@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
@@ -27,15 +28,16 @@ export function Button({ className, variant = "primary", children, disabled, loa
   );
 }
 
-type ButtonLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
+type ButtonLinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
+  href: string;
   variant?: ButtonVariant;
   children: ReactNode;
 };
 
 export function ButtonLink({ className, variant = "primary", children, ...props }: ButtonLinkProps) {
   return (
-    <a className={cn(baseClass, variants[variant], className)} {...props}>
+    <Link className={cn(baseClass, variants[variant], className)} {...props}>
       {children}
-    </a>
+    </Link>
   );
 }

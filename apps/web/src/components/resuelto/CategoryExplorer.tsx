@@ -18,6 +18,7 @@ const tones = [
 ];
 
 export function CategoryExplorer({ groups }: { groups: readonly CategoryGroup[] }) {
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
   const [active, setActive] = useState(0);
   const activeGroup = groups[active];
 
@@ -52,7 +53,7 @@ export function CategoryExplorer({ groups }: { groups: readonly CategoryGroup[] 
           {activeGroup.items.map((item) => (
             <a
               key={item}
-              href="/resultados"
+              href={`${basePath}/resultados/`}
               className="group flex min-h-[52px] items-center justify-between rounded-md border border-neutral-200 bg-white px-4 py-3 text-sm font-semibold text-neutral-700 transition-[border-color,background-color,color,transform] duration-fast ease-standard hover:-translate-y-0.5 hover:border-brand-500 hover:bg-brand-100 hover:text-brand-700"
             >
               {item}

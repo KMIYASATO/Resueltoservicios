@@ -143,6 +143,7 @@ function SearchCombobox({
 }
 
 export function MainSearch() {
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
   const [service, setService] = useState<Option | null>(serviceOptions[0]);
   const [district, setDistrict] = useState<Option | null>(districtOptions[0]);
   const [touched, setTouched] = useState(false);
@@ -155,7 +156,7 @@ export function MainSearch() {
   return (
     <form
       className="grid gap-3 rounded-[24px] border border-white/70 bg-white p-3 shadow-lg lg:grid-cols-[1.25fr_1fr_auto]"
-      action="/resultados"
+      action={`${basePath}/resultados/`}
       onSubmit={(event) => {
         setTouched(true);
         if (!canSubmit) {

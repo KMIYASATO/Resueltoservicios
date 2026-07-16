@@ -20,6 +20,9 @@ import { ServiceCard } from "@/components/resuelto/ServiceCard";
 import { categoryGroups, districts, faqs, heroServices, professionals, services, steps } from "@/data/home";
 
 export default function HomePage() {
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+  const resultsHref = `${basePath}/resultados/`;
+
   return (
     <main id="contenido" className="min-h-screen bg-white">
       <SiteHeader />
@@ -45,7 +48,7 @@ export default function HomePage() {
             </div>
             <div className="mx-auto flex max-w-2xl flex-wrap justify-center gap-2 lg:mx-0 lg:justify-start">
               {heroServices.map((service) => (
-                <a key={service} href="/resultados" className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-brand-700 shadow-xs ring-1 ring-neutral-200 transition-colors hover:bg-brand-100">
+                <a key={service} href={resultsHref} className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-brand-700 shadow-xs ring-1 ring-neutral-200 transition-colors hover:bg-brand-100">
                   {service}
                 </a>
               ))}

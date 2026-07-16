@@ -4,6 +4,10 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ResueltoLogo } from "@/components/resuelto/ResueltoLogo";
 
+export function generateStaticParams() {
+  return [{ id: "demo" }];
+}
+
 export default function ProfessionalProfilePage() {
   return (
     <main id="contenido" className="min-h-screen bg-neutral-50">

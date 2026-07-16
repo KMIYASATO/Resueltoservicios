@@ -18,6 +18,14 @@ pnpm install
 pnpm dev
 ```
 
+## Public Preview
+
+GitHub Pages:
+
+```text
+https://kmiyasato.github.io/Resueltoservicios/
+```
+
 ## Rules
 
 - Do not copy Webel code, design, texts or assets.
