@@ -1,0 +1,23 @@
+# Environment Variables
+
+## Public
+
+```env
+NEXT_PUBLIC_APP_URL=
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+```
+
+## Private Server Only
+
+```env
+SUPABASE_SECRET_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+SUPABASE_DB_URL=
+SUPABASE_JWT_SECRET=
+EMAIL_PROVIDER_API_KEY=
+PAYMENT_PROVIDER_SECRET=
+PAYMENT_WEBHOOK_SECRET=
+```
+
+Private variables must never be imported into client components.

@@ -1,0 +1,12 @@
+{
+  "name": "resuelto",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "dev": "pnpm --filter @resuelto/web dev",
+    "build": "pnpm --filter @resuelto/web build",
+    "lint": "pnpm --filter @resuelto/web lint",
+    "typecheck": "pnpm --filter @resuelto/web typecheck"
+  }
+}
