@@ -4,29 +4,11 @@ import { MapPin, Search } from "lucide-react";
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { districts, services } from "@/data/home";
 import { cn } from "@/lib/cn";
 
-const serviceOptions = [
-  { value: "limpieza", label: "Limpieza del hogar", meta: "Limpieza" },
-  { value: "gasfiteria", label: "Gasfiteria", meta: "Hogar" },
-  { value: "electricidad", label: "Electricidad", meta: "Hogar" },
-  { value: "armado", label: "Armado e instalacion", meta: "Hogar" },
-  { value: "pintura", label: "Pintura", meta: "Mantenimiento" },
-  { value: "jardineria", label: "Jardineria", meta: "Mantenimiento" },
-  { value: "cerrajeria", label: "Cerrajeria", meta: "Hogar" },
-  { value: "mudanzas", label: "Mudanzas pequenas", meta: "Mudanza" }
-];
-
-const districtOptions = [
-  { value: "miraflores", label: "Miraflores", meta: "Lima" },
-  { value: "san-isidro", label: "San Isidro", meta: "Lima" },
-  { value: "surco", label: "Santiago de Surco", meta: "Lima" },
-  { value: "la-molina", label: "La Molina", meta: "Lima" },
-  { value: "barranco", label: "Barranco", meta: "Lima" },
-  { value: "jesus-maria", label: "Jesus Maria", meta: "Lima" },
-  { value: "magdalena", label: "Magdalena", meta: "Lima" },
-  { value: "san-borja", label: "San Borja", meta: "Lima" }
-];
+const serviceOptions = services.map((service) => ({ value: service.slug, label: service.name, meta: service.category }));
+const districtOptions = districts.map((district) => ({ value: district.slug, label: district.name, meta: "Lima" }));
 
 type Option = { value: string; label: string; meta: string };
 
@@ -38,7 +20,8 @@ function SearchCombobox({
   value,
   onChange,
   placeholder,
-  error
+  error,
+  grouped = false
 }: {
   id: string;
   label: string;
@@ -48,6 +31,7 @@ function SearchCombobox({
   onChange: (option: Option | null) => void;
   placeholder: string;
   error?: string;
+  grouped?: boolean;
 }) {
   const [query, setQuery] = useState(value?.label ?? "");
   const [open, setOpen] = useState(false);
@@ -61,6 +45,11 @@ function SearchCombobox({
 
   const listboxId = `${id}-listbox`;
   const activeId = filtered[activeIndex] ? `${id}-option-${activeIndex}` : undefined;
+  const groupedOptions = filtered.reduce<Record<string, Option[]>>((groups, option) => {
+    const key = grouped ? option.meta : "Sugerencias";
+    groups[key] = [...(groups[key] ?? []), option];
+    return groups;
+  }, {});
 
   return (
     <div className="relative">
@@ -112,26 +101,34 @@ function SearchCombobox({
       {error ? <p className="mt-1 text-sm font-medium text-error-600" id={`${id}-error`}>{error}</p> : null}
       {open ? (
         <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-30 rounded-xl border border-neutral-200 bg-white p-2 shadow-lg" onMouseDown={(event) => event.preventDefault()}>
-          <div className="mb-2 px-3 py-2 text-xs font-semibold text-neutral-600">{query ? "Resultados" : "Sugerencias populares"}</div>
+          <div className="mb-2 px-3 py-2 text-xs font-semibold text-neutral-600">{query ? "Resultados" : "Servicios populares"}</div>
           <div id={listboxId} role="listbox" className="max-h-64 overflow-auto">
-            {filtered.length > 0 ? filtered.map((option, index) => (
-              <button
-                key={option.value}
-                id={`${id}-option-${index}`}
-                type="button"
-                role="option"
-                aria-selected={value?.value === option.value}
-                className={cn("flex w-full items-center justify-between rounded-md px-3 py-3 text-left transition-colors duration-fast", index === activeIndex ? "bg-brand-100 text-brand-700" : "hover:bg-neutral-50")}
-                onMouseEnter={() => setActiveIndex(index)}
-                onClick={() => {
-                  onChange(option);
-                  setQuery(option.label);
-                  setOpen(false);
-                }}
-              >
-                <span className="font-semibold text-neutral-950">{option.label}</span>
-                <span className="text-xs font-medium text-neutral-600">{option.meta}</span>
-              </button>
+            {filtered.length > 0 ? Object.entries(groupedOptions).map(([group, groupOptions]) => (
+              <div key={group} className="py-1">
+                {grouped ? <p className="px-3 py-1 text-xs font-bold uppercase tracking-wide text-neutral-400">{group}</p> : null}
+                {groupOptions.map((option) => {
+                  const index = filtered.findIndex((item) => item.value === option.value);
+                  return (
+                    <button
+                      key={option.value}
+                      id={`${id}-option-${index}`}
+                      type="button"
+                      role="option"
+                      aria-selected={value?.value === option.value}
+                      className={cn("flex w-full items-center justify-between rounded-md px-3 py-3 text-left transition-colors duration-fast", index === activeIndex ? "bg-brand-100 text-brand-700" : "hover:bg-neutral-50")}
+                      onMouseEnter={() => setActiveIndex(index)}
+                      onClick={() => {
+                        onChange(option);
+                        setQuery(option.label);
+                        setOpen(false);
+                      }}
+                    >
+                      <span className="font-semibold text-neutral-950">{option.label}</span>
+                      <span className="text-xs font-medium text-neutral-600">{option.meta}</span>
+                    </button>
+                  );
+                })}
+              </div>
             )) : (
               <div className="rounded-md bg-neutral-50 px-3 py-4 text-sm text-neutral-600">No encontramos ese resultado. Prueba con otra palabra.</div>
             )}
@@ -166,8 +163,8 @@ export function MainSearch() {
         setLoading(true);
       }}
     >
-      <input type="hidden" name="service" value={service?.value ?? ""} />
-      <input type="hidden" name="district" value={district?.value ?? ""} />
+      <input type="hidden" name="servicio" value={service?.value ?? ""} />
+      <input type="hidden" name="distrito" value={district?.value ?? ""} />
       <SearchCombobox
         id="service-search"
         label="¿Qué servicio necesitas?"
@@ -175,8 +172,9 @@ export function MainSearch() {
         options={serviceOptions}
         value={service}
         onChange={setService}
-        placeholder="Ej. limpieza, gasfiteria..."
+        placeholder="Ej. limpieza, gasfitería..."
         error={serviceError}
+        grouped
       />
       <SearchCombobox
         id="district-search"

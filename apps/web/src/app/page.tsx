@@ -1,27 +1,18 @@
-import {
-  CheckCircle2,
-  Clock3,
-  HeartHandshake,
-  MapPin,
-  ShieldCheck,
-  Sparkles,
-  Star,
-  UserRoundCheck
-} from "lucide-react";
+import { CheckCircle2, Clock3, HeartHandshake, MapPin, ShieldCheck, Sparkles, Star, UserRoundCheck } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { CategoryExplorer } from "@/components/resuelto/CategoryExplorer";
 import { FaqAccordion } from "@/components/resuelto/FaqAccordion";
 import { MainSearch } from "@/components/resuelto/MainSearch";
+import { ProfessionalCard } from "@/components/resuelto/ProfessionalCard";
 import { ResueltoLogo } from "@/components/resuelto/ResueltoLogo";
-import { SiteHeader } from "@/components/resuelto/SiteHeader";
 import { ServiceCard } from "@/components/resuelto/ServiceCard";
-import { categoryGroups, districts, faqs, heroServices, professionals, services, steps } from "@/data/home";
+import { SiteHeader } from "@/components/resuelto/SiteHeader";
+import { benefits, categoryGroups, districts, faqs, professionals, services, steps, trustItems } from "@/data/home";
 
 export default function HomePage() {
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
-  const resultsHref = `${basePath}/resultados/`;
 
   return (
     <main id="contenido" className="min-h-screen bg-white">
@@ -37,19 +28,19 @@ export default function HomePage() {
             <Badge tone="action">Servicios a domicilio en Lima</Badge>
             <div className="grid gap-4">
               <h1 className="font-display text-5xl font-bold leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-7xl">
-                Haz tu casa mas simple
+                Lo necesitas. Queda Resuelto.
               </h1>
               <p className="mx-auto max-w-xl text-lg leading-8 text-neutral-600 lg:mx-0">
-                Encuentra profesionales para limpieza, arreglos, instalaciones y mantenimiento sin salir de casa.
+                Encuentra profesionales para tu hogar, compara opciones y reserva el horario que más te conviene.
               </p>
             </div>
             <div className="mx-auto w-full max-w-3xl lg:mx-0">
               <MainSearch />
             </div>
             <div className="mx-auto flex max-w-2xl flex-wrap justify-center gap-2 lg:mx-0 lg:justify-start">
-              {heroServices.map((service) => (
-                <a key={service} href={resultsHref} className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-brand-700 shadow-xs ring-1 ring-neutral-200 transition-colors hover:bg-brand-100">
-                  {service}
+              {services.slice(0, 5).map((service) => (
+                <a key={service.slug} href={`${basePath}/resultados/?servicio=${service.slug}&distrito=miraflores`} className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-brand-700 shadow-xs ring-1 ring-neutral-200 transition-colors duration-fast hover:bg-brand-100">
+                  {service.name}
                 </a>
               ))}
             </div>
@@ -63,7 +54,6 @@ export default function HomePage() {
                   Miraflores
                 </div>
               </div>
-
               <div className="absolute right-5 top-5 w-52 rounded-[24px] bg-white p-4 text-neutral-950 shadow-lg sm:right-8 sm:top-14">
                 <p className="text-xs font-semibold text-neutral-600">Disponible hoy</p>
                 <div className="mt-3 flex items-center gap-3">
@@ -72,11 +62,10 @@ export default function HomePage() {
                   </div>
                   <div>
                     <p className="font-display text-xl font-bold">3:00 p. m.</p>
-                    <p className="text-xs text-neutral-600">Horario demo</p>
+                    <p className="text-xs text-neutral-600">Horario sugerido</p>
                   </div>
                 </div>
               </div>
-
               <div className="absolute bottom-5 left-5 right-5 rounded-[30px] bg-white p-4 text-neutral-950 shadow-lg sm:left-10 sm:right-auto sm:w-[380px]">
                 <div className="mb-4 flex items-center justify-between">
                   <div>
@@ -89,9 +78,7 @@ export default function HomePage() {
                   {professionals.slice(0, 2).map((professional) => (
                     <div key={professional.name} className="flex items-center justify-between rounded-2xl bg-neutral-50 p-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-600 font-bold text-white">
-                          {professional.initials}
-                        </div>
+                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-brand-600 font-bold text-white">{professional.initials}</div>
                         <div>
                           <p className="font-semibold">{professional.name}</p>
                           <p className="text-xs text-neutral-600">{professional.specialty}</p>
@@ -102,7 +89,6 @@ export default function HomePage() {
                   ))}
                 </div>
               </div>
-
               <div className="absolute left-12 top-28 h-64 w-64 rounded-full bg-action-500/25 blur-2xl" />
               <div className="absolute right-16 bottom-32 h-44 w-44 rounded-full bg-pink-500/20 blur-2xl" />
               <div className="grid h-full min-h-[470px] place-items-center">
@@ -119,18 +105,47 @@ export default function HomePage() {
         </div>
       </section>
 
+      <section id="populares" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+        <div className="text-center">
+          <p className="text-sm font-semibold text-brand-600">Lo más popular en tu zona</p>
+          <h2 className="mt-2 font-display text-4xl font-bold tracking-[-0.04em] text-neutral-950 lg:text-5xl">Servicios que la gente busca primero</h2>
+        </div>
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {services.map((service) => <ServiceCard key={service.slug} {...service} />)}
+        </div>
+      </section>
+
+      <section className="bg-neutral-50 py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-10 text-center">
+            <p className="text-sm font-semibold text-brand-600">Confianza</p>
+            <h2 className="mt-2 font-display text-4xl font-bold tracking-[-0.04em] text-neutral-950 lg:text-5xl">Decide con información clara</h2>
+          </div>
+          <div className="grid gap-5 lg:grid-cols-3">
+            {trustItems.map((item, index) => {
+              const Icon = [ShieldCheck, Clock3, UserRoundCheck][index];
+              return (
+                <Card key={item.title} className="p-6">
+                  <Icon className="h-8 w-8 text-brand-600" />
+                  <h3 className="mt-5 font-display text-2xl font-bold text-neutral-950">{item.title}</h3>
+                  <p className="mt-2 leading-7 text-neutral-600">{item.text}</p>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       <section id="como-funciona" className="bg-white py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h2 className="font-display text-4xl font-bold tracking-[-0.04em] text-neutral-950 lg:text-5xl">Como funciona</h2>
+            <h2 className="font-display text-4xl font-bold tracking-[-0.04em] text-neutral-950 lg:text-5xl">Cómo funciona</h2>
           </div>
           <div className="mt-12 grid gap-6 lg:grid-cols-3">
             {steps.map((step, index) => (
               <div key={step.title} className="grid gap-5 text-center">
                 <div className="mx-auto grid h-44 w-full max-w-[280px] place-items-center rounded-[34px] bg-gradient-to-br from-brand-100 via-white to-pink-100 shadow-sm ring-1 ring-neutral-200">
-                  <div className="grid h-24 w-24 place-items-center rounded-full bg-brand-600 text-3xl font-bold text-white shadow-md">
-                    {index + 1}
-                  </div>
+                  <div className="grid h-24 w-24 place-items-center rounded-full bg-brand-600 text-3xl font-bold text-white shadow-md">{index + 1}</div>
                 </div>
                 <div>
                   <h3 className="font-display text-2xl font-bold text-neutral-950">{step.title}</h3>
@@ -142,33 +157,32 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="overflow-hidden bg-neutral-50 py-16 lg:py-24">
+      <section id="profesionales" className="bg-neutral-50 py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-10 text-center">
+            <p className="text-sm font-semibold text-brand-600">Profesionales recomendados</p>
+            <h2 className="mt-2 font-display text-4xl font-bold tracking-[-0.04em] text-neutral-950 lg:text-5xl">Compara antes de reservar</h2>
+          </div>
+          <div className="grid gap-5 lg:grid-cols-3">
+            {professionals.map((professional) => <ProfessionalCard key={professional.id} {...professional} />)}
+          </div>
+        </div>
+      </section>
+
+      <section className="overflow-hidden bg-white py-16 lg:py-24">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
           <div className="grid content-center gap-5">
-            <p className="text-sm font-semibold text-brand-600">Servicios en casa</p>
-            <h2 className="font-display text-4xl font-bold tracking-[-0.04em] text-neutral-950 lg:text-5xl">
-              Ya recibimos compras, comida y paquetes en casa. Resuelto hace lo mismo con los servicios.
-            </h2>
-            <p className="max-w-2xl text-lg leading-8 text-neutral-600">
-              Compara opciones, revisa informacion del profesional y reserva sin depender de recomendaciones sueltas o chats desordenados.
-            </p>
+            <p className="text-sm font-semibold text-brand-600">Beneficios</p>
+            <h2 className="font-display text-4xl font-bold tracking-[-0.04em] text-neutral-950 lg:text-5xl">Una forma más ordenada de resolver tareas del hogar</h2>
+            <p className="max-w-2xl text-lg leading-8 text-neutral-600">Encuentra opciones, revisa detalles y reserva sin depender de recomendaciones sueltas o chats desordenados.</p>
           </div>
           <Card className="relative min-h-[360px] overflow-hidden border-0 bg-brand-700 p-6 text-white shadow-lg">
             <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-action-500/40 blur-2xl" />
             <div className="relative grid gap-4">
-              {[
-                [ShieldCheck, "Pago protegido", "Simulado hasta aprobar proveedor."],
-                [Clock3, "Horarios visibles", "Elige fecha y disponibilidad."],
-                [UserRoundCheck, "Profesionales claros", "Perfil, servicio y reputacion." ]
-              ].map(([Icon, title, text]) => (
-                <div key={String(title)} className="rounded-2xl bg-white/12 p-4 ring-1 ring-white/15">
-                  <div className="flex items-start gap-3">
-                    <Icon className="mt-1 h-6 w-6 text-action-100" />
-                    <div>
-                      <h3 className="font-display text-xl font-bold">{String(title)}</h3>
-                      <p className="mt-1 text-sm leading-6 text-brand-100">{String(text)}</p>
-                    </div>
-                  </div>
+              {benefits.map((benefit) => (
+                <div key={benefit} className="flex items-start gap-3 rounded-2xl bg-white/12 p-4 ring-1 ring-white/15">
+                  <CheckCircle2 className="mt-1 h-5 w-5 text-brand-100" />
+                  <p className="text-sm leading-6 text-brand-100">{benefit}</p>
                 </div>
               ))}
             </div>
@@ -176,45 +190,27 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="populares" className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
-        <div className="text-center">
-          <p className="text-sm font-semibold text-brand-600">Lo mas popular en tu zona</p>
-          <h2 className="mt-2 font-display text-4xl font-bold tracking-[-0.04em] text-neutral-950 lg:text-5xl">Servicios que la gente busca primero</h2>
-        </div>
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {services.map((service) => (
-            <ServiceCard key={service.slug} {...service} />
-          ))}
-        </div>
-      </section>
-
-      <section id="categorias" className="bg-neutral-50 py-16 lg:py-24">
+      <section id="catalogo" className="bg-neutral-50 py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-10 text-center">
-            <p className="text-sm font-semibold text-brand-600">Todas las categorias</p>
+            <p className="text-sm font-semibold text-brand-600">Catálogo</p>
             <h2 className="mt-2 font-display text-4xl font-bold tracking-[-0.04em] text-neutral-950 lg:text-5xl">El servicio a domicilio que necesites</h2>
           </div>
           <div className="mb-8 flex flex-wrap justify-center gap-2">
             {districts.map((district) => (
-              <span key={district} className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-neutral-700 shadow-xs ring-1 ring-neutral-200">
-                {district}
-              </span>
+              <span key={district.slug} className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-neutral-700 shadow-xs ring-1 ring-neutral-200">{district.name}</span>
             ))}
           </div>
           <CategoryExplorer groups={categoryGroups} />
         </div>
       </section>
 
-      <section id="profesionales" className="bg-white py-16 lg:py-24">
+      <section className="bg-white py-16 lg:py-24">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[1fr_420px] lg:px-8">
           <div className="grid content-center gap-4">
             <p className="text-sm font-semibold text-brand-600">Para profesionales</p>
-            <h2 className="font-display text-4xl font-bold tracking-[-0.04em] text-neutral-950 lg:text-5xl">
-              Ofrece tus servicios con una agenda mas ordenada.
-            </h2>
-            <p className="max-w-2xl text-lg leading-8 text-neutral-600">
-              Crea tu perfil, define zonas, horarios y servicios. La plataforma queda preparada para reservas, estados y pagos simulados.
-            </p>
+            <h2 className="font-display text-4xl font-bold tracking-[-0.04em] text-neutral-950 lg:text-5xl">Ofrece tus servicios con una agenda más ordenada.</h2>
+            <p className="max-w-2xl text-lg leading-8 text-neutral-600">Crea tu perfil, define zonas, horarios y servicios para recibir solicitudes con mejor contexto desde el primer contacto.</p>
             <ButtonLink href="#" className="w-fit">Ofrecer mis servicios</ButtonLink>
           </div>
           <Card className="p-5">
@@ -225,7 +221,7 @@ export default function HomePage() {
               <div className="mt-5 grid gap-2 text-sm font-semibold text-neutral-700">
                 <span className="rounded-full bg-white px-3 py-2">Agenda</span>
                 <span className="rounded-full bg-white px-3 py-2">Solicitudes</span>
-                <span className="rounded-full bg-white px-3 py-2">Reputacion</span>
+                <span className="rounded-full bg-white px-3 py-2">Reputación</span>
               </div>
             </div>
           </Card>
@@ -236,9 +232,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <p className="text-sm font-semibold text-brand-600">Preguntas frecuentes</p>
           <h2 className="mt-2 font-display text-4xl font-bold tracking-[-0.04em] text-neutral-950">Antes de reservar</h2>
-          <div className="mt-8">
-            <FaqAccordion items={faqs} />
-          </div>
+          <div className="mt-8"><FaqAccordion items={faqs} /></div>
         </div>
       </section>
 
@@ -246,23 +240,19 @@ export default function HomePage() {
         <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[1.2fr_2fr] lg:px-8">
           <div className="grid gap-4">
             <ResueltoLogo inverted />
-            <p className="max-w-sm text-sm leading-6 text-neutral-300">
-              Servicios de confianza, cuando los necesitas. Producto en desarrollo para Lima Metropolitana.
-            </p>
+            <p className="max-w-sm text-sm leading-6 text-brand-100">Servicios de confianza, cuando los necesitas. Pensado para Lima Metropolitana.</p>
           </div>
           <div className="grid gap-6 text-sm sm:grid-cols-4">
             {[
               ["Clientes", "Buscar", "Reservas", "Ayuda"],
               ["Profesionales", "Registrarme", "Tarifas", "Agenda"],
-              ["Legal", "Terminos", "Privacidad", "Cookies"],
+              ["Legal", "Términos", "Privacidad", "Cookies"],
               ["Soporte", "Centro de ayuda", "Reclamos", "Contacto"]
             ].map((column) => (
               <div key={column[0]}>
                 <h3 className="font-semibold text-white">{column[0]}</h3>
-                <div className="mt-3 grid gap-2 text-neutral-300">
-                  {column.slice(1).map((item) => (
-                    <a key={item} href="#" className="hover:text-white">{item}</a>
-                  ))}
+                <div className="mt-3 grid gap-2 text-brand-100">
+                  {column.slice(1).map((item) => <a key={item} href="#" className="hover:text-white">{item}</a>)}
                 </div>
               </div>
             ))}

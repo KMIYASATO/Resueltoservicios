@@ -4,6 +4,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 
 export function ProfessionalCard({
+  id,
   name,
   specialty,
   rating,
@@ -13,6 +14,7 @@ export function ProfessionalCard({
   availability,
   initials
 }: {
+  id: string;
   name: string;
   specialty: string;
   rating: string;
@@ -52,7 +54,7 @@ export function ProfessionalCard({
       </div>
       <div className="flex flex-col gap-3 border-t border-neutral-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
         <span className="font-semibold text-neutral-950">{price}</span>
-        <ButtonLink href="/profesionales/demo" variant="secondary">
+        <ButtonLink href={`/profesionales/${id}`} variant="secondary">
           Ver perfil
         </ButtonLink>
       </div>
