@@ -53,7 +53,7 @@ export function CategoryExplorer({ groups }: { groups: readonly CategoryGroup[] 
       <Card className="p-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-sm font-semibold text-brand-600">Categoria seleccionada</p>
+            <p className="text-sm font-semibold text-brand-600">Categoría seleccionada</p>
             <h3 className="mt-1 font-display text-3xl font-bold text-neutral-950">{activeGroup.title}</h3>
           </div>
           <span className="rounded-full bg-brand-100 px-3 py-1 text-sm font-semibold text-brand-700">{activeGroup.items.length} servicios</span>
