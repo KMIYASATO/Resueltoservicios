@@ -4,10 +4,11 @@ import { ChevronDown, Clock3, SearchX, SlidersHorizontal } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/Badge";
+import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { MainSearch } from "@/components/resuelto/MainSearch";
 import { ProfessionalCard } from "@/components/resuelto/ProfessionalCard";
-import { districts, professionals, services } from "@/data/home";
+import { assignmentPolicy, districts, getPricingForService, matchProfessionals, services } from "@/data/home";
 import { cn } from "@/lib/cn";
 
 const filterGroups = [
@@ -21,6 +22,7 @@ const filterGroups = [
 
 const sortOptions = [
   { value: "recomendados", label: "Recomendados" },
+  { value: "rapido", label: "Más rápido" },
   { value: "rating", label: "Mejor valoración" },
   { value: "precio", label: "Menor precio" }
 ] as const;
@@ -47,12 +49,15 @@ export function ResultsContent() {
   const serviceName = selectedService?.name ?? humanize(serviceSlug);
   const districtName = selectedDistrict?.name ?? humanize(districtSlug);
   const hasError = !serviceSlug || !districtSlug;
+  const pricing = getPricingForService(serviceSlug);
+  const districtEnabled = Boolean(selectedDistrict?.enabled);
+  const matchedProfessionals = useMemo(() => matchProfessionals(districtSlug), [districtSlug]);
 
   const visibleProfessionals = useMemo(() => {
     const activeFilters = filterGroups.flatMap((group) => searchParams.getAll(group.key));
-    let list = [...professionals];
+    let list = districtEnabled ? [...matchedProfessionals] : [];
     if (activeFilters.includes("Disponible hoy")) {
-      list = list.filter((professional) => professional.availability.toLowerCase().includes("disponible hoy"));
+      list = list.filter((professional) => professional.availabilityStatus === "available");
     }
     if (activeFilters.includes("4.8+")) {
       list = list.filter((professional) => Number(professional.rating) >= 4.8);
@@ -63,11 +68,16 @@ export function ResultsContent() {
     if (sort === "rating") {
       list.sort((a, b) => Number(b.rating) - Number(a.rating));
     }
+    if (sort === "rapido") {
+      list.sort((a, b) => (a.availabilityStatus === "available" ? 0 : 1) - (b.availabilityStatus === "available" ? 0 : 1) || a.etaMinutes - b.etaMinutes);
+    }
     if (sort === "precio") {
       list.sort((a, b) => priceValue(a.price) - priceValue(b.price));
     }
     return list;
-  }, [searchParams, sort]);
+  }, [districtEnabled, matchedProfessionals, searchParams, sort]);
+
+  const fastestProfessional = visibleProfessionals.find((professional) => professional.availabilityStatus === "available") ?? visibleProfessionals[0];
 
   function buildHref(key: string, value: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -130,7 +140,45 @@ export function ResultsContent() {
           </Card>
         ) : null}
 
+        {!hasError && !districtEnabled ? (
+          <Card className="border-action-500/40 bg-action-100 p-4 text-neutral-950">
+            Por ahora atendemos solicitudes en Miraflores, San Isidro y San Borja. Puedes revisar profesionales, pero la reserva se habilita dentro de esas zonas.
+          </Card>
+        ) : null}
+
         <MainSearch />
+
+        <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+          <Card className="overflow-hidden p-0">
+            <div className="grid gap-4 bg-white p-5 sm:grid-cols-[1fr_auto] sm:items-center">
+              <div>
+                <p className="text-sm font-semibold text-brand-600">Motor de matching</p>
+                <h2 className="mt-1 font-display text-2xl font-bold text-neutral-950">Prioridad por cercanía, disponibilidad y carga</h2>
+                <p className="mt-2 text-sm leading-6 text-neutral-600">El listado favorece técnicos verificados dentro de zona, disponibles ahora, con buen rating y menor saturación.</p>
+              </div>
+              {fastestProfessional ? (
+                <ButtonLink href={`/reserva?modo=rapido&profesional=${fastestProfessional.id}&servicio=${serviceSlug ?? "limpieza-hogar"}&distrito=${districtSlug ?? "miraflores"}`}>
+                  Pedir el más rápido
+                </ButtonLink>
+              ) : null}
+            </div>
+            <div className="grid border-t border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-700 sm:grid-cols-3">
+              <span><strong className="text-neutral-950">Regla:</strong> {assignmentPolicy.title}</span>
+              <span><strong className="text-neutral-950">Timeout:</strong> {assignmentPolicy.timeout}</span>
+              <span><strong className="text-neutral-950">Cobertura:</strong> Miraflores, San Isidro y San Borja</span>
+            </div>
+          </Card>
+
+          <Card className="p-5">
+            <p className="text-sm font-semibold text-brand-600">Precio referencial</p>
+            <h2 className="mt-1 font-display text-2xl font-bold text-neutral-950">{pricing.baseRange}</h2>
+            <div className="mt-4 grid gap-2 text-sm text-neutral-700">
+              <span>Urgencia alta: {pricing.urgentRange}</span>
+              <span>Ajuste máximo en visita: {pricing.onsiteAdjustmentLimit}</span>
+              <span>Fondo de garantía: {pricing.guaranteeReserve} de cada transacción</span>
+            </div>
+          </Card>
+        </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <button type="button" className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-md border border-brand-600 bg-white px-4 py-2 font-semibold text-brand-600 lg:hidden" onClick={() => setMobileFiltersOpen(true)}>

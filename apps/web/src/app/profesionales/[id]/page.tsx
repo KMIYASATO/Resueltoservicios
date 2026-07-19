@@ -1,9 +1,15 @@
-import { CalendarClock, CheckCircle2, MapPin, ShieldCheck, Star } from "lucide-react";
+import { CalendarClock, CheckCircle2, Gauge, MapPin, ShieldCheck, Star } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ResueltoLogo } from "@/components/resuelto/ResueltoLogo";
-import { findProfessional, professionals } from "@/data/home";
+import { commissionLevels, findProfessional, professionals } from "@/data/home";
+
+const statusCopy = {
+  available: "Disponible ahora",
+  busy: "Ocupado",
+  offline: "Desconectado"
+} as const;
 
 export function generateStaticParams() {
   return professionals.map((professional) => ({ id: professional.id }));
@@ -23,6 +29,7 @@ const reviews = [
 export default async function ProfessionalProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const professional = findProfessional(id);
+  const level = commissionLevels.find((item) => item.level === professional.level);
 
   return (
     <main id="contenido" className="min-h-screen bg-neutral-50 pb-24 lg:pb-0">
@@ -42,6 +49,7 @@ export default async function ProfessionalProfilePage({ params }: { params: Prom
                 <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white bg-brand-600 text-2xl font-bold text-white shadow-sm">{professional.initials}</div>
                 <div className="pb-1">
                   <Badge tone="success">Verificado</Badge>
+                  <span className="ml-2 inline-flex rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold text-brand-700">{statusCopy[professional.availabilityStatus]}</span>
                   <h1 className="mt-3 font-display text-4xl font-bold tracking-[-0.03em] text-neutral-950">{professional.name}</h1>
                   <p className="mt-2 text-lg text-neutral-600">{professional.specialty} · Lima Metropolitana</p>
                 </div>
@@ -64,6 +72,32 @@ export default async function ProfessionalProfilePage({ params }: { params: Prom
                   <p className="mt-3 text-sm font-semibold text-neutral-950">{item}</p>
                 </div>
               ))}
+            </div>
+          </Card>
+
+          <Card className="p-6">
+            <h2 className="font-display text-2xl font-bold text-neutral-950">Reglas operativas del perfil</h2>
+            <div className="mt-5 grid gap-4 lg:grid-cols-4">
+              <div className="rounded-lg border border-neutral-200 p-4">
+                <Gauge className="h-5 w-5 text-brand-600" />
+                <p className="mt-3 text-sm font-semibold text-neutral-950">Afinidad operativa</p>
+                <p className="mt-1 text-sm text-neutral-600">ETA {professional.etaMinutes} min, {professional.activeJobs} servicio activo.</p>
+              </div>
+              <div className="rounded-lg border border-neutral-200 p-4">
+                <ShieldCheck className="h-5 w-5 text-brand-600" />
+                <p className="mt-3 text-sm font-semibold text-neutral-950">Nivel {professional.level}</p>
+                <p className="mt-1 text-sm text-neutral-600">Comisión aplicable: {level?.commission ?? "por definir"}.</p>
+              </div>
+              <div className="rounded-lg border border-neutral-200 p-4">
+                <Star className="h-5 w-5 text-brand-600" />
+                <p className="mt-3 text-sm font-semibold text-neutral-950">Reputación mínima</p>
+                <p className="mt-1 text-sm text-neutral-600">Pausa automática si cae bajo 3.5 sostenido.</p>
+              </div>
+              <div className="rounded-lg border border-neutral-200 p-4">
+                <CheckCircle2 className="h-5 w-5 text-brand-600" />
+                <p className="mt-3 text-sm font-semibold text-neutral-950">Prueba de cierre</p>
+                <p className="mt-1 text-sm text-neutral-600">Código único o fotos antes de liberar pago.</p>
+              </div>
             </div>
           </Card>
 

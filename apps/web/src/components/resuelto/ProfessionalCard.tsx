@@ -2,6 +2,19 @@ import { CalendarClock, CheckCircle2, Star } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { cn } from "@/lib/cn";
+
+const statusCopy = {
+  available: "Disponible ahora",
+  busy: "Ocupado",
+  offline: "Desconectado"
+};
+
+const statusClass = {
+  available: "bg-success-100 text-success-600",
+  busy: "bg-action-100 text-neutral-950",
+  offline: "bg-neutral-100 text-neutral-600"
+};
 
 export function ProfessionalCard({
   id,
@@ -12,7 +25,11 @@ export function ProfessionalCard({
   services,
   price,
   availability,
-  initials
+  initials,
+  availabilityStatus = "available",
+  matchScore,
+  etaLabel,
+  distanceLabel
 }: {
   id: string;
   name: string;
@@ -23,6 +40,10 @@ export function ProfessionalCard({
   price: string;
   availability: string;
   initials: string;
+  availabilityStatus?: "available" | "busy" | "offline";
+  matchScore?: number;
+  etaLabel?: string;
+  distanceLabel?: string;
 }) {
   return (
     <Card className="grid gap-5 p-5 transition-[border-color,box-shadow,transform] duration-normal ease-standard hover:-translate-y-1 hover:border-brand-500 hover:shadow-md">
@@ -34,10 +55,18 @@ export function ProfessionalCard({
           <div className="flex flex-wrap items-center gap-2">
             <h3 className="font-display text-xl font-bold text-neutral-950">{name}</h3>
             <Badge tone="success">Verificado</Badge>
+            <span className={cn("rounded-full px-2.5 py-1 text-xs font-semibold", statusClass[availabilityStatus])}>{statusCopy[availabilityStatus]}</span>
           </div>
           <p className="mt-1 text-sm text-neutral-600">{specialty}</p>
         </div>
       </div>
+      {typeof matchScore === "number" ? (
+        <div className="grid gap-2 rounded-lg bg-brand-100 p-3 text-sm text-neutral-700 sm:grid-cols-3">
+          <span><strong className="text-brand-700">{matchScore}%</strong> afinidad</span>
+          <span>{etaLabel}</span>
+          <span>{distanceLabel}</span>
+        </div>
+      ) : null}
       <div className="grid gap-3 text-sm text-neutral-700">
         <span className="flex items-center gap-2">
           <Star aria-hidden="true" className="h-4 w-4 fill-warning-600 text-warning-600" />

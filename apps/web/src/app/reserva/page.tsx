@@ -1,9 +1,9 @@
-import { CalendarClock, CheckCircle2, CreditCard, Home, MapPin, UserRoundCheck } from "lucide-react";
+import { AlertTriangle, CalendarClock, CheckCircle2, CreditCard, Home, MapPin, ReceiptText, ShieldCheck, UserRoundCheck } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ResueltoLogo } from "@/components/resuelto/ResueltoLogo";
-import { professionals, services } from "@/data/home";
+import { getPricingForService, paymentPolicy, professionals, services } from "@/data/home";
 
 const bookingSteps = [
   {
@@ -36,6 +36,7 @@ const bookingSteps = [
 export default function BookingPage() {
   const service = services[0];
   const professional = professionals[0];
+  const pricing = getPricingForService(service.slug);
 
   return (
     <main id="contenido" className="min-h-screen bg-neutral-50">
@@ -81,6 +82,24 @@ export default function BookingPage() {
                 <CalendarClock className="h-6 w-6 text-brand-600" aria-hidden="true" />
                 <p className="mt-3 text-sm font-semibold text-neutral-950">Sugerencia</p>
                 <p className="mt-1 text-sm leading-6 text-neutral-700">Incluye fotos, medidas o detalles del problema para recibir una mejor atención.</p>
+              </div>
+            </div>
+
+            <div className="mt-6 grid gap-4 lg:grid-cols-3">
+              <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-4">
+                <ReceiptText className="h-5 w-5 text-brand-600" />
+                <p className="mt-3 text-sm font-semibold text-neutral-950">Precio referencial</p>
+                <p className="mt-1 text-sm leading-6 text-neutral-600">{pricing.baseRange}. En alta urgencia puede subir a {pricing.urgentRange}.</p>
+              </div>
+              <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-4">
+                <AlertTriangle className="h-5 w-5 text-brand-600" />
+                <p className="mt-3 text-sm font-semibold text-neutral-950">Ajuste en visita</p>
+                <p className="mt-1 text-sm leading-6 text-neutral-600">Tope máximo: {pricing.onsiteAdjustmentLimit}. Si lo supera, requiere aprobación del cliente.</p>
+              </div>
+              <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-4">
+                <ShieldCheck className="h-5 w-5 text-brand-600" />
+                <p className="mt-3 text-sm font-semibold text-neutral-950">Garantía</p>
+                <p className="mt-1 text-sm leading-6 text-neutral-600">{pricing.guaranteeReserve} se separa para cubrir reclamos trazables.</p>
               </div>
             </div>
 
@@ -130,6 +149,22 @@ export default function BookingPage() {
               );
             })}
           </div>
+
+          <Card className="p-6">
+            <p className="text-sm font-semibold text-brand-600">Pago y cierre del trabajo</p>
+            <h2 className="mt-2 font-display text-3xl font-bold tracking-[-0.03em] text-neutral-950">Retención, confirmación y liberación</h2>
+            <div className="mt-5 grid gap-4 lg:grid-cols-4">
+              {[paymentPolicy.preAuthorization, paymentPolicy.retry, paymentPolicy.capture, paymentPolicy.split].map((item, index) => (
+                <div key={item} className="rounded-lg border border-neutral-200 p-4">
+                  <span className="text-xs font-semibold text-brand-600">Regla {index + 1}</span>
+                  <p className="mt-2 text-sm leading-6 text-neutral-700">{item}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 rounded-xl bg-brand-100 p-4 text-sm leading-6 text-neutral-700">
+              Para finalizar, el cliente valida un código único o fotos del resultado. Si hay problema, puede abrir disputa durante las primeras 24 horas.
+            </div>
+          </Card>
         </div>
 
         <Card className="h-fit p-6 lg:sticky lg:top-8">
