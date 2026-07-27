@@ -1,60 +1,61 @@
 "use client";
 
-import { GraduationCap, PaintRoller, Sparkles, Wrench, X, Zap } from "lucide-react";
+import { BriefcaseBusiness, Car, GraduationCap, Home, KeyRound, Languages, Leaf, Music, PlugZap, Sparkles, WashingMachine, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import type { KeyboardEvent, TouchEvent } from "react";
 import { cn } from "@/lib/cn";
 
+type ServiceOption = {
+  label: string;
+  icon: LucideIcon;
+};
+
 type PrimaryCategory = {
   label: string;
-  name: string;
   slug: string;
   color: string;
   icon: LucideIcon;
-  services: string[];
+  services: ServiceOption[];
 };
 
 const categories: PrimaryCategory[] = [
   {
     label: "Clases",
-    name: "Clases y aprendizaje",
     slug: "clases",
     color: "#F18D9E",
     icon: GraduationCap,
-    services: ["Clases de idiomas", "Clases escolares", "Clases universitarias", "Música", "Arte y manualidades", "Computación", "Baile", "Entrenamiento personal"]
+    services: [
+      { label: "Colegio", icon: GraduationCap },
+      { label: "Universidad", icon: BriefcaseBusiness },
+      { label: "Idiomas", icon: Languages },
+      { label: "Música", icon: Music }
+    ]
   },
   {
     label: "Limpieza",
-    name: "Limpieza del hogar",
     slug: "limpieza",
     color: "#98DBC6",
     icon: Sparkles,
-    services: ["Limpieza del hogar", "Limpieza profunda", "Limpieza de oficinas", "Limpieza postobra", "Limpieza de ventanas", "Limpieza de muebles"]
+    services: [
+      { label: "Casa", icon: Home },
+      { label: "Oficinas", icon: BriefcaseBusiness },
+      { label: "Ventanas", icon: Sparkles },
+      { label: "Tapicería", icon: WashingMachine },
+      { label: "Auto", icon: Car }
+    ]
   },
   {
-    label: "Pintura",
-    name: "Pintura y acabados",
-    slug: "pintura",
-    color: "#E6D72A",
-    icon: PaintRoller,
-    services: ["Pintura de interiores", "Pintura de exteriores", "Pintura de departamentos", "Pintura de oficinas", "Resane de paredes", "Acabados y retoques"]
-  },
-  {
-    label: "Electricidad",
-    name: "Servicios eléctricos",
-    slug: "electricidad",
+    label: "Hogar",
+    slug: "hogar",
     color: "#5BC8AC",
-    icon: Zap,
-    services: ["Revisión eléctrica", "Cambio de tomacorrientes", "Instalación de luminarias", "Reparación de interruptores", "Problemas de cortocircuito", "Instalación de tableros"]
-  },
-  {
-    label: "Instalación",
-    name: "Instalación de equipos",
-    slug: "instalacion-equipos",
-    color: "#236A5B",
-    icon: Wrench,
-    services: ["Instalación de televisores", "Instalación de lavadoras", "Instalación de cocinas", "Instalación de campanas", "Instalación de termas", "Instalación de aire acondicionado", "Armado de muebles"]
+    icon: Home,
+    services: [
+      { label: "Electricidad", icon: PlugZap },
+      { label: "Electrodomésticos", icon: WashingMachine },
+      { label: "Cerrajero", icon: KeyRound },
+      { label: "Jardinería", icon: Leaf }
+    ]
   }
 ];
 
@@ -79,13 +80,14 @@ function isDesktopViewport() {
 type PrimaryCategoryNavProps = {
   className?: string;
   listClassName?: string;
+  variant?: "compact" | "featured";
 };
 
-export function PrimaryCategoryNav({ className, listClassName }: PrimaryCategoryNavProps) {
+export function PrimaryCategoryNav({ className, listClassName, variant = "compact" }: PrimaryCategoryNavProps) {
   const instanceId = useId().replace(/:/g, "");
-  const [openSlug, setOpenSlug] = useState<string | null>(null);
+  const [openSlug, setOpenSlug] = useState<string | null>(variant === "featured" ? categories[0].slug : null);
   const [sheetSlug, setSheetSlug] = useState<string | null>(null);
-  const [panelPosition, setPanelPosition] = useState({ top: 0, left: 16, width: 360 });
+  const [panelPosition, setPanelPosition] = useState({ top: 0, left: 16, width: 340 });
   const [dragOffset, setDragOffset] = useState(0);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -102,29 +104,27 @@ export function PrimaryCategoryNav({ className, listClassName }: PrimaryCategory
     const trigger = triggerRefs.current[slug];
     if (!trigger) return;
     const rect = trigger.getBoundingClientRect();
-    const width = Math.min(360, window.innerWidth - 32);
+    const width = Math.min(340, window.innerWidth - 32);
     const left = Math.min(Math.max(16, rect.left + rect.width / 2 - width / 2), window.innerWidth - width - 16);
     setPanelPosition({ top: rect.bottom + 12, left, width });
   }
 
-  function clearCloseTimer() {
+  function openDesktop(category: PrimaryCategory) {
     if (closeTimer.current) clearTimeout(closeTimer.current);
-  }
-
-  function openDropdown(slug: string) {
-    clearCloseTimer();
-    setOpenSlug(slug);
-    requestAnimationFrame(() => updatePanelPosition(slug));
+    setOpenSlug(category.slug);
+    requestAnimationFrame(() => updatePanelPosition(category.slug));
   }
 
   function closeDropdown(returnFocus = false) {
     const slug = openSlug;
+    if (variant === "featured") return;
     setOpenSlug(null);
     if (returnFocus && slug) requestAnimationFrame(() => triggerRefs.current[slug]?.focus());
   }
 
   function scheduleDropdownClose() {
-    clearCloseTimer();
+    if (variant === "featured") return;
+    if (closeTimer.current) clearTimeout(closeTimer.current);
     closeTimer.current = setTimeout(() => closeDropdown(false), 180);
   }
 
@@ -135,22 +135,23 @@ export function PrimaryCategoryNav({ className, listClassName }: PrimaryCategory
     if (returnFocus && slug) requestAnimationFrame(() => triggerRefs.current[slug]?.focus());
   }
 
+  function handleTriggerClick(category: PrimaryCategory) {
+    if (isDesktopViewport()) {
+      if (variant === "compact" && openSlug === category.slug) closeDropdown(false);
+      else openDesktop(category);
+      return;
+    }
+
+    setOpenSlug(variant === "featured" ? category.slug : null);
+    setSheetSlug(category.slug);
+  }
+
   function focusService(container: HTMLElement | null, direction: 1 | -1) {
     if (!container) return;
     const links = Array.from(container.querySelectorAll<HTMLAnchorElement>("[data-category-service]"));
     const currentIndex = links.findIndex((link) => link === document.activeElement);
     const nextIndex = currentIndex < 0 ? 0 : (currentIndex + direction + links.length) % links.length;
     links[nextIndex]?.focus();
-  }
-
-  function handleTriggerClick(category: PrimaryCategory) {
-    if (isDesktopViewport()) {
-      if (openSlug === category.slug) closeDropdown(false);
-      else openDropdown(category.slug);
-      return;
-    }
-    setOpenSlug(null);
-    setSheetSlug(category.slug);
   }
 
   function handleTriggerKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number, category: PrimaryCategory) {
@@ -164,7 +165,7 @@ export function PrimaryCategoryNav({ className, listClassName }: PrimaryCategory
 
     if (event.key === "ArrowDown" && isDesktopViewport()) {
       event.preventDefault();
-      openDropdown(category.slug);
+      openDesktop(category);
       requestAnimationFrame(() => panelRef.current?.querySelector<HTMLAnchorElement>("[data-category-service]")?.focus());
       return;
     }
@@ -176,9 +177,9 @@ export function PrimaryCategoryNav({ className, listClassName }: PrimaryCategory
   }
 
   function handleServiceKeyDown(event: KeyboardEvent<HTMLElement>, container: HTMLElement | null) {
-    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+    if (event.key === "ArrowDown" || event.key === "ArrowUp" || event.key === "ArrowRight" || event.key === "ArrowLeft") {
       event.preventDefault();
-      focusService(container, event.key === "ArrowDown" ? 1 : -1);
+      focusService(container, event.key === "ArrowUp" || event.key === "ArrowLeft" ? -1 : 1);
       return;
     }
 
@@ -195,8 +196,7 @@ export function PrimaryCategoryNav({ className, listClassName }: PrimaryCategory
 
   function handleTouchMove(event: TouchEvent<HTMLDivElement>) {
     if (touchStartY.current === null) return;
-    const nextOffset = Math.max(0, event.touches[0].clientY - touchStartY.current);
-    setDragOffset(nextOffset);
+    setDragOffset(Math.max(0, event.touches[0].clientY - touchStartY.current));
   }
 
   function handleTouchEnd() {
@@ -206,7 +206,7 @@ export function PrimaryCategoryNav({ className, listClassName }: PrimaryCategory
   }
 
   useEffect(() => {
-    if (!openSlug) return;
+    if (!openSlug || variant === "featured") return;
     const currentSlug = openSlug;
 
     function handlePointerDown(event: PointerEvent) {
@@ -229,7 +229,7 @@ export function PrimaryCategoryNav({ className, listClassName }: PrimaryCategory
       const trigger = triggerRefs.current[currentSlug];
       if (!trigger) return;
       const rect = trigger.getBoundingClientRect();
-      const width = Math.min(360, window.innerWidth - 32);
+      const width = Math.min(340, window.innerWidth - 32);
       const left = Math.min(Math.max(16, rect.left + rect.width / 2 - width / 2), window.innerWidth - width - 16);
       setPanelPosition({ top: rect.bottom + 12, left, width });
     }
@@ -244,7 +244,7 @@ export function PrimaryCategoryNav({ className, listClassName }: PrimaryCategory
       window.removeEventListener("resize", handleReposition);
       window.removeEventListener("scroll", handleReposition, true);
     };
-  }, [openSlug]);
+  }, [openSlug, variant]);
 
   useEffect(() => {
     if (!sheetSlug) return;
@@ -269,8 +269,8 @@ export function PrimaryCategoryNav({ className, listClassName }: PrimaryCategory
   }, [sheetSlug]);
 
   return (
-    <nav className={cn("relative", className)} aria-label="Categorías principales">
-      <div className={cn("scrollbar-none flex gap-3 overflow-x-auto whitespace-nowrap px-1 py-1 lg:flex-wrap lg:overflow-visible", listClassName)}>
+    <nav className={cn("relative", className)} aria-label="Categorías de servicios">
+      <div className={cn("scrollbar-none flex gap-3 overflow-x-auto whitespace-nowrap px-1 py-1 lg:flex-wrap lg:overflow-visible", variant === "featured" ? "lg:justify-center" : "", listClassName)}>
         {categories.map((category, index) => {
           const Icon = category.icon;
           const selected = openSlug === category.slug || sheetSlug === category.slug;
@@ -293,7 +293,7 @@ export function PrimaryCategoryNav({ className, listClassName }: PrimaryCategory
               onClick={() => handleTriggerClick(category)}
               onKeyDown={(event) => handleTriggerKeyDown(event, index, category)}
               onMouseEnter={() => {
-                if (isDesktopViewport()) openDropdown(category.slug);
+                if (variant === "compact" && isDesktopViewport()) openDesktop(category);
               }}
               onMouseLeave={scheduleDropdownClose}
             >
@@ -306,30 +306,41 @@ export function PrimaryCategoryNav({ className, listClassName }: PrimaryCategory
         })}
       </div>
 
-      {openCategory ? (
-        <div
-          ref={panelRef}
-          id={`primary-category-${instanceId}-${openCategory.slug}`}
-          className="fixed z-[60] hidden max-h-[65vh] overflow-y-auto rounded-lg border border-neutral-200 bg-white p-5 shadow-md lg:block"
-          style={{ top: panelPosition.top, left: panelPosition.left, width: panelPosition.width }}
-          onMouseEnter={clearCloseTimer}
-          onMouseLeave={scheduleDropdownClose}
-          onKeyDown={(event) => handleServiceKeyDown(event, panelRef.current)}
-        >
-          <p className="text-sm font-semibold text-brand-600">{openCategory.name}</p>
-          <div className="mt-4 grid gap-2" role="menu" aria-label={openCategory.name}>
-            {openCategory.services.map((service) => (
-              <a
-                key={service}
-                data-category-service="true"
-                role="menuitem"
-                href={serviceHref(openCategory.slug, service)}
-                className="rounded-md px-3 py-3 text-sm font-semibold text-neutral-700 transition-colors duration-fast hover:bg-brand-100 hover:text-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
-                onClick={() => closeDropdown(false)}
-              >
-                {service}
-              </a>
-            ))}
+      {openCategory && variant === "featured" ? (
+        <div ref={panelRef} id={`primary-category-${instanceId}-${openCategory.slug}`} className="mt-6 rounded-[28px] border border-neutral-200 bg-white p-4 shadow-sm sm:p-5 lg:p-6" onKeyDown={(event) => handleServiceKeyDown(event, panelRef.current)}>
+          <div className="mb-4 flex items-center justify-center gap-3 text-center">
+            <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: openCategory.color }} aria-hidden="true" />
+            <p className="font-display text-xl font-bold text-neutral-950">{openCategory.label}</p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" role="menu" aria-label={openCategory.label}>
+            {openCategory.services.map((service) => {
+              const ServiceIcon = service.icon;
+              return (
+                <a key={service.label} data-category-service="true" role="menuitem" href={serviceHref(openCategory.slug, service.label)} className="group flex min-h-16 items-center gap-3 rounded-2xl border border-neutral-200 bg-neutral-50 px-4 py-3 font-semibold text-neutral-950 transition-[background-color,border-color,transform] duration-[160ms] hover:-translate-y-0.5 hover:border-brand-500 hover:bg-brand-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white text-brand-600 ring-1 ring-neutral-200 transition-colors group-hover:bg-brand-600 group-hover:text-white">
+                    <ServiceIcon aria-hidden="true" className="h-5 w-5" />
+                  </span>
+                  {service.label}
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+
+      {openCategory && variant === "compact" ? (
+        <div ref={panelRef} id={`primary-category-${instanceId}-${openCategory.slug}`} className="fixed z-[60] hidden max-h-[65vh] overflow-y-auto rounded-lg border border-neutral-200 bg-white p-5 shadow-md lg:block" style={{ top: panelPosition.top, left: panelPosition.left, width: panelPosition.width }} onMouseEnter={() => closeTimer.current && clearTimeout(closeTimer.current)} onMouseLeave={scheduleDropdownClose} onKeyDown={(event) => handleServiceKeyDown(event, panelRef.current)}>
+          <p className="text-sm font-semibold text-brand-600">{openCategory.label}</p>
+          <div className="mt-4 grid gap-2" role="menu" aria-label={openCategory.label}>
+            {openCategory.services.map((service) => {
+              const ServiceIcon = service.icon;
+              return (
+                <a key={service.label} data-category-service="true" role="menuitem" href={serviceHref(openCategory.slug, service.label)} className="flex items-center gap-3 rounded-xl border border-transparent px-3 py-3 text-sm font-semibold text-neutral-700 transition-colors duration-fast hover:border-neutral-200 hover:bg-brand-100 hover:text-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600" onClick={() => closeDropdown(false)}>
+                  <ServiceIcon aria-hidden="true" className="h-4 w-4 text-brand-600" />
+                  {service.label}
+                </a>
+              );
+            })}
           </div>
         </div>
       ) : null}
@@ -337,49 +348,27 @@ export function PrimaryCategoryNav({ className, listClassName }: PrimaryCategory
       {sheetCategory ? (
         <div className="fixed inset-0 z-[80] lg:hidden" role="presentation">
           <button className="absolute inset-0 bg-brand-700/35" type="button" aria-label="Cerrar categoría" onClick={() => closeSheet(true)} />
-          <div
-            ref={sheetRef}
-            id={`primary-category-${instanceId}-${sheetCategory.slug}`}
-            className="absolute inset-x-0 bottom-0 max-h-[82vh] overflow-y-auto rounded-t-[28px] border border-neutral-200 bg-white px-5 pt-3 shadow-lg"
-            style={{ paddingBottom: "calc(20px + env(safe-area-inset-bottom))", transform: `translateY(${dragOffset}px)` }}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby={`primary-category-title-${instanceId}-${sheetCategory.slug}`}
-            onTouchStart={handleTouchStart}
-            onTouchMove={handleTouchMove}
-            onTouchEnd={handleTouchEnd}
-            onKeyDown={(event) => handleServiceKeyDown(event, sheetRef.current)}
-          >
+          <div ref={sheetRef} id={`primary-category-${instanceId}-${sheetCategory.slug}`} className="absolute inset-x-0 bottom-0 max-h-[82vh] overflow-y-auto rounded-t-[28px] border border-neutral-200 bg-white px-5 pt-3 shadow-lg" style={{ paddingBottom: "calc(20px + env(safe-area-inset-bottom))", transform: `translateY(${dragOffset}px)` }} role="dialog" aria-modal="true" aria-labelledby={`primary-category-title-${instanceId}-${sheetCategory.slug}`} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd} onKeyDown={(event) => handleServiceKeyDown(event, sheetRef.current)}>
             <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-neutral-300" aria-hidden="true" />
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-sm font-semibold text-brand-600">Categoría</p>
-                <h2 id={`primary-category-title-${instanceId}-${sheetCategory.slug}`} className="font-display text-2xl font-bold text-neutral-950">
-                  {sheetCategory.name}
-                </h2>
+                <h2 id={`primary-category-title-${instanceId}-${sheetCategory.slug}`} className="font-display text-2xl font-bold text-neutral-950">{sheetCategory.label}</h2>
               </div>
-              <button
-                ref={sheetCloseRef}
-                type="button"
-                className="grid min-h-12 min-w-12 place-items-center rounded-full text-brand-700 transition-colors lg:hover:bg-brand-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-brand-600"
-                aria-label="Cerrar categoría"
-                onClick={() => closeSheet(true)}
-              >
+              <button ref={sheetCloseRef} type="button" className="grid min-h-12 min-w-12 place-items-center rounded-full text-brand-700 transition-colors lg:hover:bg-brand-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-brand-600" aria-label="Cerrar categoría" onClick={() => closeSheet(true)}>
                 <X aria-hidden="true" className="h-5 w-5" />
               </button>
             </div>
             <div className="mt-5 grid gap-2">
-              {sheetCategory.services.map((service) => (
-                <a
-                  key={service}
-                  data-category-service="true"
-                  href={serviceHref(sheetCategory.slug, service)}
-                  className="flex min-h-12 items-center rounded-lg border border-neutral-200 px-4 py-3 font-semibold text-neutral-950 transition-colors active:bg-brand-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
-                  onClick={() => closeSheet(false)}
-                >
-                  {service}
-                </a>
-              ))}
+              {sheetCategory.services.map((service) => {
+                const ServiceIcon = service.icon;
+                return (
+                  <a key={service.label} data-category-service="true" href={serviceHref(sheetCategory.slug, service.label)} className="flex min-h-12 items-center gap-3 rounded-lg border border-neutral-200 px-4 py-3 font-semibold text-neutral-950 transition-colors active:bg-brand-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600" onClick={() => closeSheet(false)}>
+                    <ServiceIcon aria-hidden="true" className="h-5 w-5 text-brand-600" />
+                    {service.label}
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>
