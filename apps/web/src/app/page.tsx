@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/Card";
 import { CategoryExplorer } from "@/components/resuelto/CategoryExplorer";
 import { FaqAccordion } from "@/components/resuelto/FaqAccordion";
 import { MainSearch } from "@/components/resuelto/MainSearch";
+import { PrimaryCategoryNav } from "@/components/resuelto/PrimaryCategoryNav";
 import { ProfessionalCard } from "@/components/resuelto/ProfessionalCard";
 import { ResueltoLogo } from "@/components/resuelto/ResueltoLogo";
 import { ServiceCard } from "@/components/resuelto/ServiceCard";
@@ -12,8 +13,6 @@ import { SiteHeader } from "@/components/resuelto/SiteHeader";
 import { assignmentPolicy, benefits, categoryGroups, districts, faqs, notificationSteps, operatingRules, professionals, services, steps, trustItems } from "@/data/home";
 
 export default function HomePage() {
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
-
   return (
     <main id="contenido" className="min-h-screen bg-white">
       <SiteHeader />
@@ -37,13 +36,7 @@ export default function HomePage() {
             <div className="mx-auto w-full max-w-3xl lg:mx-0">
               <MainSearch />
             </div>
-            <div className="mx-auto flex max-w-2xl flex-wrap justify-center gap-2 lg:mx-0 lg:justify-start">
-              {services.slice(0, 5).map((service) => (
-                <a key={service.slug} href={`${basePath}/resultados/?servicio=${service.slug}&distrito=miraflores`} className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-brand-700 shadow-xs ring-1 ring-neutral-200 transition-colors duration-fast hover:bg-brand-100">
-                  {service.name}
-                </a>
-              ))}
-            </div>
+            <PrimaryCategoryNav className="mx-auto w-full max-w-3xl lg:mx-0" listClassName="justify-start lg:justify-start" />
           </div>
 
           <div className="relative mx-auto w-full max-w-[620px] lg:max-w-none">

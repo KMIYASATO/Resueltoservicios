@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ButtonLink } from "@/components/ui/Button";
 import { categoryGroups, services } from "@/data/home";
 import { cn } from "@/lib/cn";
+import { PrimaryCategoryNav } from "./PrimaryCategoryNav";
 import { ResueltoLogo } from "./ResueltoLogo";
 
 const navItems = [
@@ -123,8 +124,14 @@ export function SiteHeader() {
         </button>
       </div>
 
+      <div className="border-t border-neutral-200/70 bg-white/96 py-3">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <PrimaryCategoryNav listClassName="lg:justify-center" />
+        </div>
+      </div>
+
       {megaOpen ? (
-        <div className="absolute inset-x-0 top-full z-50 hidden px-4 lg:block" onMouseEnter={scheduleOpen} onMouseLeave={scheduleClose}>
+        <div className="absolute inset-x-0 top-[73px] z-50 hidden px-4 lg:block" onMouseEnter={scheduleOpen} onMouseLeave={scheduleClose}>
           <div
             ref={menuRef}
             id="services-mega-menu"
@@ -176,9 +183,9 @@ export function SiteHeader() {
       ) : null}
 
       {mobileOpen ? (
-        <div className="fixed inset-0 top-[73px] z-50 lg:hidden" id="mobile-menu">
+        <div className="fixed inset-0 top-[153px] z-50 lg:hidden" id="mobile-menu">
           <button className="absolute inset-0 bg-brand-700/30" type="button" aria-label="Cerrar menú" onClick={() => setMobileOpen(false)} />
-          <div className="absolute inset-x-3 top-3 max-h-[calc(100vh-96px)] overflow-y-auto rounded-xl border border-neutral-200 bg-white p-4 shadow-lg">
+          <div className="absolute inset-x-3 top-3 max-h-[calc(100vh-176px)] overflow-y-auto rounded-xl border border-neutral-200 bg-white p-4 shadow-lg">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="font-display text-2xl font-bold text-neutral-950">Servicios</h2>
               <button className="rounded-md p-2 text-brand-700 hover:bg-brand-100" type="button" aria-label="Cerrar menú" onClick={() => setMobileOpen(false)}>

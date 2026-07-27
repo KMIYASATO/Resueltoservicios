@@ -79,6 +79,14 @@ a {
   text-decoration: none;
 }
 
+.scrollbar-none {
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 :focus-visible {
   outline: 3px solid rgba(35, 106, 91, 0.35);
   outline-offset: 3px;
