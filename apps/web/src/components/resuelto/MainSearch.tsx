@@ -1,16 +1,28 @@
 "use client";
 
 import { MapPin, Search } from "lucide-react";
-import type { ReactNode } from "react";
-import { useMemo, useState } from "react";
+import type { ReactNode, RefObject } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { districts, services } from "@/data/home";
+import { enabledDistricts, SERVICE_SELECTED_EVENT, serviceOptions } from "@/data/serviceCatalog";
+import type { ServiceSelectedDetail } from "@/data/serviceCatalog";
 import { cn } from "@/lib/cn";
 
-const serviceOptions = services.map((service) => ({ value: service.slug, label: service.name, meta: service.category }));
-const districtOptions = districts.map((district) => ({ value: district.slug, label: district.name, meta: "Lima" }));
+type Option = {
+  value: string;
+  label: string;
+  meta: string;
+  categorySlug?: string;
+};
 
-type Option = { value: string; label: string; meta: string };
+const searchServiceOptions: Option[] = serviceOptions.map((service) => ({
+  value: service.slug,
+  label: service.label,
+  meta: service.categoryLabel,
+  categorySlug: service.categorySlug
+}));
+
+const districtOptions: Option[] = enabledDistricts.map((district) => ({ value: district.slug, label: district.label, meta: "Lima" }));
 
 function SearchCombobox({
   id,
@@ -20,8 +32,7 @@ function SearchCombobox({
   value,
   onChange,
   placeholder,
-  error,
-  grouped = false
+  inputRef
 }: {
   id: string;
   label: string;
@@ -30,12 +41,15 @@ function SearchCombobox({
   value: Option | null;
   onChange: (option: Option | null) => void;
   placeholder: string;
-  error?: string;
-  grouped?: boolean;
+  inputRef?: RefObject<HTMLInputElement | null>;
 }) {
   const [query, setQuery] = useState(value?.label ?? "");
   const [open, setOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    setQuery(value?.label ?? "");
+  }, [value]);
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -45,28 +59,28 @@ function SearchCombobox({
 
   const listboxId = `${id}-listbox`;
   const activeId = filtered[activeIndex] ? `${id}-option-${activeIndex}` : undefined;
-  const groupedOptions = filtered.reduce<Record<string, Option[]>>((groups, option) => {
-    const key = grouped ? option.meta : "Sugerencias";
-    groups[key] = [...(groups[key] ?? []), option];
-    return groups;
-  }, {});
+
+  function selectOption(option: Option) {
+    onChange(option);
+    setQuery(option.label);
+    setOpen(false);
+  }
 
   return (
-    <div className="relative">
-      <label className={cn("grid gap-2 rounded-lg border bg-neutral-50 px-4 py-3 transition-colors duration-fast ease-standard", error ? "border-error-600 bg-error-100" : "border-neutral-200 hover:border-brand-500 focus-within:border-brand-600 focus-within:bg-white")} htmlFor={id}>
+    <div className="relative min-w-0 flex-1">
+      <label className="grid gap-1 px-4 py-3" htmlFor={id}>
         <span className="text-xs font-semibold text-neutral-700">{label}</span>
         <span className="flex items-center gap-2 text-neutral-950">
           {icon}
           <input
+            ref={inputRef}
             id={id}
-            className="w-full bg-transparent text-base outline-none placeholder:text-neutral-400"
+            className="w-full bg-transparent text-base font-semibold outline-none placeholder:font-normal placeholder:text-neutral-400"
             role="combobox"
             aria-autocomplete="list"
             aria-expanded={open}
             aria-controls={listboxId}
             aria-activedescendant={open ? activeId : undefined}
-            aria-invalid={Boolean(error)}
-            aria-describedby={error ? `${id}-error` : undefined}
             placeholder={placeholder}
             value={query}
             onFocus={() => setOpen(true)}
@@ -88,49 +102,32 @@ function SearchCombobox({
               }
               if (event.key === "Enter" && open && filtered[activeIndex]) {
                 event.preventDefault();
-                const option = filtered[activeIndex];
-                onChange(option);
-                setQuery(option.label);
-                setOpen(false);
+                selectOption(filtered[activeIndex]);
               }
               if (event.key === "Escape") setOpen(false);
             }}
           />
         </span>
       </label>
-      {error ? <p className="mt-1 text-sm font-medium text-error-600" id={`${id}-error`}>{error}</p> : null}
       {open ? (
-        <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-30 rounded-xl border border-neutral-200 bg-white p-2 shadow-lg" onMouseDown={(event) => event.preventDefault()}>
-          <div className="mb-2 px-3 py-2 text-xs font-semibold text-neutral-600">{query ? "Resultados" : "Servicios populares"}</div>
+        <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 rounded-xl border border-neutral-200 bg-white p-2 shadow-lg" onMouseDown={(event) => event.preventDefault()}>
           <div id={listboxId} role="listbox" className="max-h-64 overflow-auto">
-            {filtered.length > 0 ? Object.entries(groupedOptions).map(([group, groupOptions]) => (
-              <div key={group} className="py-1">
-                {grouped ? <p className="px-3 py-1 text-xs font-bold uppercase tracking-wide text-neutral-400">{group}</p> : null}
-                {groupOptions.map((option) => {
-                  const index = filtered.findIndex((item) => item.value === option.value);
-                  return (
-                    <button
-                      key={option.value}
-                      id={`${id}-option-${index}`}
-                      type="button"
-                      role="option"
-                      aria-selected={value?.value === option.value}
-                      className={cn("flex w-full items-center justify-between rounded-md px-3 py-3 text-left transition-colors duration-fast", index === activeIndex ? "bg-brand-100 text-brand-700" : "hover:bg-neutral-50")}
-                      onMouseEnter={() => setActiveIndex(index)}
-                      onClick={() => {
-                        onChange(option);
-                        setQuery(option.label);
-                        setOpen(false);
-                      }}
-                    >
-                      <span className="font-semibold text-neutral-950">{option.label}</span>
-                      <span className="text-xs font-medium text-neutral-600">{option.meta}</span>
-                    </button>
-                  );
-                })}
-              </div>
+            {filtered.length > 0 ? filtered.map((option, index) => (
+              <button
+                key={`${option.meta}-${option.value}`}
+                id={`${id}-option-${index}`}
+                type="button"
+                role="option"
+                aria-selected={value?.value === option.value && value?.meta === option.meta}
+                className={cn("flex w-full items-center justify-between rounded-md px-3 py-3 text-left transition-colors duration-fast", index === activeIndex ? "bg-brand-100 text-brand-700" : "hover:bg-neutral-50")}
+                onMouseEnter={() => setActiveIndex(index)}
+                onClick={() => selectOption(option)}
+              >
+                <span className="font-semibold text-neutral-950">{option.label}</span>
+                <span className="text-xs font-medium text-neutral-600">{option.meta}</span>
+              </button>
             )) : (
-              <div className="rounded-md bg-neutral-50 px-3 py-4 text-sm text-neutral-600">No encontramos ese resultado. Prueba con otra palabra.</div>
+              <div className="rounded-md bg-neutral-50 px-3 py-4 text-sm text-neutral-600">No encontramos ese resultado habilitado.</div>
             )}
           </div>
         </div>
@@ -139,23 +136,44 @@ function SearchCombobox({
   );
 }
 
-export function MainSearch() {
+export function MainSearch({ className }: { className?: string }) {
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
-  const [service, setService] = useState<Option | null>(serviceOptions[0]);
-  const [district, setDistrict] = useState<Option | null>(districtOptions[0]);
-  const [touched, setTouched] = useState(false);
+  const districtInputRef = useRef<HTMLInputElement>(null);
+  const [service, setService] = useState<Option | null>(null);
+  const [district, setDistrict] = useState<Option | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const serviceError = touched && !service ? "Selecciona un servicio." : undefined;
-  const districtError = touched && !district ? "Ingresa o selecciona un distrito." : undefined;
-  const canSubmit = service && district;
+  const canSubmit = Boolean(service && district);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const categorySlug = params.get("categoria");
+    const serviceSlug = params.get("servicio");
+    const districtSlug = params.get("distrito");
+    const urlService = searchServiceOptions.find((option) => option.value === serviceSlug && (!categorySlug || option.categorySlug === categorySlug)) ?? null;
+    const urlDistrict = districtOptions.find((option) => option.value === districtSlug) ?? null;
+    setService(urlService);
+    setDistrict(urlDistrict);
+  }, []);
+
+  useEffect(() => {
+    function handleSelected(event: Event) {
+      const detail = (event as CustomEvent<ServiceSelectedDetail>).detail;
+      const option = searchServiceOptions.find((item) => item.value === detail.serviceSlug && item.categorySlug === detail.categorySlug);
+      if (!option) return;
+      setService(option);
+      requestAnimationFrame(() => districtInputRef.current?.focus());
+    }
+
+    window.addEventListener(SERVICE_SELECTED_EVENT, handleSelected);
+    return () => window.removeEventListener(SERVICE_SELECTED_EVENT, handleSelected);
+  }, []);
 
   return (
     <form
-      className="grid gap-3 rounded-[24px] border border-white/70 bg-white p-3 shadow-lg lg:grid-cols-[1.25fr_1fr_auto]"
+      className={cn("mx-auto grid w-full max-w-5xl gap-2 rounded-[20px] border border-neutral-200 bg-white p-2 shadow-md md:min-h-[72px] md:grid-cols-[1.25fr_1fr_auto] md:items-stretch md:gap-0", className)}
       action={`${basePath}/resultados/`}
       onSubmit={(event) => {
-        setTouched(true);
         if (!canSubmit) {
           event.preventDefault();
           return;
@@ -163,30 +181,36 @@ export function MainSearch() {
         setLoading(true);
       }}
     >
+      <input type="hidden" name="categoria" value={service?.categorySlug ?? ""} />
       <input type="hidden" name="servicio" value={service?.value ?? ""} />
       <input type="hidden" name="distrito" value={district?.value ?? ""} />
-      <SearchCombobox
-        id="service-search"
-        label="¿Qué servicio necesitas?"
-        icon={<Search aria-hidden="true" className="h-5 w-5 text-brand-600" />}
-        options={serviceOptions}
-        value={service}
-        onChange={setService}
-        placeholder="Ej. limpieza, gasfitería..."
-        error={serviceError}
-        grouped
-      />
-      <SearchCombobox
-        id="district-search"
-        label="¿Dónde necesitas el servicio?"
-        icon={<MapPin aria-hidden="true" className="h-5 w-5 text-brand-600" />}
-        options={districtOptions}
-        value={district}
-        onChange={setDistrict}
-        placeholder="Ej. Miraflores"
-        error={districtError}
-      />
-      <Button className="min-h-[64px] rounded-lg px-8 text-base" type="submit" disabled={!canSubmit} loading={loading}>
+
+      <div className="rounded-2xl bg-neutral-50 md:rounded-r-none md:bg-white md:[box-shadow:inset_-1px_0_0_#DCE9E5]">
+        <SearchCombobox
+          id="service-search"
+          label="¿Qué servicio estás buscando?"
+          icon={<Search aria-hidden="true" className="h-5 w-5 text-brand-600" />}
+          options={searchServiceOptions}
+          value={service}
+          onChange={setService}
+          placeholder="Ej. Electricidad, limpieza de casa o idiomas"
+        />
+      </div>
+
+      <div className="rounded-2xl bg-neutral-50 md:rounded-none md:bg-white">
+        <SearchCombobox
+          id="district-search"
+          label="¿Dónde necesitas el servicio?"
+          icon={<MapPin aria-hidden="true" className="h-5 w-5 text-brand-600" />}
+          options={districtOptions}
+          value={district}
+          onChange={setDistrict}
+          placeholder="Selecciona tu distrito"
+          inputRef={districtInputRef}
+        />
+      </div>
+
+      <Button className="min-h-[56px] w-full rounded-2xl px-7 text-base md:h-full md:min-h-full md:w-auto md:min-w-[216px] md:rounded-lg md:px-8" type="submit" disabled={!canSubmit} loading={loading}>
         Buscar profesionales
       </Button>
     </form>

@@ -1,30 +1,25 @@
 import { CheckCircle2, Sparkles } from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { CategoryExplorer } from "@/components/resuelto/CategoryExplorer";
 import { FaqAccordion } from "@/components/resuelto/FaqAccordion";
-import { PrimaryCategoryNav } from "@/components/resuelto/PrimaryCategoryNav";
+import { MainSearch } from "@/components/resuelto/MainSearch";
 import { ProfessionalCard } from "@/components/resuelto/ProfessionalCard";
 import { ResueltoLogo } from "@/components/resuelto/ResueltoLogo";
 import { SiteHeader } from "@/components/resuelto/SiteHeader";
-import { benefits, categoryGroups, districts, faqs, professionals } from "@/data/home";
+import { benefits, faqs, professionals } from "@/data/home";
 
 export default function HomePage() {
   return (
     <main id="contenido" className="min-h-screen bg-white">
       <SiteHeader />
 
-      <section className="relative isolate overflow-hidden bg-neutral-50 text-neutral-950">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_0%,rgba(152,219,198,0.55),transparent_28%),radial-gradient(circle_at_80%_10%,rgba(241,141,158,0.18),transparent_24%)]" />
-        <div className="mx-auto max-w-5xl px-4 py-14 text-center sm:px-6 lg:px-8 lg:py-20">
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Servicios</p>
-          <h1 className="mx-auto mt-4 max-w-3xl font-display text-4xl font-bold tracking-[-0.045em] text-neutral-950 sm:text-5xl lg:text-6xl">
-            Elige qué necesitas resolver
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-neutral-600">
-            Selecciona una categoría y encuentra el tipo de atención que buscas. Resuelto te llevará al servicio indicado para continuar la solicitud.
-          </p>
-          <PrimaryCategoryNav variant="featured" className="mx-auto mt-9 w-full" />
+      <section className="relative isolate overflow-visible bg-neutral-50 text-neutral-950">
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_0%,rgba(152,219,198,0.38),transparent_28%),radial-gradient(circle_at_80%_10%,rgba(241,141,158,0.14),transparent_24%)]" />
+        <div className="mx-auto max-w-7xl px-4 py-10 text-center sm:px-6 lg:px-8 lg:py-12">
+          <p className="text-sm font-semibold text-brand-600">Encuentra al profesional que necesitas</p>
+          <div className="mt-5">
+            <MainSearch />
+          </div>
         </div>
       </section>
 
@@ -42,7 +37,7 @@ export default function HomePage() {
               <h3 className="mt-5 font-display text-2xl font-bold text-neutral-950">Cuéntanos qué necesitas</h3>
               <p className="mt-3 leading-7 text-neutral-600">Selecciona el tipo de servicio, indica tu distrito y describe brevemente el problema.</p>
               <div className="mt-5 flex flex-wrap gap-2">
-                {["Electricidad", "Limpieza", "Pintura", "Instalación de equipos", "Otros servicios"].map((item) => (
+                {["Electricidad", "Casa", "Idiomas", "Colegio", "Jardinería"].map((item) => (
                   <span key={item} className="rounded-full bg-brand-100 px-3 py-1.5 text-sm font-semibold text-brand-700">{item}</span>
                 ))}
               </div>
@@ -109,21 +104,6 @@ export default function HomePage() {
               ))}
             </div>
           </Card>
-        </div>
-      </section>
-
-      <section id="catalogo" className="bg-neutral-50 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-10 text-center">
-            <p className="text-sm font-semibold text-brand-600">Catálogo</p>
-            <h2 className="mt-2 font-display text-4xl font-bold tracking-[-0.04em] text-neutral-950 lg:text-5xl">El servicio a domicilio que necesites</h2>
-          </div>
-          <div className="mb-8 flex flex-wrap justify-center gap-2">
-            {districts.map((district) => (
-              <span key={district.slug} className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-neutral-700 shadow-xs ring-1 ring-neutral-200">{district.name}</span>
-            ))}
-          </div>
-          <CategoryExplorer groups={categoryGroups} />
         </div>
       </section>
 

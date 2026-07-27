@@ -8,7 +8,8 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { MainSearch } from "@/components/resuelto/MainSearch";
 import { ProfessionalCard } from "@/components/resuelto/ProfessionalCard";
-import { assignmentPolicy, districts, getPricingForService, matchProfessionals, services } from "@/data/home";
+import { assignmentPolicy, getPricingForService, matchProfessionals } from "@/data/home";
+import { enabledDistricts, serviceOptions } from "@/data/serviceCatalog";
 import { cn } from "@/lib/cn";
 
 const filterGroups = [
@@ -43,14 +44,15 @@ export function ResultsContent() {
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const serviceSlug = searchParams.get("servicio");
   const districtSlug = searchParams.get("distrito");
+  const categorySlug = searchParams.get("categoria");
   const sort = searchParams.get("orden") ?? "recomendados";
-  const selectedService = services.find((service) => service.slug === serviceSlug);
-  const selectedDistrict = districts.find((district) => district.slug === districtSlug);
-  const serviceName = selectedService?.name ?? humanize(serviceSlug);
-  const districtName = selectedDistrict?.name ?? humanize(districtSlug);
-  const hasError = !serviceSlug || !districtSlug;
+  const selectedService = serviceOptions.find((service) => service.slug === serviceSlug && (!categorySlug || service.categorySlug === categorySlug));
+  const selectedDistrict = enabledDistricts.find((district) => district.slug === districtSlug);
+  const serviceName = selectedService?.label ?? humanize(serviceSlug);
+  const districtName = selectedDistrict?.label ?? humanize(districtSlug);
+  const hasError = !categorySlug || !serviceSlug || !districtSlug;
   const pricing = getPricingForService(serviceSlug);
-  const districtEnabled = Boolean(selectedDistrict?.enabled);
+  const districtEnabled = Boolean(selectedDistrict);
   const matchedProfessionals = useMemo(() => matchProfessionals(districtSlug), [districtSlug]);
 
   const visibleProfessionals = useMemo(() => {
@@ -127,7 +129,7 @@ export function ResultsContent() {
         <div>
           <Badge tone="brand">Resultados</Badge>
           <h1 className="mt-3 font-display text-4xl font-bold tracking-[-0.03em] text-neutral-950">
-            {serviceName} en {districtName}
+            Profesionales de {serviceName} en {districtName}
           </h1>
           <p className="mt-3 max-w-2xl leading-7 text-neutral-600">
             {visibleProfessionals.length} profesionales disponibles para comparar por precio, disponibilidad y valoración.

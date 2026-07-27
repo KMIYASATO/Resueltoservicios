@@ -3,26 +3,82 @@ export type ServiceItem = {
   slug: string;
   description: string;
   price: string;
-  icon: "Sparkles" | "Droplets" | "Zap" | "Wrench" | "Paintbrush" | "Leaf" | "KeyRound" | "Truck";
+  icon: string;
   category: string;
 };
 
 export const services: ServiceItem[] = [
   {
-    name: "Limpieza del hogar",
-    slug: "limpieza-hogar",
-    description: "Casa, departamentos y limpiezas profundas.",
+    name: "Colegio",
+    slug: "colegio",
+    description: "Apoyo escolar y refuerzo por materias.",
+    price: "Desde S/ 45",
+    icon: "School",
+    category: "Clases"
+  },
+  {
+    name: "Universidad",
+    slug: "universidad",
+    description: "Tutorías para cursos universitarios.",
+    price: "Desde S/ 60",
+    icon: "BriefcaseBusiness",
+    category: "Clases"
+  },
+  {
+    name: "Idiomas",
+    slug: "idiomas",
+    description: "Clases particulares de idiomas.",
+    price: "Desde S/ 50",
+    icon: "Languages",
+    category: "Clases"
+  },
+  {
+    name: "Música",
+    slug: "musica",
+    description: "Clases de instrumento y teoría musical.",
+    price: "Desde S/ 55",
+    icon: "Music2",
+    category: "Clases"
+  },
+  {
+    name: "Casa",
+    slug: "casa",
+    description: "Limpieza para casas y departamentos.",
     price: "Desde S/ 60",
     icon: "Sparkles",
     category: "Limpieza"
   },
   {
-    name: "Gasfitería",
-    slug: "gasfiteria",
-    description: "Fugas, griferías e instalaciones simples.",
-    price: "Desde S/ 45",
-    icon: "Droplets",
-    category: "Hogar"
+    name: "Oficinas",
+    slug: "oficinas",
+    description: "Limpieza para espacios de trabajo.",
+    price: "Desde S/ 90",
+    icon: "Building2",
+    category: "Limpieza"
+  },
+  {
+    name: "Ventanas",
+    slug: "ventanas",
+    description: "Limpieza puntual de ventanas y mamparas.",
+    price: "Desde S/ 50",
+    icon: "PanelsTopLeft",
+    category: "Limpieza"
+  },
+  {
+    name: "Tapicería",
+    slug: "tapiceria",
+    description: "Limpieza de muebles y tapizados.",
+    price: "Desde S/ 70",
+    icon: "Armchair",
+    category: "Limpieza"
+  },
+  {
+    name: "Auto",
+    slug: "auto",
+    description: "Limpieza interior y exterior de autos.",
+    price: "Desde S/ 55",
+    icon: "Car",
+    category: "Limpieza"
   },
   {
     name: "Electricidad",
@@ -33,28 +89,12 @@ export const services: ServiceItem[] = [
     category: "Hogar"
   },
   {
-    name: "Armado e instalación",
-    slug: "armado-instalacion",
-    description: "Muebles, repisas, soportes y cortinas.",
-    price: "Desde S/ 40",
-    icon: "Wrench",
+    name: "Electrodomésticos",
+    slug: "electrodomesticos",
+    description: "Revisión e instalación de equipos del hogar.",
+    price: "Desde S/ 60",
+    icon: "WashingMachine",
     category: "Hogar"
-  },
-  {
-    name: "Pintura",
-    slug: "pintura",
-    description: "Retoques, habitaciones y paredes interiores.",
-    price: "Desde S/ 90",
-    icon: "Paintbrush",
-    category: "Mantenimiento"
-  },
-  {
-    name: "Jardinería",
-    slug: "jardineria",
-    description: "Macetas, patios, terrazas y áreas verdes.",
-    price: "Desde S/ 50",
-    icon: "Leaf",
-    category: "Mantenimiento"
   },
   {
     name: "Cerrajería",
@@ -65,39 +105,27 @@ export const services: ServiceItem[] = [
     category: "Hogar"
   },
   {
-    name: "Mudanzas pequeñas",
-    slug: "mudanzas-pequenas",
-    description: "Traslados puntuales, muebles y cajas.",
-    price: "Desde S/ 80",
-    icon: "Truck",
-    category: "Mudanza y apoyo"
+    name: "Jardinería",
+    slug: "jardineria",
+    description: "Macetas, patios, terrazas y áreas verdes.",
+    price: "Desde S/ 50",
+    icon: "Sprout",
+    category: "Hogar"
   }
 ];
 
 export const categoryGroups = [
   {
+    title: "Clases",
+    items: ["Colegio", "Universidad", "Idiomas", "Música"]
+  },
+  {
     title: "Limpieza",
-    items: ["Limpieza de casa", "Limpieza profunda", "Limpieza post obra", "Plancha", "Oficinas pequeñas", "Ventanas", "Tapicería", "Alquiler temporal"]
+    items: ["Casa", "Oficinas", "Ventanas", "Tapicería", "Auto"]
   },
   {
     title: "Hogar",
-    items: ["Gasfitería", "Electricidad", "Pintura", "Cerrajería", "Armado de muebles", "Instalaciones", "Reparaciones", "Técnico para el hogar"]
-  },
-  {
-    title: "Mantenimiento",
-    items: ["Jardinería", "Aire acondicionado", "Electrodomésticos", "Reparaciones menores", "Piscinas", "Sellados", "Impermeabilización", "Fumigación"]
-  },
-  {
-    title: "Mudanza y apoyo",
-    items: ["Mudanzas pequeñas", "Carga por horas", "Retiro de muebles", "Embalaje", "Traslado puntual", "Ayuda en casa", "Traslado de muebles", "Desarme"]
-  },
-  {
-    title: "Cuidado",
-    items: ["Cuidado de adultos", "Acompañamiento", "Cuidado de niños", "Apoyo por horas", "Mascotas", "Paseos", "Baño de mascotas", "Visitas"]
-  },
-  {
-    title: "Bienestar",
-    items: ["Fisioterapia", "Entrenamiento", "Clases particulares", "Yoga", "Belleza a domicilio", "Masajes", "Manicure", "Peluquería"]
+    items: ["Electricidad", "Electrodomésticos", "Cerrajería", "Jardinería"]
   }
 ] as const;
 
@@ -164,7 +192,7 @@ export const professionals = [
   {
     id: "jorge-a",
     name: "Jorge Álvarez",
-    specialty: "Gasfitería e instalaciones",
+    specialty: "Electrodomésticos y hogar",
     rating: "4.7",
     reviews: "24 opiniones",
     services: "58 servicios realizados",
@@ -189,10 +217,9 @@ export const professionals = [
 export type Professional = (typeof professionals)[number];
 
 export const servicePricing = [
+  { category: "Clases", baseRange: "S/ 45 - S/ 90", urgentRange: "S/ 65 - S/ 130", onsiteAdjustmentLimit: "20% o S/ 35", guaranteeReserve: "3%" },
   { category: "Limpieza", baseRange: "S/ 60 - S/ 120", urgentRange: "S/ 85 - S/ 160", onsiteAdjustmentLimit: "20% o S/ 35", guaranteeReserve: "3%" },
-  { category: "Hogar", baseRange: "S/ 45 - S/ 110", urgentRange: "S/ 70 - S/ 150", onsiteAdjustmentLimit: "25% o S/ 40", guaranteeReserve: "4%" },
-  { category: "Mantenimiento", baseRange: "S/ 50 - S/ 140", urgentRange: "S/ 80 - S/ 190", onsiteAdjustmentLimit: "25% o S/ 45", guaranteeReserve: "4%" },
-  { category: "Mudanza y apoyo", baseRange: "S/ 80 - S/ 180", urgentRange: "S/ 120 - S/ 240", onsiteAdjustmentLimit: "30% o S/ 60", guaranteeReserve: "5%" }
+  { category: "Hogar", baseRange: "S/ 45 - S/ 140", urgentRange: "S/ 70 - S/ 190", onsiteAdjustmentLimit: "25% o S/ 45", guaranteeReserve: "4%" }
 ] as const;
 
 export const assignmentPolicy = {
@@ -283,7 +310,7 @@ export function matchProfessionals(districtSlug?: string | null) {
 export const steps = [
   {
     title: "Busca el servicio",
-    text: "Elige qué necesitas resolver y en qué distrito quieres atenderlo."
+    text: "Selecciona el servicio, indica el distrito y confirma la búsqueda."
   },
   {
     title: "Compara opciones",
