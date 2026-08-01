@@ -155,7 +155,7 @@ function SearchCombobox({
       </label>
       {open ? (
         <div className="absolute left-0 right-0 top-[calc(100%+8px)] z-50 rounded-xl border border-neutral-200 bg-white p-2 shadow-lg" onMouseDown={(event) => event.preventDefault()}>
-          <div id={listboxId} role="listbox" className="max-h-64 overflow-auto">
+          <div id={listboxId} role="listbox" className="max-h-[min(18rem,52vh)] overflow-auto">
             {filtered.length > 0 ? filtered.map((option, index) => (
               <button
                 key={`${option.meta}-${option.value}`}
@@ -225,7 +225,7 @@ export function MainSearch({ className }: { className?: string }) {
 
   return (
     <form
-      className={cn("mx-auto grid w-full max-w-5xl gap-2 rounded-[20px] border border-neutral-200 bg-white p-2 shadow-md md:min-h-[72px] md:grid-cols-[1.25fr_1fr_auto] md:items-stretch md:gap-0", className)}
+      className={cn("mx-auto grid w-full max-w-5xl gap-3 rounded-[26px] border border-neutral-200 bg-white p-3 shadow-lg md:min-h-[72px] md:grid-cols-[1.25fr_1fr_auto] md:items-stretch md:gap-0 md:rounded-[20px] md:p-2 md:shadow-md", className)}
       action={`${basePath}/resultados/`}
       onSubmit={(event) => {
         if (!canSubmit) {
@@ -239,7 +239,7 @@ export function MainSearch({ className }: { className?: string }) {
       <input type="hidden" name="servicio" value={service?.value ?? ""} />
       <input type="hidden" name="distrito" value={district?.value ?? ""} />
 
-      <div className="rounded-2xl bg-neutral-50 md:rounded-r-none md:bg-white md:[box-shadow:inset_-1px_0_0_#DCE9E5]">
+      <div className="rounded-2xl bg-neutral-50 ring-1 ring-neutral-100 md:rounded-r-none md:bg-white md:ring-0 md:[box-shadow:inset_-1px_0_0_#DCE9E5]">
         <SearchCombobox
           id="service-search"
           label="¿Qué servicio estás buscando?"
@@ -253,7 +253,7 @@ export function MainSearch({ className }: { className?: string }) {
         />
       </div>
 
-      <div className="rounded-2xl bg-neutral-50 md:rounded-none md:bg-white">
+      <div className="rounded-2xl bg-neutral-50 ring-1 ring-neutral-100 md:rounded-none md:bg-white md:ring-0">
         <SearchCombobox
           id="district-search"
           label="¿Dónde necesitas el servicio?"
@@ -268,7 +268,7 @@ export function MainSearch({ className }: { className?: string }) {
         />
       </div>
 
-      <Button className="min-h-[56px] w-full rounded-2xl px-7 text-base md:h-full md:min-h-full md:w-auto md:min-w-[216px] md:rounded-lg md:px-8" type="submit" disabled={!canSubmit} loading={loading}>
+      <Button className="min-h-[60px] w-full rounded-2xl px-7 text-base shadow-sm md:h-full md:min-h-full md:w-auto md:min-w-[216px] md:rounded-lg md:px-8" type="submit" disabled={!canSubmit} loading={loading}>
         Buscar profesionales
       </Button>
     </form>

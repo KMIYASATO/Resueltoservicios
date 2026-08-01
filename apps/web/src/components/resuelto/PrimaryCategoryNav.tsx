@@ -221,7 +221,7 @@ export function PrimaryCategoryNav({ className, listClassName }: PrimaryCategory
   return (
     <nav className={cn("relative", className)} aria-label="Categorías de servicios">
       <p className="mb-3 text-center text-sm font-semibold text-brand-600">Explora por categoría</p>
-      <div className={cn("scrollbar-none flex gap-4 overflow-x-auto whitespace-nowrap px-1 py-1 lg:justify-center lg:overflow-visible", listClassName)}>
+      <div className={cn("scrollbar-none flex gap-2 overflow-x-auto whitespace-nowrap px-1 py-1 sm:gap-3 lg:justify-center lg:gap-4 lg:overflow-visible", listClassName)}>
         {serviceCategories.map((category, index) => {
           const Icon = category.icon;
           const expanded = openSlug === category.slug || sheetSlug === category.slug;
@@ -236,7 +236,7 @@ export function PrimaryCategoryNav({ className, listClassName }: PrimaryCategory
               }}
               type="button"
               className={cn(
-                "inline-flex h-16 min-h-16 shrink-0 cursor-pointer items-center gap-3 rounded-full border px-7 text-lg font-semibold shadow-xs transition-[background-color,border-color,color,transform] duration-[160ms] ease-standard active:scale-[0.98] active:duration-[90ms] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-brand-600 [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-px [@media(hover:hover)_and_(pointer:fine)]:hover:border-brand-500 [@media(hover:hover)_and_(pointer:fine)]:hover:bg-brand-100",
+                "inline-flex h-12 min-h-12 shrink-0 cursor-pointer items-center gap-2 rounded-full border px-4 text-sm font-semibold shadow-xs transition-[background-color,border-color,color,transform] duration-[160ms] ease-standard active:scale-[0.98] active:duration-[90ms] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-brand-600 sm:h-14 sm:min-h-14 sm:gap-3 sm:px-5 sm:text-base lg:h-16 lg:min-h-16 lg:px-7 lg:text-lg [@media(hover:hover)_and_(pointer:fine)]:hover:-translate-y-px [@media(hover:hover)_and_(pointer:fine)]:hover:border-brand-500 [@media(hover:hover)_and_(pointer:fine)]:hover:bg-brand-100",
                 active ? "border-brand-600 bg-brand-600 text-white" : "border-neutral-200 bg-white text-neutral-950"
               )}
               aria-expanded={expanded}
@@ -249,8 +249,8 @@ export function PrimaryCategoryNav({ className, listClassName }: PrimaryCategory
               }}
               onMouseLeave={scheduleClose}
             >
-              <span className={cn("grid h-10 w-10 shrink-0 place-items-center rounded-full", active ? "bg-white/15" : "")} style={active ? undefined : { backgroundColor: `${category.color}24` }} aria-hidden="true">
-                <Icon className="h-6 w-6" style={active ? { color: "#FFFFFF" } : { color: category.color }} />
+              <span className={cn("grid h-8 w-8 shrink-0 place-items-center rounded-full sm:h-10 sm:w-10", active ? "bg-white/15" : "")} style={active ? undefined : { backgroundColor: `${category.color}24` }} aria-hidden="true">
+                <Icon className="h-5 w-5 sm:h-6 sm:w-6" style={active ? { color: "#FFFFFF" } : { color: category.color }} />
               </span>
               <span>{category.label}</span>
             </button>
