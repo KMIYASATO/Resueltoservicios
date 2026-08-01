@@ -1,6 +1,7 @@
 import { CheckCircle2, Sparkles } from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { AppInstallActions } from "@/components/resuelto/AppInstallActions";
 import { FaqAccordion } from "@/components/resuelto/FaqAccordion";
 import { MainSearch } from "@/components/resuelto/MainSearch";
 import { ProfessionalCard } from "@/components/resuelto/ProfessionalCard";
@@ -9,29 +10,7 @@ import { SiteHeader } from "@/components/resuelto/SiteHeader";
 import { benefits, faqs, professionals } from "@/data/home";
 
 function AppDownloadLinks({ compact = false }: { compact?: boolean }) {
-  const links = [
-    { platform: "iOS", eyebrow: "Descarga en", label: "App Store", href: "#" },
-    { platform: "Android", eyebrow: "Disponible en", label: "Google Play", href: "#" }
-  ];
-
-  return (
-    <div className={compact ? "grid gap-2 sm:grid-cols-2" : "grid gap-3 sm:grid-cols-2"}>
-      {links.map((link) => (
-        <a
-          key={link.platform}
-          href={link.href}
-          className="group flex min-h-14 items-center gap-3 rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-left shadow-sm transition-[border-color,transform,box-shadow] duration-fast hover:-translate-y-0.5 hover:border-brand-500 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
-          aria-label={`${link.eyebrow} ${link.label} para ${link.platform}`}
-        >
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-100 text-xs font-black uppercase text-brand-700 group-hover:bg-brand-600 group-hover:text-white">{link.platform}</span>
-          <span className="grid leading-tight">
-            <span className="text-xs font-semibold text-neutral-500">{link.eyebrow}</span>
-            <span className="text-base font-bold text-neutral-950">{link.label}</span>
-          </span>
-        </a>
-      ))}
-    </div>
-  );
+  return <AppInstallActions compact={compact} />;
 }
 
 export default function HomePage() {
