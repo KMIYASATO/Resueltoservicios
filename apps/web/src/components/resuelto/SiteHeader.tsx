@@ -41,6 +41,7 @@ export function SiteHeader() {
 
         <div className="hidden items-center gap-3 sm:flex">
           <a className="rounded-full px-3 py-2 text-sm font-semibold text-brand-600 transition-colors hover:bg-brand-100" href="#">Iniciar sesión</a>
+          <a className="rounded-full px-3 py-2 text-sm font-semibold text-brand-600 transition-colors hover:bg-brand-100" href="#descargar-app">Descargar app</a>
           <ButtonLink href="#profesionales" variant="primary">Ofrecer servicios</ButtonLink>
         </div>
 
@@ -74,6 +75,7 @@ export function SiteHeader() {
             </div>
             <div className="grid gap-3">
               <a href="#" onClick={() => setMobileOpen(false)} className="rounded-md px-4 py-3 font-semibold text-neutral-700 transition-colors hover:bg-brand-100 hover:text-brand-700">Iniciar sesión</a>
+              <a href="#descargar-app" onClick={() => setMobileOpen(false)} className="rounded-md px-4 py-3 font-semibold text-neutral-700 transition-colors hover:bg-brand-100 hover:text-brand-700">Descargar app</a>
               <ButtonLink href="#profesionales" className="w-full" onClick={() => setMobileOpen(false)}>Ofrecer servicios</ButtonLink>
             </div>
           </div>

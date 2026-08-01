@@ -3,11 +3,36 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { FaqAccordion } from "@/components/resuelto/FaqAccordion";
 import { MainSearch } from "@/components/resuelto/MainSearch";
-import { MobileAppBanner } from "@/components/resuelto/MobileAppBanner";
 import { ProfessionalCard } from "@/components/resuelto/ProfessionalCard";
 import { ResueltoLogo } from "@/components/resuelto/ResueltoLogo";
 import { SiteHeader } from "@/components/resuelto/SiteHeader";
 import { benefits, faqs, professionals } from "@/data/home";
+
+function AppDownloadLinks({ compact = false }: { compact?: boolean }) {
+  const links = [
+    { platform: "iOS", eyebrow: "Descarga en", label: "App Store", href: "#" },
+    { platform: "Android", eyebrow: "Disponible en", label: "Google Play", href: "#" }
+  ];
+
+  return (
+    <div className={compact ? "grid gap-2 sm:grid-cols-2" : "grid gap-3 sm:grid-cols-2"}>
+      {links.map((link) => (
+        <a
+          key={link.platform}
+          href={link.href}
+          className="group flex min-h-14 items-center gap-3 rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-left shadow-sm transition-[border-color,transform,box-shadow] duration-fast hover:-translate-y-0.5 hover:border-brand-500 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
+          aria-label={`${link.eyebrow} ${link.label} para ${link.platform}`}
+        >
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-100 text-xs font-black uppercase text-brand-700 group-hover:bg-brand-600 group-hover:text-white">{link.platform}</span>
+          <span className="grid leading-tight">
+            <span className="text-xs font-semibold text-neutral-500">{link.eyebrow}</span>
+            <span className="text-base font-bold text-neutral-950">{link.label}</span>
+          </span>
+        </a>
+      ))}
+    </div>
+  );
+}
 
 export default function HomePage() {
   return (
@@ -19,13 +44,19 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 py-8 text-center sm:px-6 sm:py-10 lg:px-8 lg:py-14">
           <div className="mx-auto max-w-4xl">
             <p className="text-sm font-semibold text-brand-600">Encuentra al profesional que necesitas</p>
-            <h1 className="mt-3 font-display text-4xl font-bold tracking-[-0.05em] text-neutral-950 sm:text-5xl lg:text-6xl">Servicios del hogar cuando los necesitas</h1>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-neutral-600 sm:text-lg sm:leading-8">Busca profesionales verificados, elige tu distrito y compara opciones para resolver tareas del hogar.</p>
+            <h1 className="mt-3 font-display text-4xl font-bold tracking-[-0.05em] text-neutral-950 sm:text-5xl lg:text-6xl">Servicios del hogar desde tu celular</h1>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-neutral-600 sm:text-lg sm:leading-8">Busca técnicos verificados, elige tu distrito y reserva desde web móvil, iOS o Android.</p>
           </div>
           <div className="mt-7">
             <MainSearch />
           </div>
-          <MobileAppBanner />
+          <div id="descargar-app" className="mx-auto mt-6 max-w-2xl rounded-[28px] border border-neutral-200 bg-white/95 p-4 text-left shadow-sm backdrop-blur sm:p-5">
+            <div className="mb-4 grid gap-1 text-center sm:text-left">
+              <p className="text-sm font-semibold text-brand-600">Descarga la app</p>
+              <p className="text-sm leading-6 text-neutral-600">Accede más rápido a tus reservas desde iPhone o Android.</p>
+            </div>
+            <AppDownloadLinks compact />
+          </div>
         </div>
       </section>
 
@@ -133,6 +164,19 @@ export default function HomePage() {
               </div>
             </div>
           </Card>
+        </div>
+      </section>
+
+      <section className="bg-brand-700 py-14 text-white sm:py-16 lg:py-20">
+        <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-[1fr_520px] lg:items-center lg:px-8">
+          <div>
+            <p className="text-sm font-semibold text-brand-100">Queda en tu bolsillo</p>
+            <h2 className="mt-2 font-display text-3xl font-bold tracking-[-0.04em] sm:text-4xl lg:text-5xl">Reserva servicios desde iOS o Android</h2>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-brand-100 sm:text-lg sm:leading-8">Guarda tus solicitudes, revisa profesionales y continúa la coordinación desde tu teléfono.</p>
+          </div>
+          <div className="rounded-[28px] bg-white p-4 shadow-lg sm:p-5">
+            <AppDownloadLinks />
+          </div>
         </div>
       </section>
 
