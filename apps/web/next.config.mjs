@@ -4,6 +4,9 @@ const repoBasePath = "/Resueltoservicios";
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   poweredByHeader: false,
+  env: {
+    NEXT_PUBLIC_BASE_PATH: isGithubPages ? repoBasePath : ""
+  },
   ...(isGithubPages
     ? {
         output: "export",
