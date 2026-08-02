@@ -13,7 +13,7 @@ export function AppInstallActions({ compact = false }: { compact?: boolean }) {
     <div className={compact ? "grid gap-2 sm:grid-cols-[1fr_auto]" : "grid gap-3 sm:grid-cols-[1fr_auto]"}>
       <a
         href={apkUrl}
-        download="resuelto-android.apk"
+        download="queda-android.apk"
         className="group flex min-h-14 items-center gap-3 rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-left shadow-sm transition-[border-color,transform,box-shadow] duration-fast hover:-translate-y-0.5 hover:border-brand-500 hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
       >
         <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-brand-100 text-brand-700 group-hover:bg-brand-600 group-hover:text-white">
@@ -35,7 +35,7 @@ export function AppInstallActions({ compact = false }: { compact?: boolean }) {
 
       {showHelp ? (
         <p className={cn("rounded-2xl bg-brand-100 px-4 py-3 text-sm leading-6 text-neutral-700", compact ? "sm:col-span-2" : "sm:col-span-2")}>
-          Descarga el APK, ábrelo desde Descargas y acepta instalar desde Chrome si Android lo solicita. La app usa el mismo logo y abre Resuelto en pantalla de app.
+          Descarga el APK, ábrelo desde Descargas y acepta instalar desde Chrome si Android lo solicita. La app usa el mismo logo y abre queda en pantalla de app.
         </p>
       ) : null}
     </div>

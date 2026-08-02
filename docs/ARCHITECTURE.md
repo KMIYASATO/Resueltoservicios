@@ -1,6 +1,6 @@
 # Architecture
 
-Resuelto uses a Supabase-centered architecture for the MVP.
+queda uses a Supabase-centered architecture for the MVP.
 
 ```text
 Browser

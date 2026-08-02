@@ -1,6 +1,8 @@
-# resuelto_mobile
+# queda Android app
 
-A new Flutter project.
+App Flutter para abrir queda en Android mediante WebView.
+
+El identificador técnico del paquete sigue siendo `resuelto_mobile` hasta aprobar un cambio de bundle/application id.
 
 ## Getting Started
 

@@ -2,7 +2,7 @@
 
 ## Visual System Update
 
-Resuelto now uses the updated approved palette:
+queda now uses the updated approved palette:
 
 - Aquamarine: `#98DBC6`
 - Turquoise: `#5BC8AC`

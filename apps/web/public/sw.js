@@ -1,4 +1,4 @@
-const CACHE_NAME = "resuelto-pwa-v1";
+const CACHE_NAME = "queda-pwa-v1";
 const SHELL_ASSETS = ["./"];
 
 self.addEventListener("install", (event) => {

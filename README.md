@@ -1,6 +1,8 @@
-# Resuelto
+# queda
 
 Marketplace peruano de servicios a domicilio para encontrar, comparar y reservar profesionales confiables en Lima Metropolitana.
+
+queda es el nuevo nombre de marca del proyecto anteriormente denominado Resuelto. La URL técnica de GitHub Pages se mantiene temporalmente para no romper la publicación existente.
 
 ## Stack
 

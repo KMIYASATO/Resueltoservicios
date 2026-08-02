@@ -1,8 +1,8 @@
-# DOCUMENTO FUNCIONAL Y TÉCNICO MAESTRO — RESUELTO
+# DOCUMENTO FUNCIONAL Y TÉCNICO MAESTRO — queda
 
 **Versión:** 1.0  
 **Estado:** Definición base para revisión y ejecución por OpenCode  
-**Proyecto:** Resuelto  
+**Proyecto:** queda  
 **Tipo de producto:** Marketplace de servicios a domicilio  
 **Mercado inicial:** Lima Metropolitana, Perú  
 **Idioma inicial:** Español  
@@ -12,9 +12,11 @@
 
 ---
 
+**Nota de rebrand:** queda es el nuevo nombre de marca del proyecto anteriormente denominado Resuelto. Algunas rutas, nombres de archivo o identificadores internos pueden conservar temporalmente el nombre técnico anterior para evitar rupturas.
+
 # 0. INSTRUCCIÓN OBLIGATORIA PARA OPENCODE
 
-Este documento es la **fuente principal de definición funcional y técnica** de Resuelto.
+Este documento es la **fuente principal de definición funcional y técnica** de queda.
 
 OpenCode debe:
 
@@ -27,7 +29,7 @@ OpenCode debe:
 7. No desactivar Row Level Security para resolver errores.
 8. No usar `service_role` en el navegador.
 9. No ejecutar migraciones destructivas en producción sin aprobación explícita.
-10. No modificar KenjiPocket. Resuelto debe vivir en un proyecto independiente.
+10. No modificar KenjiPocket. queda debe vivir en un proyecto independiente.
 
 **Ubicación recomendada:**
 
@@ -39,9 +41,9 @@ OpenCode debe:
 
 # 1. VISIÓN DEL PRODUCTO
 
-## 1.1 Qué es Resuelto
+## 1.1 Qué es queda
 
-Resuelto será un marketplace peruano de servicios a domicilio que permitirá a una persona:
+queda será un marketplace peruano de servicios a domicilio que permitirá a una persona:
 
 1. Buscar el servicio que necesita.
 2. Indicar su ubicación.
@@ -65,9 +67,9 @@ Resuelto será un marketplace peruano de servicios a domicilio que permitirá a 
 
 ## 1.4 Diferencia frente a un directorio
 
-Resuelto no será una lista de teléfonos ni una página de anuncios.
+queda no será una lista de teléfonos ni una página de anuncios.
 
-Resuelto gestionará:
+queda gestionará:
 
 - búsqueda;
 - comparación;
@@ -264,7 +266,7 @@ Los valores deben ser configurables desde base de datos, no escritos directament
 
 ## 5.2 Incentivos para permanencia
 
-El profesional mantiene dentro de Resuelto:
+El profesional mantiene dentro de queda:
 
 - agenda;
 - historial;
@@ -1827,7 +1829,7 @@ Lee completamente estos archivos:
 1. docs/BRAND_BOOK_RESUELTO.md
 2. docs/DOCUMENTO_FUNCIONAL_TECNICO_RESUELTO.md
 
-Ambos documentos son obligatorios y representan la fuente única de verdad del proyecto Resuelto.
+Ambos documentos son obligatorios y representan la fuente única de verdad del proyecto queda.
 
 No escribas código todavía.
 

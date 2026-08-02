@@ -5,35 +5,35 @@ const _homeUrl = 'https://kmiyasato.github.io/Resueltoservicios/';
 const _brandColor = Color(0xFF236A5B);
 
 void main() {
-  runApp(const ResueltoApp());
+  runApp(const QuedaApp());
 }
 
-class ResueltoApp extends StatelessWidget {
-  const ResueltoApp({super.key});
+class QuedaApp extends StatelessWidget {
+  const QuedaApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Resuelto',
+      title: 'queda',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: _brandColor),
         scaffoldBackgroundColor: const Color(0xFFF7FBFA),
         useMaterial3: true,
       ),
-      home: const ResueltoWebView(),
+      home: const QuedaWebView(),
     );
   }
 }
 
-class ResueltoWebView extends StatefulWidget {
-  const ResueltoWebView({super.key});
+class QuedaWebView extends StatefulWidget {
+  const QuedaWebView({super.key});
 
   @override
-  State<ResueltoWebView> createState() => _ResueltoWebViewState();
+  State<QuedaWebView> createState() => _QuedaWebViewState();
 }
 
-class _ResueltoWebViewState extends State<ResueltoWebView> {
+class _QuedaWebViewState extends State<QuedaWebView> {
   late final WebViewController _controller;
   var _loading = true;
   var _hasError = false;
@@ -131,7 +131,7 @@ class _ErrorState extends StatelessWidget {
               Image.asset('assets/logo.png', width: 172),
               const SizedBox(height: 20),
               const Text(
-                'No se pudo cargar Resuelto',
+                'No se pudo cargar queda',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800, color: Color(0xFF16302A)),
               ),

@@ -6,8 +6,8 @@ export default function manifest(): MetadataRoute.Manifest {
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
   return {
-    name: "Resuelto",
-    short_name: "Resuelto",
+    name: "queda",
+    short_name: "queda",
     description: "Encuentra y reserva profesionales confiables para servicios a domicilio.",
     start_url: `${basePath}/`,
     scope: `${basePath}/`,

@@ -44,7 +44,7 @@ export default function HomePage() {
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="font-display text-3xl font-bold tracking-[-0.04em] text-neutral-950 sm:text-4xl lg:text-5xl">Cómo funciona</h2>
             <p className="mt-4 text-lg leading-8 text-neutral-600">
-              Resuelto conecta a personas que necesitan un servicio con profesionales disponibles en su zona. Busca, elige cómo quieres ser atendido y coordina todo desde un solo lugar.
+              queda conecta a personas que necesitan un servicio con profesionales disponibles en su zona. Busca, elige cómo quieres ser atendido y coordina todo desde un solo lugar.
             </p>
           </div>
           <div className="mt-12 grid gap-5 lg:grid-cols-3">
@@ -66,7 +66,7 @@ export default function HomePage() {
               <div className="mt-5 grid gap-3">
                 <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4">
                   <p className="font-semibold text-neutral-950">Encontrar al más rápido</p>
-                  <p className="mt-1 text-sm leading-6 text-neutral-600">Resuelto busca un profesional disponible para atender la solicitud lo antes posible.</p>
+                  <p className="mt-1 text-sm leading-6 text-neutral-600">queda busca un profesional disponible para atender la solicitud lo antes posible.</p>
                 </div>
                 <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4">
                   <p className="font-semibold text-neutral-950">Elegir un profesional</p>
@@ -149,7 +149,7 @@ export default function HomePage() {
       <section className="bg-brand-700 py-14 text-white sm:py-16 lg:py-20">
         <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-[1fr_520px] lg:items-center lg:px-8">
           <div>
-            <p className="text-sm font-semibold text-brand-100">Queda en tu bolsillo</p>
+            <p className="text-sm font-semibold text-brand-100">queda en tu bolsillo</p>
             <h2 className="mt-2 font-display text-3xl font-bold tracking-[-0.04em] sm:text-4xl lg:text-5xl">Reserva servicios desde iOS o Android</h2>
             <p className="mt-4 max-w-2xl text-base leading-7 text-brand-100 sm:text-lg sm:leading-8">Guarda tus solicitudes, revisa profesionales y continúa la coordinación desde tu teléfono.</p>
           </div>

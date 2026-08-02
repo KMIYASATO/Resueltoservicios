@@ -224,7 +224,7 @@ export const servicePricing = [
 
 export const assignmentPolicy = {
   title: "Asignación por aceptación rápida",
-  rule: "Cuando el cliente elige el más rápido, Resuelto notifica hasta 3 técnicos verificados, disponibles y cercanos. Gana quien acepta primero dentro de 90 segundos.",
+  rule: "Cuando el cliente elige el más rápido, queda notifica hasta 3 técnicos verificados, disponibles y cercanos. Gana quien acepta primero dentro de 90 segundos.",
   manualRule: "Si el cliente elige un profesional específico, la solicitud se reserva para esa persona y se muestra alternativa si no responde.",
   timeout: "Sin respuesta en 90 segundos, la solicitud escala al siguiente grupo disponible."
 } as const;
@@ -337,8 +337,8 @@ export const benefits = [
 
 export const faqs = [
   {
-    question: "¿Resuelto envía trabajadores propios?",
-    answer: "No. Resuelto conecta clientes con profesionales independientes y organiza la reserva para que puedas comparar antes de decidir."
+    question: "¿queda envía trabajadores propios?",
+    answer: "No. queda conecta clientes con profesionales independientes y organiza la reserva para que puedas comparar antes de decidir."
   },
   {
     question: "¿Los precios son finales?",

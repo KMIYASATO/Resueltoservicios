@@ -1,4 +1,4 @@
-# BRAND BOOK Y SISTEMA DE DISEÑO — RESUELTO
+# BRAND BOOK Y SISTEMA DE DISEÑO — queda
 
 **Documento maestro para OpenCode**  
 **Versión:** 1.0  
@@ -7,14 +7,16 @@
 **Mercado inicial:** Perú — Lima Metropolitana  
 **Idioma inicial:** Español  
 **Moneda inicial:** PEN (S/)  
-**Nombre comercial:** Resuelto  
+**Nombre comercial:** queda  
 **Nota legal:** El uso definitivo del nombre, dominio y logotipo está sujeto a validación de disponibilidad y registro de marca.
+
+**Nota de rebrand:** queda es el nuevo nombre de marca del proyecto anteriormente denominado Resuelto. Algunas rutas, nombres de archivo o componentes internos pueden conservar temporalmente el nombre técnico anterior para evitar rupturas.
 
 ---
 
 ## 0. REGLA DE USO PARA OPENCODE
 
-Este documento es la **fuente única de verdad** para la identidad visual, tono de comunicación y diseño de interfaz de Resuelto.
+Este documento es la **fuente única de verdad** para la identidad visual, tono de comunicación y diseño de interfaz de queda.
 
 OpenCode deberá:
 
@@ -41,7 +43,7 @@ OpenCode deberá:
 
 ## 1.1 Nombre
 
-# Resuelto
+# queda
 
 El nombre expresa el resultado que busca el usuario: dejar de preocuparse porque el problema ya está siendo atendido.
 
@@ -63,7 +65,7 @@ Alternativa corta para espacios reducidos:
 
 ## 1.3 Promesa de marca
 
-> Resuelto te ayuda a encontrar, comparar y reservar profesionales confiables desde un solo lugar.
+> queda te ayuda a encontrar, comparar y reservar profesionales confiables desde un solo lugar.
 
 ## 1.4 Idea central
 
@@ -73,11 +75,11 @@ Esta idea debe guiar el diseño, la comunicación y la experiencia. La interfaz 
 
 ## 1.5 Posicionamiento
 
-Resuelto es un marketplace peruano de servicios a domicilio que permite comparar profesionales, revisar reputación, conocer precios, reservar horarios y gestionar el servicio de forma clara y segura.
+queda es un marketplace peruano de servicios a domicilio que permite comparar profesionales, revisar reputación, conocer precios, reservar horarios y gestionar el servicio de forma clara y segura.
 
 ## 1.6 Diferenciación
 
-Resuelto no es:
+queda no es:
 
 - un clasificado de números telefónicos;
 - un directorio sin seguimiento;
@@ -85,7 +87,7 @@ Resuelto no es:
 - una ferretería digital;
 - una empresa que ejecuta todos los servicios directamente.
 
-Resuelto sí es:
+queda sí es:
 
 - una plataforma de descubrimiento;
 - un sistema de comparación;
@@ -270,14 +272,14 @@ Dirección recomendada:
 ### Versión principal
 
 ```text
-[ISOTIPO] Resuelto
+[ISOTIPO] queda
           Servicios de confianza, cuando los necesitas.
 ```
 
 ### Versión compacta
 
 ```text
-[ISOTIPO] Resuelto
+[ISOTIPO] queda
 ```
 
 ### Isotipo
@@ -294,7 +296,7 @@ Uso en:
 
 - tipografía base: Manrope;
 - peso sugerido: 700;
-- minúsculas con inicial mayúscula: `Resuelto`;
+- minúsculas: `queda`;
 - apariencia geométrica, limpia y ligeramente redondeada;
 - evitar itálicas y efectos 3D.
 
@@ -355,7 +357,7 @@ Requisitos:
 
 ## 6.1 Paleta principal actualizada
 
-La identidad visual de Resuelto usa una paleta fresca, cercana y amable. Esta paleta reemplaza el sistema anterior azul/naranja.
+La identidad visual de queda usa una paleta fresca, cercana y amable. Esta paleta reemplaza el sistema anterior azul/naranja.
 
 | Token | Nombre | HEX | Uso |
 |---|---|---|---|
@@ -898,7 +900,7 @@ Evitar spinners como única señal de carga en páginas completas.
 
 Columnas:
 
-- Resuelto;
+- queda;
 - Clientes;
 - Profesionales;
 - Ayuda;
@@ -1171,7 +1173,7 @@ Una implementación cumple esta definición solo si:
 
 ## Marca
 
-- utiliza “Resuelto”;
+- utiliza “queda”;
 - usa el descriptor aprobado;
 - no contiene referencias visibles a Chamba;
 - no copia recursos de Webel;
@@ -1247,7 +1249,7 @@ No aprobar diseños que:
 # 22. RESUMEN EJECUTIVO
 
 ```text
-Marca: Resuelto
+Marca: queda
 Categoría: Marketplace de servicios a domicilio
 Mercado inicial: Lima, Perú
 Promesa: Encontrar, comparar y reservar profesionales confiables
