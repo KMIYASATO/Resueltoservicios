@@ -1,17 +1,12 @@
 import { CheckCircle2, Sparkles } from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { AppInstallActions } from "@/components/resuelto/AppInstallActions";
 import { FaqAccordion } from "@/components/resuelto/FaqAccordion";
 import { MainSearch } from "@/components/resuelto/MainSearch";
 import { ProfessionalCard } from "@/components/resuelto/ProfessionalCard";
 import { ResueltoLogo } from "@/components/resuelto/ResueltoLogo";
 import { SiteHeader } from "@/components/resuelto/SiteHeader";
 import { benefits, faqs, professionals } from "@/data/home";
-
-function AppDownloadLinks({ compact = false }: { compact?: boolean }) {
-  return <AppInstallActions compact={compact} />;
-}
 
 export default function HomePage() {
   return (
@@ -24,17 +19,10 @@ export default function HomePage() {
           <div className="mx-auto max-w-4xl">
             <p className="text-sm font-semibold text-brand-600">Encuentra al profesional que necesitas</p>
             <h1 className="mt-3 font-display text-4xl font-bold tracking-[-0.05em] text-neutral-950 sm:text-5xl lg:text-6xl">Servicios del hogar desde tu celular</h1>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-neutral-600 sm:text-lg sm:leading-8">Busca técnicos verificados, elige tu distrito y reserva desde web móvil, iOS o Android.</p>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-neutral-600 sm:text-lg sm:leading-8">Busca técnicos verificados, elige tu distrito y reserva desde tu celular.</p>
           </div>
           <div className="mt-7">
             <MainSearch />
-          </div>
-          <div id="descargar-app" className="mx-auto mt-6 max-w-2xl rounded-[28px] border border-neutral-200 bg-white/95 p-4 text-left shadow-sm backdrop-blur sm:p-5">
-            <div className="mb-4 grid gap-1 text-center sm:text-left">
-              <p className="text-sm font-semibold text-brand-600">Descarga la app</p>
-              <p className="text-sm leading-6 text-neutral-600">Accede más rápido a tus reservas desde iPhone o Android.</p>
-            </div>
-            <AppDownloadLinks compact />
           </div>
         </div>
       </section>
@@ -143,19 +131,6 @@ export default function HomePage() {
               </div>
             </div>
           </Card>
-        </div>
-      </section>
-
-      <section className="bg-brand-700 py-14 text-white sm:py-16 lg:py-20">
-        <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-[1fr_520px] lg:items-center lg:px-8">
-          <div>
-            <p className="text-sm font-semibold text-brand-100">queda en tu bolsillo</p>
-            <h2 className="mt-2 font-display text-3xl font-bold tracking-[-0.04em] sm:text-4xl lg:text-5xl">Reserva servicios desde iOS o Android</h2>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-brand-100 sm:text-lg sm:leading-8">Guarda tus solicitudes, revisa profesionales y continúa la coordinación desde tu teléfono.</p>
-          </div>
-          <div className="rounded-[28px] bg-white p-4 shadow-lg sm:p-5">
-            <AppDownloadLinks />
-          </div>
         </div>
       </section>
 
