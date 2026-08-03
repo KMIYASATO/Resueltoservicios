@@ -8,5 +8,13 @@
     "build": "pnpm --filter @resuelto/web build",
     "lint": "pnpm --filter @resuelto/web lint",
     "typecheck": "pnpm --filter @resuelto/web typecheck"
+  },
+  "pnpm": {
+    "overrides": {
+      "@eslint/plugin-kit": "0.3.4",
+      "brace-expansion": "1.1.17",
+      "postcss": "8.5.25",
+      "sharp": "0.35.3"
+    }
   }
 }
