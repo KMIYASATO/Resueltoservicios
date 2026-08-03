@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { AuthPageClient } from "@/features/auth/components/AuthPageClient";
-import { AuthPageFallback } from "../AuthPageFallback";
+import { AuthRouteRedirect } from "@/features/auth/components/AuthRouteRedirect";
 
 export const metadata: Metadata = {
   title: "Crear cuenta | Queda",
@@ -10,8 +9,8 @@ export const metadata: Metadata = {
 
 export default function RegisterPage() {
   return (
-    <Suspense fallback={<AuthPageFallback />}>
-      <AuthPageClient mode="register" />
+    <Suspense fallback={null}>
+      <AuthRouteRedirect mode="register" />
     </Suspense>
   );
 }

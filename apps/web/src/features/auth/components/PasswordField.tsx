@@ -23,7 +23,7 @@ export function PasswordField({ label, error, inputRef, ...props }: PasswordFiel
       type={visible ? "text" : "password"}
       rightSlot={(
         <button
-          className="rounded-md p-2 text-neutral-500 transition-colors hover:bg-brand-100 hover:text-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
+          className="min-h-[44px] min-w-[44px] rounded-md p-2 text-neutral-600 transition-colors hover:bg-brand-100 hover:text-brand-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
           type="button"
           aria-label={visible ? "Ocultar contraseña" : "Mostrar contraseña"}
           onClick={() => setVisible((value) => !value)}

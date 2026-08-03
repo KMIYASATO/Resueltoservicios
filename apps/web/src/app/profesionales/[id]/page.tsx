@@ -2,6 +2,7 @@ import { CalendarClock, CheckCircle2, Gauge, MapPin, ShieldCheck, Star } from "l
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ResueltoLogo } from "@/components/resuelto/ResueltoLogo";
+import { AuthTriggerButton } from "@/features/auth/components/AuthTriggerButton";
 import { commissionLevels, findProfessional, professionals } from "@/data/home";
 
 export function generateStaticParams() {
@@ -138,12 +139,12 @@ export default async function ProfessionalProfilePage({ params }: { params: Prom
             <span>{professional.zone}</span>
             <span>{professional.price}</span>
           </div>
-          <ButtonLink href={`/reserva?profesional=${professional.id}`} className="mt-6 w-full">Solicitar atención</ButtonLink>
+          <AuthTriggerButton auth={{ mode: "login", returnTo: `/reserva?profesional=${professional.id}`, accountIntent: "customer", pendingAction: `request-service:${professional.id}` }} className="mt-6 w-full">Solicitar atención</AuthTriggerButton>
         </Card>
       </section>
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-200 bg-white p-3 shadow-lg lg:hidden">
-        <ButtonLink href={`/reserva?profesional=${professional.id}`} className="w-full">Solicitar atención</ButtonLink>
+        <AuthTriggerButton auth={{ mode: "login", returnTo: `/reserva?profesional=${professional.id}`, accountIntent: "customer", pendingAction: `request-service:${professional.id}` }} className="w-full">Solicitar atención</AuthTriggerButton>
       </div>
     </main>
   );

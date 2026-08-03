@@ -1,5 +1,7 @@
 export type AuthMode = "login" | "register";
 
+export type AuthModalMode = AuthMode | "forgot-password";
+
 export type AuthIntent = "customer" | "professional";
 
 export type AuthProvider = "google" | "facebook";
@@ -34,4 +36,12 @@ export type PasswordRequirement = {
   key: "length" | "letter" | "number";
   label: string;
   met: boolean;
+};
+
+export type OpenAuthModalOptions = {
+  mode?: AuthModalMode;
+  returnTo?: string;
+  accountIntent?: AuthIntent;
+  pendingAction?: string;
+  email?: string;
 };

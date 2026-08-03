@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { AuthPageClient } from "@/features/auth/components/AuthPageClient";
-import { AuthPageFallback } from "../AuthPageFallback";
+import { AuthRouteRedirect } from "@/features/auth/components/AuthRouteRedirect";
 
 export const metadata: Metadata = {
   title: "Iniciar sesión | Queda",
@@ -10,8 +9,8 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<AuthPageFallback />}>
-      <AuthPageClient mode="login" />
+    <Suspense fallback={null}>
+      <AuthRouteRedirect mode="login" />
     </Suspense>
   );
 }

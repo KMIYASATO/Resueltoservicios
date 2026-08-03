@@ -1,6 +1,7 @@
 import { CalendarClock, ShieldCheck, Star } from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { AuthTriggerButton } from "@/features/auth/components/AuthTriggerButton";
 
 export function ProfessionalCard({
   id,
@@ -67,9 +68,9 @@ export function ProfessionalCard({
         <ButtonLink href={`/profesionales/${id}`} variant="secondary">
           Ver perfil
         </ButtonLink>
-        <ButtonLink href={`/reserva?profesional=${id}`}>
+        <AuthTriggerButton auth={{ mode: "login", returnTo: `/reserva?profesional=${id}`, accountIntent: "customer", pendingAction: `request-service:${id}` }}>
           Solicitar atención
-        </ButtonLink>
+        </AuthTriggerButton>
       </div>
     </Card>
   );

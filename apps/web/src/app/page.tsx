@@ -1,5 +1,4 @@
 import { Camera, CheckCircle2, Clock3, FileText, ShieldCheck } from "lucide-react";
-import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { FaqAccordion } from "@/components/resuelto/FaqAccordion";
 import { MainSearch } from "@/components/resuelto/MainSearch";
@@ -7,6 +6,7 @@ import { PrimaryCategoryNav } from "@/components/resuelto/PrimaryCategoryNav";
 import { ResueltoLogo } from "@/components/resuelto/ResueltoLogo";
 import { SiteHeader } from "@/components/resuelto/SiteHeader";
 import { faqs } from "@/data/home";
+import { AuthTriggerButton } from "@/features/auth/components/AuthTriggerButton";
 
 const requestDetails = [
   "Solicitud registrada",
@@ -137,7 +137,7 @@ export default function HomePage() {
             <h2 className="mt-2 font-display text-3xl font-bold tracking-[-0.04em] text-neutral-950 sm:text-4xl">¿Ofreces servicios?</h2>
             <p className="mt-3 max-w-2xl text-lg leading-8 text-neutral-600">Crea tu perfil, indica tu disponibilidad y recibe solicitudes con información más completa.</p>
           </div>
-          <ButtonLink href="/auth/register/?intent=professional&returnTo=/profesionales/onboarding/" className="w-full sm:w-fit">Ofrecer mis servicios</ButtonLink>
+          <AuthTriggerButton auth={{ mode: "register", accountIntent: "professional", returnTo: "/profesionales/onboarding/", pendingAction: "professional-onboarding" }} className="w-full sm:w-fit">Ofrecer mis servicios</AuthTriggerButton>
         </div>
       </section>
 

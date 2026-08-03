@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { ButtonLink } from "@/components/ui/Button";
+import { AuthTriggerButton } from "@/features/auth/components/AuthTriggerButton";
 import { cn } from "@/lib/cn";
 import { ResueltoLogo } from "./ResueltoLogo";
 
@@ -40,8 +39,8 @@ export function SiteHeader() {
         <ResueltoLogo />
 
         <div className="hidden items-center gap-3 sm:flex">
-          <Link className="rounded-full px-3 py-2 text-sm font-semibold text-brand-600 transition-colors hover:bg-brand-100" href="/auth/login/">Iniciar sesión</Link>
-          <ButtonLink href="/auth/register/?intent=professional&returnTo=/profesionales/onboarding/" variant="primary">Ofrecer servicios</ButtonLink>
+          <AuthTriggerButton auth={{ mode: "login" }} className="rounded-full px-3 py-2" variant="link">Iniciar sesión</AuthTriggerButton>
+          <AuthTriggerButton auth={{ mode: "register", accountIntent: "professional", returnTo: "/profesionales/onboarding/", pendingAction: "professional-onboarding" }}>Ofrecer servicios</AuthTriggerButton>
         </div>
 
         <button
@@ -67,8 +66,8 @@ export function SiteHeader() {
               </button>
             </div>
             <div className="grid gap-3">
-              <Link href="/auth/login/" onClick={() => setMobileOpen(false)} className="rounded-md px-4 py-3 font-semibold text-neutral-700 transition-colors hover:bg-brand-100 hover:text-brand-700">Iniciar sesión</Link>
-              <ButtonLink href="/auth/register/?intent=professional&returnTo=/profesionales/onboarding/" className="w-full" onClick={() => setMobileOpen(false)}>Ofrecer servicios</ButtonLink>
+              <AuthTriggerButton auth={{ mode: "login" }} onClick={() => setMobileOpen(false)} variant="tertiary" className="justify-start px-4 py-3 text-neutral-700 hover:text-brand-700">Iniciar sesión</AuthTriggerButton>
+              <AuthTriggerButton auth={{ mode: "register", accountIntent: "professional", returnTo: "/profesionales/onboarding/", pendingAction: "professional-onboarding" }} className="w-full" onClick={() => setMobileOpen(false)}>Ofrecer servicios</AuthTriggerButton>
             </div>
           </div>
         </div>

@@ -7,23 +7,23 @@ function wait() {
 export const unavailableAuthService: AuthService = {
   async signInWithEmail() {
     await wait();
-    return { ok: false, message: "El acceso estará disponible cuando finalicemos la conexión segura de Queda." };
+    return { ok: false, message: "Esta opción estará disponible próximamente." };
   },
   async signUpWithEmail() {
     await wait();
-    return { ok: false, message: "El registro estará disponible cuando finalicemos la conexión segura de Queda." };
+    return { ok: false, message: "Esta opción estará disponible próximamente." };
   },
   async signInWithGoogle() {
     await wait();
-    return { ok: false, message: "El acceso con Google estará disponible próximamente." };
+    return { ok: false, message: "Esta opción estará disponible próximamente." };
   },
   async signInWithFacebook() {
     await wait();
-    return { ok: false, message: "El acceso con Facebook estará disponible próximamente." };
+    return { ok: false, message: "Esta opción estará disponible próximamente." };
   },
   async sendPasswordReset() {
     await wait();
-    return { ok: false, message: "La recuperación estará disponible cuando conectemos el servicio de autenticación." };
+    return { ok: false, message: "Esta opción estará disponible próximamente." };
   },
   async signOut() {
     await wait();

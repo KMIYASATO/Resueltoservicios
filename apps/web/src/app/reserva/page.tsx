@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ResueltoLogo } from "@/components/resuelto/ResueltoLogo";
+import { AuthTriggerButton } from "@/features/auth/components/AuthTriggerButton";
 import { getPricingForService, professionals, services } from "@/data/home";
 
 const bookingSteps = [
@@ -125,7 +126,7 @@ export default function BookingPage() {
             </div>
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href="#" className="w-full sm:w-fit">Enviar solicitud</ButtonLink>
+              <AuthTriggerButton auth={{ mode: "login", returnTo: "/reserva/", accountIntent: "customer", pendingAction: "submit-request" }} className="w-full sm:w-fit">Enviar solicitud</AuthTriggerButton>
               <ButtonLink href="/resultados/?servicio=limpieza-hogar&distrito=miraflores" variant="secondary" className="w-full sm:w-fit">Ver profesionales</ButtonLink>
             </div>
           </Card>

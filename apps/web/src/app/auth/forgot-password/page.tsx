@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { ForgotPasswordPageClient } from "@/features/auth/components/ForgotPasswordPageClient";
-import { AuthPageFallback } from "../AuthPageFallback";
+import { AuthRouteRedirect } from "@/features/auth/components/AuthRouteRedirect";
 
 export const metadata: Metadata = {
   title: "Recuperar contraseña | Queda",
@@ -10,8 +9,8 @@ export const metadata: Metadata = {
 
 export default function ForgotPasswordPage() {
   return (
-    <Suspense fallback={<AuthPageFallback />}>
-      <ForgotPasswordPageClient />
+    <Suspense fallback={null}>
+      <AuthRouteRedirect mode="forgot-password" />
     </Suspense>
   );
 }
