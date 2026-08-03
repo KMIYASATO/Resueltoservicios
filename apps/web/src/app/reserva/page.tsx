@@ -1,9 +1,9 @@
-import { AlertTriangle, CalendarClock, CheckCircle2, CreditCard, Home, MapPin, ReceiptText, ShieldCheck, UserRoundCheck } from "lucide-react";
+import { AlertTriangle, CalendarClock, CheckCircle2, Home, MapPin, ReceiptText, ShieldCheck, UserRoundCheck } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ResueltoLogo } from "@/components/resuelto/ResueltoLogo";
-import { getPricingForService, paymentPolicy, professionals, services } from "@/data/home";
+import { getPricingForService, professionals, services } from "@/data/home";
 
 const bookingSteps = [
   {
@@ -27,9 +27,9 @@ const bookingSteps = [
     icon: CheckCircle2
   },
   {
-    title: "Pago y confirmación",
-    description: "Confirma la reserva cuando todos los datos estén correctos.",
-    icon: CreditCard
+    title: "Solicitud enviada",
+    description: "El profesional revisa el detalle y responde con una opción de atención.",
+    icon: CheckCircle2
   }
 ] as const;
 
@@ -50,13 +50,13 @@ export default function BookingPage() {
       <section className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1fr_360px] lg:px-8">
         <div className="grid gap-6">
           <div>
-            <Badge tone="brand">Reserva</Badge>
-            <h1 className="mt-3 font-display text-4xl font-bold tracking-[-0.03em] text-neutral-950">Confirma tu servicio paso a paso</h1>
+            <Badge tone="brand">Solicitud</Badge>
+            <h1 className="mt-3 font-display text-4xl font-bold tracking-[-0.03em] text-neutral-950">Envía tu solicitud paso a paso</h1>
             <p className="mt-3 max-w-2xl leading-7 text-neutral-600">Completa los datos esenciales para que el profesional pueda revisar tu solicitud con claridad.</p>
           </div>
 
           <Card className="p-5">
-            <ol className="grid gap-3 sm:grid-cols-5" aria-label="Etapas de la reserva">
+            <ol className="grid gap-3 sm:grid-cols-5" aria-label="Etapas de la solicitud">
               {bookingSteps.map((step, index) => {
                 const Icon = step.icon;
                 const active = index === 0;
@@ -76,7 +76,7 @@ export default function BookingPage() {
               <div>
                 <p className="text-sm font-semibold text-brand-600">Paso actual: Detalle</p>
                 <h2 className="mt-2 font-display text-3xl font-bold tracking-[-0.03em] text-neutral-950">Cuéntanos qué necesitas</h2>
-                <p className="mt-3 leading-7 text-neutral-600">Mientras completas el flujo, mantendremos visible el resumen para que puedas revisar cada decisión antes de confirmar.</p>
+                <p className="mt-3 leading-7 text-neutral-600">Mientras completas el flujo, mantendremos visible el resumen para que puedas revisar cada decisión antes de enviar.</p>
               </div>
               <div className="rounded-xl bg-brand-100 p-4">
                 <CalendarClock className="h-6 w-6 text-brand-600" aria-hidden="true" />
@@ -89,7 +89,7 @@ export default function BookingPage() {
               <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-4">
                 <ReceiptText className="h-5 w-5 text-brand-600" />
                 <p className="mt-3 text-sm font-semibold text-neutral-950">Precio referencial</p>
-                <p className="mt-1 text-sm leading-6 text-neutral-600">{pricing.baseRange}. En alta urgencia puede subir a {pricing.urgentRange}.</p>
+                <p className="mt-1 text-sm leading-6 text-neutral-600">{pricing.baseRange}. El monto final depende del detalle revisado por el profesional.</p>
               </div>
               <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-4">
                 <AlertTriangle className="h-5 w-5 text-brand-600" />
@@ -98,8 +98,8 @@ export default function BookingPage() {
               </div>
               <div className="rounded-xl border border-neutral-200 bg-neutral-50 p-4">
                 <ShieldCheck className="h-5 w-5 text-brand-600" />
-                <p className="mt-3 text-sm font-semibold text-neutral-950">Garantía</p>
-                <p className="mt-1 text-sm leading-6 text-neutral-600">{pricing.guaranteeReserve} se separa para cubrir reclamos trazables.</p>
+                <p className="mt-3 text-sm font-semibold text-neutral-950">Contacto</p>
+                <p className="mt-1 text-sm leading-6 text-neutral-600">Los datos se comparten cuando corresponde coordinar la atención.</p>
               </div>
             </div>
 
@@ -125,7 +125,7 @@ export default function BookingPage() {
             </div>
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href="#" className="w-full sm:w-fit">Continuar</ButtonLink>
+              <ButtonLink href="#" className="w-full sm:w-fit">Enviar solicitud</ButtonLink>
               <ButtonLink href="/resultados/?servicio=limpieza-hogar&distrito=miraflores" variant="secondary" className="w-full sm:w-fit">Ver profesionales</ButtonLink>
             </div>
           </Card>
@@ -151,19 +151,9 @@ export default function BookingPage() {
           </div>
 
           <Card className="p-6">
-            <p className="text-sm font-semibold text-brand-600">Pago y cierre del trabajo</p>
-            <h2 className="mt-2 font-display text-3xl font-bold tracking-[-0.03em] text-neutral-950">Retención, confirmación y liberación</h2>
-            <div className="mt-5 grid gap-4 lg:grid-cols-4">
-              {[paymentPolicy.preAuthorization, paymentPolicy.retry, paymentPolicy.capture, paymentPolicy.split].map((item, index) => (
-                <div key={item} className="rounded-lg border border-neutral-200 p-4">
-                  <span className="text-xs font-semibold text-brand-600">Regla {index + 1}</span>
-                  <p className="mt-2 text-sm leading-6 text-neutral-700">{item}</p>
-                </div>
-              ))}
-            </div>
-            <div className="mt-5 rounded-xl bg-brand-100 p-4 text-sm leading-6 text-neutral-700">
-              Para finalizar, el cliente valida un código único o fotos del resultado. Si hay problema, puede abrir disputa durante las primeras 24 horas.
-            </div>
+            <p className="text-sm font-semibold text-brand-600">Después de enviar</p>
+            <h2 className="mt-2 font-display text-3xl font-bold tracking-[-0.03em] text-neutral-950">Revisión y coordinación</h2>
+            <p className="mt-3 leading-7 text-neutral-600">El profesional revisa el detalle, confirma si puede atenderte o propone otra fecha y horario.</p>
           </Card>
         </div>
 

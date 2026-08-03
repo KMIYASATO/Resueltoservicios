@@ -175,7 +175,7 @@ export const professionals = [
     services: "110 servicios realizados",
     responseTime: "Responde en el día",
     price: "Desde S/ 65",
-    availability: "Mañana desde las 9:00 a. m.",
+    availability: "Próxima disponibilidad mañana desde las 9:00 a. m.",
     zone: "Barranco, Miraflores y Magdalena",
     initials: "MP",
     verified: "Identidad verificada",
@@ -198,7 +198,7 @@ export const professionals = [
     services: "58 servicios realizados",
     responseTime: "Responde en menos de 2 horas",
     price: "Desde S/ 45",
-    availability: "Disponible hoy desde las 6:00 p. m.",
+    availability: "Agenda disponible esta semana",
     zone: "San Borja, Surco y La Molina",
     initials: "JA",
     verified: "Identidad y oficio verificados",
@@ -224,16 +224,16 @@ export const servicePricing = [
 
 export const assignmentPolicy = {
   title: "Asignación por aceptación rápida",
-  rule: "Cuando el cliente elige el más rápido, queda notifica hasta 3 técnicos verificados, disponibles y cercanos. Gana quien acepta primero dentro de 90 segundos.",
-  manualRule: "Si el cliente elige un profesional específico, la solicitud se reserva para esa persona y se muestra alternativa si no responde.",
-  timeout: "Sin respuesta en 90 segundos, la solicitud escala al siguiente grupo disponible."
+  rule: "Cuando el cliente envía una solicitud, Queda notifica a profesionales compatibles para que revisen el detalle antes de responder.",
+  manualRule: "Si el cliente elige un profesional específico, la solicitud se envía a esa persona y puede recibir una nueva propuesta de horario.",
+  timeout: "Si no hay respuesta, el cliente puede solicitar otra opción compatible."
 } as const;
 
 export const paymentPolicy = {
   preAuthorization: "Se solicita una retención por el rango estimado antes de confirmar.",
   capture: "El cobro se libera cuando el cliente confirma la finalización con código o fotos.",
-  retry: "Si la tarjeta falla, se muestra reintento y se mantiene la solicitud sin asignar hasta resolver el pago.",
-  split: "Comisión de plataforma, reserva de garantía y pago al técnico se calculan por transacción.",
+  retry: "Si falta información, se muestra reintento y se mantiene la solicitud pendiente hasta completarla.",
+  split: "La comisión de plataforma y liquidación al profesional se calculan fuera de la interfaz pública.",
   disputeWindow: "El cliente puede reportar un problema dentro de las primeras 24 horas."
 } as const;
 
@@ -245,34 +245,34 @@ export const commissionLevels = [
 ] as const;
 
 export const operatingRules = [
-  { title: "Verificación", text: "Solo aparecen técnicos con estado aprobado. Pendientes o rechazados quedan bloqueados para clientes." },
+  { title: "Verificación", text: "Solo aparecen profesionales con identidad y datos de contacto confirmados." },
   { title: "Reputación", text: "Si el rating baja de 3.5 de forma sostenida, el perfil se pausa y pasa a revisión." },
-  { title: "Finalización", text: "Cada servicio requiere código único o fotos antes de marcarlo como completado." },
-  { title: "Cancelaciones", text: "Cliente: posible costo mínimo si cancela tarde. Técnico: penalidad si no llega o abandona." },
+  { title: "Finalización", text: "Cada atención puede adjuntar evidencia antes de cerrar la solicitud." },
+  { title: "Cancelaciones", text: "Cliente y profesional pueden coordinar cambios antes de confirmar la atención." },
   { title: "Geofencing", text: "En la fase inicial solo se activan solicitudes en Miraflores, San Isidro y San Borja." },
   { title: "Disputas", text: "Reclamos por daño, mal servicio o cobro excesivo pasan a revisión con acciones trazables." },
-  { title: "Balanceo", text: "El ranking reduce prioridad a técnicos saturados para repartir demanda." },
-  { title: "Referidos", text: "Cada invitación queda asociada a cliente o técnico para aplicar bono o descuento." },
-  { title: "Fuga fuera de plataforma", text: "Se monitorean patrones de contacto repetido sin nuevas reservas para revisión preventiva." },
+  { title: "Balanceo", text: "El ranking reduce prioridad a profesionales saturados para repartir demanda." },
+  { title: "Referidos", text: "Cada invitación queda asociada a cliente o profesional para aplicar bono o descuento." },
+  { title: "Fuga fuera de plataforma", text: "Se monitorean patrones de contacto repetido sin nuevas solicitudes para revisión preventiva." },
   { title: "Auditoría", text: "Se registra solicitud, aceptación, precio, cambios, confirmaciones y resolución." }
 ] as const;
 
-export const notificationSteps = ["Solicitud creada", "Técnico asignado", "En camino", "Trabajo confirmado", "Pago liberado"] as const;
+export const notificationSteps = ["Solicitud creada", "Profesional notificado", "Horario propuesto", "Atención coordinada", "Solicitud cerrada"] as const;
 
 export const onboardingSteps = ["Registro", "Documentos", "Antecedentes", "Entrevista", "Aprobación", "Activación"] as const;
 
 export const adminMetrics = [
   { label: "Pedidos activos", value: "14", tone: "brand" },
-  { label: "Técnicos disponibles", value: "8", tone: "success" },
+  { label: "Profesionales disponibles", value: "8", tone: "success" },
   { label: "Pendientes de aprobar", value: "5", tone: "action" },
   { label: "Disputas abiertas", value: "2", tone: "neutral" }
 ] as const;
 
 export const adminQueues = [
-  { title: "Solicitud urgente", detail: "Electricidad en Miraflores, 2 técnicos notificados, 42 s restantes", status: "Escalamiento activo" },
+  { title: "Solicitud pendiente", detail: "Electricidad en Miraflores, 2 profesionales notificados", status: "Revisión activa" },
   { title: "Verificación pendiente", detail: "Documento de identidad y antecedentes por revisar", status: "Revisión requerida" },
   { title: "Disputa abierta", detail: "Cliente reporta ajuste de precio mayor al límite permitido", status: "Mediación" },
-  { title: "Balanceo de carga", detail: "Un técnico concentra 38% de pedidos de la categoría Hogar", status: "Redistribuir prioridad" }
+  { title: "Balanceo de carga", detail: "Un profesional concentra 38% de solicitudes de la categoría Hogar", status: "Redistribuir prioridad" }
 ] as const;
 
 export function getPricingForService(slug?: string | null) {
@@ -301,7 +301,7 @@ export function matchProfessionals(districtSlug?: string | null) {
         districtEnabled,
         matchScore: score,
         distanceLabel: coversDistrict ? "Dentro de zona" : "Fuera de zona prioritaria",
-        etaLabel: professional.availabilityStatus === "available" ? `${professional.etaMinutes} min aprox.` : professional.availabilityStatus === "busy" ? "Tras liberar agenda" : "No disponible ahora"
+        etaLabel: professional.availabilityStatus === "available" ? `${professional.etaMinutes} min aprox.` : professional.availabilityStatus === "busy" ? "Próxima disponibilidad mañana" : "Agenda disponible esta semana"
       };
     })
     .sort((a, b) => b.matchScore - a.matchScore || a.etaMinutes - b.etaMinutes);
@@ -317,15 +317,15 @@ export const steps = [
     text: "Revisa disponibilidad, precio estimado, experiencia y opiniones."
   },
   {
-    title: "Reserva el horario",
-    text: "Confirma los datos y sigue tu reserva desde la plataforma."
+    title: "Coordina la atención",
+    text: "Envía la solicitud y acuerda fecha, horario y contacto."
   }
 ] as const;
 
 export const trustItems = [
-  { title: "Profesionales identificables", text: "Conoce a quién vas a recibir antes de reservar." },
-  { title: "Precios claros", text: "Revisa precios referenciales y condiciones antes de avanzar." },
-  { title: "Seguimiento de la reserva", text: "Mantén el control del horario, dirección y profesional elegido." }
+  { title: "Profesionales identificables", text: "Conoce a quién estás contactando antes de coordinar." },
+  { title: "Precios referenciales", text: "Revisa rangos estimados antes de enviar la solicitud." },
+  { title: "Solicitud registrada", text: "Mantén el detalle y la coordinación en un solo lugar." }
 ] as const;
 
 export const benefits = [
@@ -337,16 +337,24 @@ export const benefits = [
 
 export const faqs = [
   {
-    question: "¿queda envía trabajadores propios?",
-    answer: "No. queda conecta clientes con profesionales independientes y organiza la reserva para que puedas comparar antes de decidir."
+    question: "¿Qué ocurre después de enviar una solicitud?",
+    answer: "El profesional revisa el detalle, confirma si puede atenderte o propone otra opción de horario."
   },
   {
-    question: "¿Los precios son finales?",
-    answer: "Mostramos precios referenciales. El total puede ajustarse según el detalle del servicio, horario y condiciones del trabajo."
+    question: "¿Cuándo se comparten mis datos de contacto?",
+    answer: "Se comparten cuando corresponde avanzar con la coordinación de la atención."
   },
   {
-    question: "¿Puedo elegir profesional?",
-    answer: "Sí. Puedes comparar profesionales, revisar disponibilidad y elegir la opción que mejor se ajuste a lo que necesitas."
+    question: "¿El profesional puede proponer otro horario?",
+    answer: "Sí. Puede responder con una alternativa si el horario solicitado no está disponible."
+  },
+  {
+    question: "¿Queda realiza directamente el servicio?",
+    answer: "No. Queda conecta personas con profesionales independientes y ayuda a ordenar la solicitud."
+  },
+  {
+    question: "¿Cómo se define el precio?",
+    answer: "Mostramos precios referenciales. El monto final depende del detalle, horario y condiciones del servicio."
   }
 ] as const;
 

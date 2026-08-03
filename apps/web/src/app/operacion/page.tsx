@@ -1,16 +1,16 @@
-import { BellRing, FileCheck2, Gauge, Route, ShieldAlert, SplitSquareHorizontal, UsersRound } from "lucide-react";
+import { BellRing, FileCheck2, Gauge, Route, ShieldAlert, UsersRound } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ResueltoLogo } from "@/components/resuelto/ResueltoLogo";
-import { adminMetrics, adminQueues, assignmentPolicy, commissionLevels, notificationSteps, onboardingSteps, operatingRules, paymentPolicy } from "@/data/home";
+import { adminMetrics, adminQueues, assignmentPolicy, commissionLevels, notificationSteps, onboardingSteps, operatingRules } from "@/data/home";
 
 const engineCards = [
-  { title: "Matching", icon: Route, text: "Ordena técnicos por zona, disponibilidad, rating y carga actual." },
-  { title: "Disponibilidad", icon: Gauge, text: "Estados visibles: disponible, ocupado y desconectado." },
-  { title: "Pagos", icon: SplitSquareHorizontal, text: paymentPolicy.split },
-  { title: "Calidad", icon: ShieldAlert, text: "Bloquea técnicos no aprobados y pausa perfiles con baja reputación." },
-  { title: "Notificaciones", icon: BellRing, text: "Alertas para cliente, técnico y equipo operativo en cada hito." },
+  { title: "Matching", icon: Route, text: "Ordena profesionales por zona, disponibilidad, valoración y carga actual." },
+  { title: "Disponibilidad", icon: Gauge, text: "Muestra disponibilidad positiva sin exponer estados internos." },
+  { title: "Coordinación", icon: BellRing, text: "Registra solicitud, respuesta, fecha, horario y contacto." },
+  { title: "Calidad", icon: ShieldAlert, text: "Pausa perfiles con baja reputación para revisión interna." },
+  { title: "Notificaciones", icon: BellRing, text: "Alertas para cliente, profesional y equipo operativo en cada hito." },
   { title: "Onboarding", icon: FileCheck2, text: "Registro, documentos, antecedentes, entrevista, aprobación y activación." }
 ] as const;
 
@@ -31,7 +31,7 @@ export default function OperationsPage() {
               <Badge tone="brand">Panel operativo</Badge>
               <h1 className="mt-3 font-display text-5xl font-bold tracking-[-0.05em] text-neutral-950">Control del marketplace desde el primer día</h1>
             </div>
-            <p className="text-lg leading-8 text-neutral-600">Vista central para asignación, calidad, pagos, técnicos pendientes, disputas y alertas críticas sin exponer información sensible.</p>
+            <p className="text-lg leading-8 text-neutral-600">Vista central para solicitudes, calidad, profesionales pendientes, disputas y alertas críticas sin exponer información sensible.</p>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -98,7 +98,7 @@ export default function OperationsPage() {
             </Card>
 
             <Card className="p-6">
-              <h2 className="font-display text-2xl font-bold text-neutral-950">Onboarding de técnicos</h2>
+              <h2 className="font-display text-2xl font-bold text-neutral-950">Onboarding de profesionales</h2>
               <div className="mt-5 grid gap-2">
                 {onboardingSteps.map((step, index) => (
                   <div key={step} className="flex items-center gap-3 rounded-lg bg-neutral-50 p-3">

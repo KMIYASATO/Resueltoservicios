@@ -1,12 +1,38 @@
-import { CheckCircle2, Sparkles } from "lucide-react";
+import { Camera, CheckCircle2, Clock3, FileText, ShieldCheck } from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { FaqAccordion } from "@/components/resuelto/FaqAccordion";
 import { MainSearch } from "@/components/resuelto/MainSearch";
-import { ProfessionalCard } from "@/components/resuelto/ProfessionalCard";
+import { PrimaryCategoryNav } from "@/components/resuelto/PrimaryCategoryNav";
 import { ResueltoLogo } from "@/components/resuelto/ResueltoLogo";
 import { SiteHeader } from "@/components/resuelto/SiteHeader";
-import { benefits, faqs, professionals } from "@/data/home";
+import { faqs } from "@/data/home";
+
+const requestDetails = [
+  "Solicitud registrada",
+  "Detalle del servicio",
+  "Archivos y fotografías",
+  "Fecha y horario",
+  "Historial de coordinación"
+] as const;
+
+const trustItems = [
+  {
+    title: "Identidad verificada",
+    text: "Queda confirmó la identidad y los datos de contacto del profesional.",
+    icon: ShieldCheck
+  },
+  {
+    title: "Solicitud con contexto",
+    text: "El profesional recibe servicio, distrito, detalle y horario antes de responder.",
+    icon: FileText
+  },
+  {
+    title: "Coordinación clara",
+    text: "El contacto se comparte cuando corresponde avanzar con la atención.",
+    icon: Clock3
+  }
+] as const;
 
 export default function HomePage() {
   return (
@@ -15,95 +41,67 @@ export default function HomePage() {
 
       <section className="relative isolate overflow-visible bg-neutral-50 text-neutral-950">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_0%,rgba(152,219,198,0.38),transparent_28%),radial-gradient(circle_at_80%_10%,rgba(241,141,158,0.14),transparent_24%)]" />
-        <div className="mx-auto max-w-7xl px-4 py-8 text-center sm:px-6 sm:py-10 lg:px-8 lg:py-14">
+        <div className="mx-auto max-w-7xl px-4 py-8 text-center sm:px-6 sm:py-10 lg:px-8 lg:py-12">
           <div className="mx-auto max-w-4xl">
-            <p className="text-sm font-semibold text-brand-600">Encuentra al profesional que necesitas</p>
-            <h1 className="mt-3 font-display text-4xl font-bold tracking-[-0.05em] text-neutral-950 sm:text-5xl lg:text-6xl">Servicios del hogar desde tu celular</h1>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-neutral-600 sm:text-lg sm:leading-8">Busca técnicos verificados, elige tu distrito y reserva desde tu celular.</p>
+            <p className="text-sm font-semibold text-brand-600">Clases, limpieza y hogar</p>
+            <h1 className="mt-3 font-display text-4xl font-bold tracking-[-0.05em] text-neutral-950 sm:text-5xl lg:text-6xl">Encuentra al profesional que necesitas</h1>
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-neutral-600 sm:text-lg sm:leading-8">Busca por servicio y distrito, revisa opciones y envía tu solicitud.</p>
           </div>
-          <div className="mt-7">
+          <div className="mt-7" aria-label="Buscador principal">
             <MainSearch />
           </div>
         </div>
       </section>
 
-      <section id="como-funciona" className="bg-white py-14 sm:py-16 lg:py-24">
+      <section className="border-b border-neutral-200 bg-white py-5">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <PrimaryCategoryNav listClassName="lg:justify-center" />
+        </div>
+      </section>
+
+      <section id="como-funciona" className="bg-white py-12 sm:py-14 lg:py-18">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <h2 className="font-display text-3xl font-bold tracking-[-0.04em] text-neutral-950 sm:text-4xl lg:text-5xl">Cómo funciona</h2>
             <p className="mt-4 text-lg leading-8 text-neutral-600">
-              queda conecta a personas que necesitan un servicio con profesionales disponibles en su zona. Busca, elige cómo quieres ser atendido y coordina todo desde un solo lugar.
+              Queda conecta a personas que necesitan un servicio con profesionales disponibles en su zona.
             </p>
           </div>
-          <div className="mt-12 grid gap-5 lg:grid-cols-3">
+          <div className="mt-10 grid gap-5 lg:grid-cols-3">
             <Card className="p-6">
               <span className="grid h-11 w-11 place-items-center rounded-full bg-brand-600 text-sm font-bold text-white">1</span>
               <h3 className="mt-5 font-display text-2xl font-bold text-neutral-950">Cuéntanos qué necesitas</h3>
-              <p className="mt-3 leading-7 text-neutral-600">Selecciona el tipo de servicio, indica tu distrito y describe brevemente el problema.</p>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {["Electricidad", "Casa", "Idiomas", "Colegio", "Jardinería"].map((item) => (
-                  <span key={item} className="rounded-full bg-brand-100 px-3 py-1.5 text-sm font-semibold text-brand-700">{item}</span>
-                ))}
-              </div>
-              <p className="mt-5 text-sm leading-6 text-neutral-600">Podrás agregar fotografías para ayudar al profesional a entender mejor la solicitud.</p>
+              <p className="mt-3 leading-7 text-neutral-600">Elige el servicio, indica tu distrito y describe tu solicitud.</p>
             </Card>
 
             <Card className="p-6">
               <span className="grid h-11 w-11 place-items-center rounded-full bg-brand-600 text-sm font-bold text-white">2</span>
-              <h3 className="mt-5 font-display text-2xl font-bold text-neutral-950">Elige cómo quieres resolverlo</h3>
-              <div className="mt-5 grid gap-3">
-                <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4">
-                  <p className="font-semibold text-neutral-950">Encontrar al más rápido</p>
-                  <p className="mt-1 text-sm leading-6 text-neutral-600">queda busca un profesional disponible para atender la solicitud lo antes posible.</p>
-                </div>
-                <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-4">
-                  <p className="font-semibold text-neutral-950">Elegir un profesional</p>
-                  <p className="mt-1 text-sm leading-6 text-neutral-600">Revisa perfiles, especialidades, precios referenciales, disponibilidad y valoraciones antes de elegir.</p>
-                </div>
-              </div>
+              <h3 className="mt-5 font-display text-2xl font-bold text-neutral-950">Elige una opción</h3>
+              <p className="mt-3 leading-7 text-neutral-600">Compara profesionales según disponibilidad y valoración.</p>
             </Card>
 
             <Card className="p-6">
               <span className="grid h-11 w-11 place-items-center rounded-full bg-brand-600 text-sm font-bold text-white">3</span>
-              <h3 className="mt-5 font-display text-2xl font-bold text-neutral-950">Confirma y coordina el servicio</h3>
-              <p className="mt-3 leading-7 text-neutral-600">El profesional recibe la solicitud y confirma si puede atenderla.</p>
-              <div className="mt-5 grid gap-2 text-sm font-semibold text-neutral-700">
-                {["Profesional asignado", "Fecha y hora", "Precio cerrado o rango estimado", "Condiciones del servicio", "Información necesaria"].map((item) => (
-                  <span key={item} className="rounded-full bg-neutral-50 px-3 py-2 ring-1 ring-neutral-200">{item}</span>
-                ))}
-              </div>
-              <p className="mt-5 text-sm leading-6 text-neutral-600">Después del trabajo, el cliente confirma la finalización y puede dejar una valoración.</p>
+              <h3 className="mt-5 font-display text-2xl font-bold text-neutral-950">Coordina la atención</h3>
+              <p className="mt-3 leading-7 text-neutral-600">Envía la solicitud y acuerda fecha, horario y contacto.</p>
             </Card>
           </div>
         </div>
       </section>
 
-      <section id="profesionales" className="bg-neutral-50 py-14 sm:py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-10 text-center">
-            <p className="text-sm font-semibold text-brand-600">Profesionales recomendados</p>
-            <h2 className="mt-2 font-display text-3xl font-bold tracking-[-0.04em] text-neutral-950 sm:text-4xl lg:text-5xl">Compara antes de reservar</h2>
+      <section className="bg-neutral-50 py-12 sm:py-14 lg:py-18">
+        <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:items-center lg:px-8">
+          <div>
+            <p className="text-sm font-semibold text-brand-600">Solicitud detallada</p>
+            <h2 className="mt-2 font-display text-3xl font-bold tracking-[-0.04em] text-neutral-950 sm:text-4xl">No solo te damos un contacto</h2>
+            <p className="mt-4 max-w-2xl text-lg leading-8 text-neutral-600">Envía el detalle, fotografías y horario para que el profesional revise tu solicitud antes de responder.</p>
           </div>
-          <div className="grid gap-5 lg:grid-cols-3">
-            {professionals.map((professional) => <ProfessionalCard key={professional.id} {...professional} />)}
-          </div>
-        </div>
-      </section>
-
-      <section className="overflow-hidden bg-white py-14 sm:py-16 lg:py-24">
-        <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
-          <div className="grid content-center gap-5">
-            <p className="text-sm font-semibold text-brand-600">Beneficios</p>
-            <h2 className="font-display text-3xl font-bold tracking-[-0.04em] text-neutral-950 sm:text-4xl lg:text-5xl">Una forma más ordenada de resolver tareas del hogar</h2>
-            <p className="max-w-2xl text-lg leading-8 text-neutral-600">Encuentra opciones, revisa detalles y reserva sin depender de recomendaciones sueltas o chats desordenados.</p>
-          </div>
-          <Card className="relative min-h-[360px] overflow-hidden border-0 bg-brand-700 p-6 text-white shadow-lg">
-            <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-action-500/40 blur-2xl" />
-            <div className="relative grid gap-4">
-              {benefits.map((benefit) => (
-                <div key={benefit} className="flex items-start gap-3 rounded-2xl bg-white/12 p-4 ring-1 ring-white/15">
-                  <CheckCircle2 className="mt-1 h-5 w-5 text-brand-100" />
-                  <p className="text-sm leading-6 text-brand-100">{benefit}</p>
+          <Card className="p-5">
+            <div className="grid gap-3 sm:grid-cols-2">
+              {requestDetails.map((item) => (
+                <div key={item} className="flex items-center gap-3 rounded-xl bg-brand-100 px-4 py-3 text-sm font-semibold text-neutral-950">
+                  {item === "Archivos y fotografías" ? <Camera className="h-5 w-5 text-brand-600" aria-hidden="true" /> : <CheckCircle2 className="h-5 w-5 text-brand-600" aria-hidden="true" />}
+                  {item}
                 </div>
               ))}
             </div>
@@ -111,33 +109,42 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="bg-white py-14 sm:py-16 lg:py-24">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[1fr_420px] lg:px-8">
-          <div className="grid content-center gap-4">
-            <p className="text-sm font-semibold text-brand-600">Para profesionales</p>
-            <h2 className="font-display text-3xl font-bold tracking-[-0.04em] text-neutral-950 sm:text-4xl lg:text-5xl">Ofrece tus servicios con una agenda más ordenada.</h2>
-            <p className="max-w-2xl text-lg leading-8 text-neutral-600">Crea tu perfil, define zonas, horarios y servicios para recibir solicitudes con mejor contexto desde el primer contacto.</p>
-            <ButtonLink href="#" className="w-fit">Ofrecer mis servicios</ButtonLink>
+      <section className="bg-white py-12 sm:py-14 lg:py-18">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-sm font-semibold text-brand-600">Confianza</p>
+            <h2 className="mt-2 font-display text-3xl font-bold tracking-[-0.04em] text-neutral-950 sm:text-4xl">Información clara antes de coordinar</h2>
           </div>
-          <Card className="p-5">
-            <div className="rounded-[26px] bg-brand-100 p-5">
-              <Sparkles className="h-8 w-8 text-brand-600" />
-              <h3 className="mt-5 font-display text-2xl font-bold text-neutral-950">Tu perfil profesional</h3>
-              <p className="mt-2 leading-7 text-neutral-700">Servicios, tarifas, cobertura y disponibilidad en un solo lugar.</p>
-              <div className="mt-5 grid gap-2 text-sm font-semibold text-neutral-700">
-                <span className="rounded-full bg-white px-3 py-2">Agenda</span>
-                <span className="rounded-full bg-white px-3 py-2">Solicitudes</span>
-                <span className="rounded-full bg-white px-3 py-2">Reputación</span>
-              </div>
-            </div>
-          </Card>
+          <div className="mt-8 grid gap-5 lg:grid-cols-3">
+            {trustItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Card key={item.title} className="p-6">
+                  <Icon className="h-7 w-7 text-brand-600" aria-hidden="true" />
+                  <h3 className="mt-4 font-display text-2xl font-bold text-neutral-950">{item.title}</h3>
+                  <p className="mt-2 leading-7 text-neutral-600">{item.text}</p>
+                </Card>
+              );
+            })}
+          </div>
         </div>
       </section>
 
-      <section className="bg-neutral-50 py-14 sm:py-16 lg:py-24">
+      <section id="profesionales" className="bg-neutral-50 py-12 sm:py-14 lg:py-18">
+        <div className="mx-auto grid max-w-7xl gap-6 px-4 sm:px-6 lg:grid-cols-[1fr_auto] lg:items-center lg:px-8">
+          <div>
+            <p className="text-sm font-semibold text-brand-600">Para profesionales</p>
+            <h2 className="mt-2 font-display text-3xl font-bold tracking-[-0.04em] text-neutral-950 sm:text-4xl">¿Ofreces servicios?</h2>
+            <p className="mt-3 max-w-2xl text-lg leading-8 text-neutral-600">Crea tu perfil, indica tu disponibilidad y recibe solicitudes con información más completa.</p>
+          </div>
+          <ButtonLink href="#" className="w-full sm:w-fit">Ofrecer mis servicios</ButtonLink>
+        </div>
+      </section>
+
+      <section className="bg-white py-12 sm:py-14 lg:py-18">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <p className="text-sm font-semibold text-brand-600">Preguntas frecuentes</p>
-          <h2 className="mt-2 font-display text-3xl font-bold tracking-[-0.04em] text-neutral-950 sm:text-4xl">Antes de reservar</h2>
+          <h2 className="mt-2 font-display text-3xl font-bold tracking-[-0.04em] text-neutral-950 sm:text-4xl">Antes de enviar tu solicitud</h2>
           <div className="mt-8"><FaqAccordion items={faqs} /></div>
         </div>
       </section>
@@ -150,7 +157,7 @@ export default function HomePage() {
           </div>
           <div className="grid gap-6 text-sm sm:grid-cols-4">
             {[
-              ["Clientes", "Buscar", "Reservas", "Ayuda"],
+              ["Clientes", "Buscar", "Solicitudes", "Ayuda"],
               ["Profesionales", "Registrarme", "Tarifas", "Agenda"],
               ["Legal", "Términos", "Privacidad", "Cookies"],
               ["Soporte", "Centro de ayuda", "Reclamos", "Contacto"]

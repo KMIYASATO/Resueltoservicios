@@ -4,7 +4,6 @@ import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ButtonLink } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
-import { PrimaryCategoryNav } from "./PrimaryCategoryNav";
 import { ResueltoLogo } from "./ResueltoLogo";
 
 export function SiteHeader() {
@@ -54,12 +53,6 @@ export function SiteHeader() {
         >
           {mobileOpen ? <X aria-hidden="true" className="h-5 w-5" /> : <Menu aria-hidden="true" className="h-5 w-5" />}
         </button>
-      </div>
-
-      <div className="border-t border-neutral-200/70 bg-white/96 py-3">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <PrimaryCategoryNav listClassName="lg:justify-center" />
-        </div>
       </div>
 
       {mobileOpen ? (

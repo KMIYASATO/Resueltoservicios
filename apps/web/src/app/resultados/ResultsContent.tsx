@@ -1,14 +1,13 @@
 "use client";
 
-import { ChevronDown, Clock3, SearchX, SlidersHorizontal } from "lucide-react";
+import { ChevronDown, SearchX, SlidersHorizontal } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/Badge";
-import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { MainSearch } from "@/components/resuelto/MainSearch";
 import { ProfessionalCard } from "@/components/resuelto/ProfessionalCard";
-import { assignmentPolicy, getPricingForService, matchProfessionals } from "@/data/home";
+import { getPricingForService, matchProfessionals } from "@/data/home";
 import { enabledDistricts, serviceOptions } from "@/data/serviceCatalog";
 import { cn } from "@/lib/cn";
 
@@ -17,13 +16,13 @@ const filterGroups = [
   { key: "horario", label: "Horario", options: ["Mañana", "Tarde", "Noche"] },
   { key: "precio", label: "Precio", options: ["Menor precio", "Precio medio"] },
   { key: "rating", label: "Rating", options: ["4.8+", "4.7+"] },
-  { key: "disponibilidad", label: "Disponibilidad", options: ["Disponible hoy"] },
-  { key: "verificacion", label: "Verificación", options: ["Verificado"] }
+  { key: "disponibilidad", label: "Disponibilidad", options: ["Disponible hoy", "Esta semana"] },
+  { key: "verificacion", label: "Verificación", options: ["Identidad verificada"] }
 ] as const;
 
 const sortOptions = [
   { value: "recomendados", label: "Recomendados" },
-  { value: "rapido", label: "Más rápido" },
+  { value: "disponibilidad", label: "Próxima disponibilidad" },
   { value: "rating", label: "Mejor valoración" },
   { value: "precio", label: "Menor precio" }
 ] as const;
@@ -70,7 +69,7 @@ export function ResultsContent() {
     if (sort === "rating") {
       list.sort((a, b) => Number(b.rating) - Number(a.rating));
     }
-    if (sort === "rapido") {
+    if (sort === "disponibilidad") {
       list.sort((a, b) => (a.availabilityStatus === "available" ? 0 : 1) - (b.availabilityStatus === "available" ? 0 : 1) || a.etaMinutes - b.etaMinutes);
     }
     if (sort === "precio") {
@@ -78,8 +77,6 @@ export function ResultsContent() {
     }
     return list;
   }, [districtEnabled, matchedProfessionals, searchParams, sort]);
-
-  const fastestProfessional = visibleProfessionals.find((professional) => professional.availabilityStatus === "available") ?? visibleProfessionals[0];
 
   function buildHref(key: string, value: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -132,7 +129,7 @@ export function ResultsContent() {
             Profesionales de {serviceName} en {districtName}
           </h1>
           <p className="mt-3 max-w-2xl leading-7 text-neutral-600">
-            {visibleProfessionals.length} profesionales disponibles para comparar por precio, disponibilidad y valoración.
+            {visibleProfessionals.length} profesionales compatibles para revisar opciones y enviar una solicitud.
           </p>
         </div>
 
@@ -143,41 +140,20 @@ export function ResultsContent() {
         ) : null}
 
         {!hasError && !districtEnabled ? (
-          <Card className="border-action-500/40 bg-action-100 p-4 text-neutral-950">
-            Por ahora atendemos solicitudes en Miraflores, San Isidro y San Borja. Puedes revisar profesionales, pero la reserva se habilita dentro de esas zonas.
+            <Card className="border-action-500/40 bg-action-100 p-4 text-neutral-950">
+            Por ahora recibimos solicitudes en Miraflores, San Isidro y San Borja.
           </Card>
         ) : null}
 
         <MainSearch />
 
-        <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-          <Card className="overflow-hidden p-0">
-            <div className="grid gap-4 bg-white p-5 sm:grid-cols-[1fr_auto] sm:items-center">
-              <div>
-                <p className="text-sm font-semibold text-brand-600">Motor de matching</p>
-                <h2 className="mt-1 font-display text-2xl font-bold text-neutral-950">Prioridad por cercanía, disponibilidad y carga</h2>
-                <p className="mt-2 text-sm leading-6 text-neutral-600">El listado favorece técnicos verificados dentro de zona, disponibles ahora, con buen rating y menor saturación.</p>
-              </div>
-              {fastestProfessional ? (
-                <ButtonLink href={`/reserva?modo=rapido&profesional=${fastestProfessional.id}&servicio=${serviceSlug ?? "limpieza-hogar"}&distrito=${districtSlug ?? "miraflores"}`}>
-                  Pedir el más rápido
-                </ButtonLink>
-              ) : null}
-            </div>
-            <div className="grid border-t border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-700 sm:grid-cols-3">
-              <span><strong className="text-neutral-950">Regla:</strong> {assignmentPolicy.title}</span>
-              <span><strong className="text-neutral-950">Timeout:</strong> {assignmentPolicy.timeout}</span>
-              <span><strong className="text-neutral-950">Cobertura:</strong> Miraflores, San Isidro y San Borja</span>
-            </div>
-          </Card>
-
+        <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
           <Card className="p-5">
             <p className="text-sm font-semibold text-brand-600">Precio referencial</p>
             <h2 className="mt-1 font-display text-2xl font-bold text-neutral-950">{pricing.baseRange}</h2>
             <div className="mt-4 grid gap-2 text-sm text-neutral-700">
-              <span>Urgencia alta: {pricing.urgentRange}</span>
               <span>Ajuste máximo en visita: {pricing.onsiteAdjustmentLimit}</span>
-              <span>Fondo de garantía: {pricing.guaranteeReserve} de cada transacción</span>
+              <span>El precio final depende del detalle revisado por el profesional.</span>
             </div>
           </Card>
         </div>
@@ -208,21 +184,6 @@ export function ResultsContent() {
           </div>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-3" aria-label="Estados de carga y disponibilidad">
-          <Card className="p-4">
-            <div className="h-4 w-24 rounded-full bg-neutral-200" />
-            <div className="mt-4 h-16 rounded-lg bg-neutral-100" />
-            <p className="mt-3 text-sm font-semibold text-neutral-600">Vista de carga</p>
-          </Card>
-          <Card className="p-4">
-            <SearchX className="h-5 w-5 text-brand-600" />
-            <p className="mt-3 text-sm font-semibold text-neutral-600">Sin resultados</p>
-          </Card>
-          <Card className="p-4">
-            <Clock3 className="h-5 w-5 text-brand-600" />
-            <p className="mt-3 text-sm font-semibold text-neutral-600">Reintento disponible</p>
-          </Card>
-        </div>
       </div>
 
       {mobileFiltersOpen ? (

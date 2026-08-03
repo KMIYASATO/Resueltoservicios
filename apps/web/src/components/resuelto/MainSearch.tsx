@@ -163,7 +163,7 @@ function SearchCombobox({
                 type="button"
                 role="option"
                 aria-selected={value?.value === option.value && value?.meta === option.meta}
-                className={cn("flex w-full items-center justify-between rounded-md px-3 py-3 text-left transition-colors duration-fast", index === activeIndex ? "bg-brand-100 text-brand-700" : "hover:bg-neutral-50")}
+                className={cn("flex w-full items-center justify-between rounded-md px-3 py-3 text-left transition-colors duration-fast focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600", index === activeIndex ? "bg-brand-100 text-brand-700" : "hover:bg-neutral-50")}
                 onMouseEnter={() => setActiveIndex(index)}
                 onClick={() => selectOption(option)}
               >
@@ -190,6 +190,7 @@ export function MainSearch({ className }: { className?: string }) {
   const [loading, setLoading] = useState(false);
 
   const canSubmit = Boolean(service && district);
+  const helperText = !service ? "Elige un servicio para continuar." : !district ? "Selecciona un distrito disponible para buscar." : "Listo para buscar profesionales compatibles.";
 
   function setComboboxOpen(id: string, nextOpen: boolean) {
     setOpenCombobox((current) => (nextOpen ? id : current === id ? null : current));
@@ -268,9 +269,12 @@ export function MainSearch({ className }: { className?: string }) {
         />
       </div>
 
-      <Button className="min-h-[60px] w-full rounded-2xl px-7 text-base shadow-sm md:h-full md:min-h-full md:w-auto md:min-w-[216px] md:rounded-lg md:px-8" type="submit" disabled={!canSubmit} loading={loading}>
+      <Button className="min-h-[60px] w-full rounded-2xl bg-brand-600 px-7 text-base text-white shadow-sm hover:bg-brand-800 disabled:bg-neutral-200 disabled:text-neutral-700 md:h-full md:min-h-full md:w-auto md:min-w-[216px] md:rounded-lg md:px-8" type="submit" disabled={!canSubmit} loading={loading} aria-describedby="main-search-help">
         Buscar profesionales
       </Button>
+      <p id="main-search-help" className="px-2 text-left text-sm font-medium text-neutral-600 md:col-span-3" aria-live="polite">
+        {helperText}
+      </p>
     </form>
   );
 }

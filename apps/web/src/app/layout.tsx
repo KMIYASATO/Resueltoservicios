@@ -6,13 +6,13 @@ import "./globals.css";
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 export const metadata: Metadata = {
-  title: "queda | Servicios de confianza, cuando los necesitas",
-  description: "Encuentra, compara y reserva profesionales confiables para servicios a domicilio en Lima.",
+  title: "Queda | Servicios de confianza, cuando los necesitas",
+  description: "Busca por servicio y distrito, revisa opciones y envía tu solicitud en Lima.",
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
   manifest: `${basePath}/manifest.webmanifest`,
   appleWebApp: {
     capable: true,
-    title: "queda",
+    title: "Queda",
     statusBarStyle: "default"
   },
   icons: {

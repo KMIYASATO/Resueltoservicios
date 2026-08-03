@@ -1,15 +1,8 @@
 import { CalendarClock, CheckCircle2, Gauge, MapPin, ShieldCheck, Star } from "lucide-react";
-import { Badge } from "@/components/ui/Badge";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ResueltoLogo } from "@/components/resuelto/ResueltoLogo";
 import { commissionLevels, findProfessional, professionals } from "@/data/home";
-
-const statusCopy = {
-  available: "Disponible ahora",
-  busy: "Ocupado",
-  offline: "Desconectado"
-} as const;
 
 export function generateStaticParams() {
   return professionals.map((professional) => ({ id: professional.id }));
@@ -48,8 +41,9 @@ export default async function ProfessionalProfilePage({ params }: { params: Prom
               <div className="-mt-12 flex flex-col gap-5 sm:flex-row sm:items-end">
                 <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white bg-brand-600 text-2xl font-bold text-white shadow-sm">{professional.initials}</div>
                 <div className="pb-1">
-                  <Badge tone="success">Verificado</Badge>
-                  <span className="ml-2 inline-flex rounded-full bg-brand-100 px-3 py-1 text-xs font-semibold text-brand-700">{statusCopy[professional.availabilityStatus]}</span>
+                  <span className="inline-flex items-center gap-1 rounded-full bg-success-100 px-3 py-1 text-xs font-semibold text-success-600" title="Queda confirmó la identidad y los datos de contacto del profesional.">
+                    <ShieldCheck aria-hidden="true" className="h-3.5 w-3.5" /> Identidad verificada
+                  </span>
                   <h1 className="mt-3 font-display text-4xl font-bold tracking-[-0.03em] text-neutral-950">{professional.name}</h1>
                   <p className="mt-2 text-lg text-neutral-600">{professional.specialty} · Lima Metropolitana</p>
                 </div>
@@ -64,9 +58,9 @@ export default async function ProfessionalProfilePage({ params }: { params: Prom
           </Card>
 
           <Card className="p-6">
-            <h2 className="font-display text-2xl font-bold text-neutral-950">Verificación y experiencia</h2>
+            <h2 className="font-display text-2xl font-bold text-neutral-950">Identidad y datos del perfil</h2>
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
-              {[professional.verified, "Cobertura declarada", "Opiniones visibles"].map((item) => (
+              {["Identidad y contacto confirmados", "Cobertura declarada", "Opiniones visibles"].map((item) => (
                 <div key={item} className="rounded-lg border border-neutral-200 bg-neutral-50 p-4">
                   <ShieldCheck className="h-5 w-5 text-brand-600" />
                   <p className="mt-3 text-sm font-semibold text-neutral-950">{item}</p>
@@ -96,7 +90,7 @@ export default async function ProfessionalProfilePage({ params }: { params: Prom
               <div className="rounded-lg border border-neutral-200 p-4">
                 <CheckCircle2 className="h-5 w-5 text-brand-600" />
                 <p className="mt-3 text-sm font-semibold text-neutral-950">Prueba de cierre</p>
-                <p className="mt-1 text-sm text-neutral-600">Código único o fotos antes de liberar pago.</p>
+                <p className="mt-1 text-sm text-neutral-600">Evidencia de atención para cerrar la solicitud.</p>
               </div>
             </div>
           </Card>
@@ -137,19 +131,19 @@ export default async function ProfessionalProfilePage({ params }: { params: Prom
         </div>
 
         <Card className="h-fit p-6 lg:sticky lg:top-8">
-          <h2 className="font-display text-2xl font-bold text-neutral-950">Reserva con {professional.name.split(" ")[0]}</h2>
-          <p className="mt-2 text-sm leading-6 text-neutral-600">Revisa disponibilidad, dirección y detalle del servicio antes de confirmar.</p>
+          <h2 className="font-display text-2xl font-bold text-neutral-950">Solicita atención con {professional.name.split(" ")[0]}</h2>
+          <p className="mt-2 text-sm leading-6 text-neutral-600">Envía el detalle para que el profesional revise tu solicitud y responda.</p>
           <div className="mt-5 grid gap-3 text-sm text-neutral-700">
             <span>{professional.availability}</span>
             <span>{professional.zone}</span>
             <span>{professional.price}</span>
           </div>
-          <ButtonLink href={`/reserva?profesional=${professional.id}`} className="mt-6 w-full">Reservar ahora</ButtonLink>
+          <ButtonLink href={`/reserva?profesional=${professional.id}`} className="mt-6 w-full">Solicitar atención</ButtonLink>
         </Card>
       </section>
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-neutral-200 bg-white p-3 shadow-lg lg:hidden">
-        <ButtonLink href={`/reserva?profesional=${professional.id}`} className="w-full">Reservar ahora</ButtonLink>
+        <ButtonLink href={`/reserva?profesional=${professional.id}`} className="w-full">Solicitar atención</ButtonLink>
       </div>
     </main>
   );
