@@ -1,7 +1,6 @@
 import { Camera, CheckCircle2, Clock3, FileText, ShieldCheck } from "lucide-react";
 import { Card } from "@/components/ui/Card";
 import { FaqAccordion } from "@/components/resuelto/FaqAccordion";
-import { MainSearch } from "@/components/resuelto/MainSearch";
 import { PrimaryCategoryNav } from "@/components/resuelto/PrimaryCategoryNav";
 import { ResueltoLogo } from "@/components/resuelto/ResueltoLogo";
 import { SiteHeader } from "@/components/resuelto/SiteHeader";
@@ -39,23 +38,15 @@ export default function HomePage() {
     <main id="contenido" className="min-h-screen bg-white">
       <SiteHeader />
 
-      <section className="relative isolate overflow-visible bg-neutral-50 text-neutral-950">
+      <section className="relative isolate bg-neutral-50 pt-5 sm:pt-6">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_0%,rgba(152,219,198,0.38),transparent_28%),radial-gradient(circle_at_80%_10%,rgba(241,141,158,0.14),transparent_24%)]" />
-        <div className="mx-auto max-w-7xl px-4 py-8 text-center sm:px-6 sm:py-10 lg:px-8 lg:py-12">
-          <div className="mx-auto max-w-4xl">
-            <p className="text-sm font-semibold text-brand-600">Clases, limpieza y hogar</p>
-            <h1 className="mt-3 font-display text-4xl font-bold tracking-[-0.05em] text-neutral-950 sm:text-5xl lg:text-6xl">Encuentra al profesional que necesitas</h1>
-            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-neutral-600 sm:text-lg sm:leading-8">Busca por servicio y distrito, revisa opciones y envía tu solicitud.</p>
+        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+          <PrimaryCategoryNav compact listClassName="justify-center" />
+          <div className="mx-auto max-w-4xl py-8 sm:py-10 lg:py-12">
+            <p className="text-base font-semibold text-brand-600 sm:text-[17px]">Clases, limpieza y hogar</p>
+            <h1 className="mx-auto mt-3 max-w-3xl font-display text-4xl font-bold tracking-[-0.045em] text-neutral-950 sm:text-5xl lg:text-[52px] lg:leading-[1.02]">Encuentra al profesional que necesitas</h1>
+            <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-neutral-600 sm:text-xl">Busca por servicio y distrito, revisa opciones y envía tu solicitud.</p>
           </div>
-          <div className="mt-7" aria-label="Buscador principal">
-            <MainSearch />
-          </div>
-        </div>
-      </section>
-
-      <section className="border-b border-neutral-200 bg-white py-5">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <PrimaryCategoryNav listClassName="lg:justify-center" />
         </div>
       </section>
 

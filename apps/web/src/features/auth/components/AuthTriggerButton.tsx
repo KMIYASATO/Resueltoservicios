@@ -5,13 +5,16 @@ import { cn } from "@/lib/cn";
 import type { OpenAuthModalOptions } from "../types/auth.types";
 import { useAuthModal } from "../hooks/useAuthModal";
 
-type AuthTriggerVariant = "primary" | "secondary" | "tertiary" | "link";
+type AuthTriggerVariant = "primary" | "secondary" | "tertiary" | "link" | "accountPrimary" | "accountSecondary" | "professional";
 
 const variants: Record<AuthTriggerVariant, string> = {
   primary: "bg-brand-600 text-white shadow-sm hover:bg-brand-800 active:bg-brand-900",
   secondary: "border border-brand-600 bg-white text-brand-600 hover:bg-brand-100 active:bg-brand-100",
   tertiary: "text-brand-600 hover:bg-brand-100 hover:text-brand-700 active:bg-brand-100",
-  link: "text-brand-600 hover:bg-brand-100"
+  link: "text-brand-600 hover:bg-brand-100",
+  accountPrimary: "h-[45px] min-h-[45px] rounded-md border border-brand-600 bg-brand-600 px-4 py-0 text-[15px] text-white shadow-none hover:bg-brand-800",
+  accountSecondary: "h-[45px] min-h-[45px] rounded-md border border-[#BFD4CD] bg-white px-4 py-0 text-[15px] text-brand-600 shadow-none hover:border-brand-600 hover:bg-neutral-50",
+  professional: "h-[45px] min-h-[45px] rounded-md bg-transparent px-3 py-0 text-left text-brand-700 shadow-none hover:bg-neutral-100"
 };
 
 type AuthTriggerButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {

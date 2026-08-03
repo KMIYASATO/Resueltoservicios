@@ -57,6 +57,7 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
     const mode = normalizeMode(options.mode);
     const activeElement = document.activeElement;
     if (activeElement instanceof HTMLElement) triggerRef.current = activeElement;
+    window.dispatchEvent(new Event("queda:auth-modal-open"));
     setState({
       isOpen: true,
       mode,

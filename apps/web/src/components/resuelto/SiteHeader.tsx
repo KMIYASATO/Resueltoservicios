@@ -1,13 +1,13 @@
 "use client";
 
-import { Menu, X } from "lucide-react";
+import { ArrowRight, BriefcaseBusiness } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AuthTriggerButton } from "@/features/auth/components/AuthTriggerButton";
 import { cn } from "@/lib/cn";
+import { MainSearch } from "./MainSearch";
 import { ResueltoLogo } from "./ResueltoLogo";
 
 export function SiteHeader() {
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -17,61 +17,43 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => {
-    if (!mobileOpen) return;
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") setMobileOpen(false);
-    }
-
-    window.addEventListener("keydown", onKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [mobileOpen]);
-
   return (
-    <header className={cn("sticky top-0 z-40 bg-white/94 backdrop-blur transition-shadow duration-normal ease-standard", scrolled ? "border-b border-neutral-200 shadow-sm" : "border-b border-transparent")}>
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-2 sm:px-6 sm:py-4 lg:px-8">
-        <ResueltoLogo />
-
-        <div className="hidden items-center gap-3 sm:flex">
-          <AuthTriggerButton auth={{ mode: "login" }} className="rounded-full px-3 py-2" variant="link">Iniciar sesión</AuthTriggerButton>
-          <AuthTriggerButton auth={{ mode: "register", accountIntent: "professional", returnTo: "/profesionales/onboarding/", pendingAction: "professional-onboarding" }}>Ofrecer servicios</AuthTriggerButton>
+    <header className={cn("sticky top-0 z-50 border-b bg-white/95 backdrop-blur transition-shadow duration-normal ease-standard", scrolled ? "border-neutral-200 shadow-sm" : "border-neutral-200/70")}>
+      <div className="mx-auto flex max-w-[1360px] flex-wrap items-center gap-x-4 gap-y-3 px-4 py-3 sm:px-6 lg:px-8 min-[1100px]:min-h-[84px] min-[1100px]:flex-nowrap min-[1280px]:gap-x-6">
+        <div className="shrink-0">
+          <ResueltoLogo compact />
         </div>
 
-        <button
-          className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-md border border-neutral-200 bg-white text-brand-700 transition-colors hover:bg-brand-100 sm:hidden"
-          type="button"
-          aria-label={mobileOpen ? "Cerrar menú" : "Abrir menú"}
-          aria-expanded={mobileOpen}
-          aria-controls="mobile-menu"
-          onClick={() => setMobileOpen((value) => !value)}
-        >
-          {mobileOpen ? <X aria-hidden="true" className="h-5 w-5" /> : <Menu aria-hidden="true" className="h-5 w-5" />}
-        </button>
-      </div>
+        <div className="order-3 w-full md:flex md:justify-center min-[1100px]:order-none min-[1100px]:w-auto min-[1100px]:flex-1">
+          <MainSearch compact />
+        </div>
 
-      {mobileOpen ? (
-        <div className="fixed inset-0 top-[73px] z-50 sm:hidden" id="mobile-menu">
-          <button className="absolute inset-0 bg-brand-700/30" type="button" aria-label="Cerrar menú" onClick={() => setMobileOpen(false)} />
-          <div className="absolute inset-x-3 top-3 rounded-xl border border-neutral-200 bg-white p-4 shadow-lg">
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-display text-2xl font-bold text-neutral-950">Cuenta</h2>
-              <button className="rounded-md p-2 text-brand-700 hover:bg-brand-100" type="button" aria-label="Cerrar menú" onClick={() => setMobileOpen(false)}>
-                <X aria-hidden="true" className="h-5 w-5" />
-              </button>
-            </div>
-            <div className="grid gap-3">
-              <AuthTriggerButton auth={{ mode: "login" }} onClick={() => setMobileOpen(false)} variant="tertiary" className="justify-start px-4 py-3 text-neutral-700 hover:text-brand-700">Iniciar sesión</AuthTriggerButton>
-              <AuthTriggerButton auth={{ mode: "register", accountIntent: "professional", returnTo: "/profesionales/onboarding/", pendingAction: "professional-onboarding" }} className="w-full" onClick={() => setMobileOpen(false)}>Ofrecer servicios</AuthTriggerButton>
-            </div>
+        <div className="ml-auto hidden items-center gap-3 md:flex min-[1100px]:ml-0 min-[1280px]:gap-4">
+          <AuthTriggerButton auth={{ mode: "register", accountIntent: "professional", returnTo: "/profesionales/onboarding/", pendingAction: "professional-onboarding" }} variant="professional" className="group">
+            <BriefcaseBusiness className="h-4 w-4 shrink-0 text-brand-600" aria-hidden="true" />
+            <span className="hidden text-left leading-tight min-[1280px]:grid">
+              <span className="text-[11px] font-semibold text-neutral-600">Para profesionales</span>
+              <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-700">
+                Ofrecer servicios <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+              </span>
+            </span>
+            <span className="inline-flex items-center gap-1 text-sm font-semibold text-brand-700 min-[1280px]:hidden">
+              Ofrecer servicios <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+            </span>
+          </AuthTriggerButton>
+
+          <div className="hidden h-8 w-px bg-neutral-200 min-[1180px]:block" aria-hidden="true" />
+
+          <div className="flex items-center gap-2">
+            <AuthTriggerButton auth={{ mode: "login" }} variant="accountSecondary">Iniciar sesión</AuthTriggerButton>
+            <AuthTriggerButton auth={{ mode: "register" }} variant="accountPrimary">Registrarme</AuthTriggerButton>
           </div>
         </div>
-      ) : null}
+
+        <div className="ml-auto md:hidden">
+          <AuthTriggerButton auth={{ mode: "login" }} variant="accountSecondary" className="px-3 text-sm">Cuenta</AuthTriggerButton>
+        </div>
+      </div>
     </header>
   );
 }
