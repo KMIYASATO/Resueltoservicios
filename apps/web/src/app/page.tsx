@@ -137,7 +137,7 @@ export default function HomePage() {
             <h2 className="mt-2 font-display text-3xl font-bold tracking-[-0.04em] text-neutral-950 sm:text-4xl">¿Ofreces servicios?</h2>
             <p className="mt-3 max-w-2xl text-lg leading-8 text-neutral-600">Crea tu perfil, indica tu disponibilidad y recibe solicitudes con información más completa.</p>
           </div>
-          <ButtonLink href="#" className="w-full sm:w-fit">Ofrecer mis servicios</ButtonLink>
+          <ButtonLink href="/auth/register/?intent=professional&returnTo=/profesionales/onboarding/" className="w-full sm:w-fit">Ofrecer mis servicios</ButtonLink>
         </div>
       </section>
 
