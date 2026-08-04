@@ -3,7 +3,7 @@
 import { Check, MapPin, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 import type { ReactNode, RefObject } from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { enabledDistricts, SERVICE_SELECTED_EVENT, serviceCategories, serviceOptions } from "@/data/serviceCatalog";
 import type { ServiceSelectedDetail } from "@/data/serviceCatalog";
@@ -87,7 +87,7 @@ function SearchCombobox({
   const resolvedInputRef = inputRef ?? fallbackInputRef;
   const [query, setQuery] = useState(value?.label ?? "");
   const [activeIndex, setActiveIndex] = useState(0);
-  const [popoverStyle, setPopoverStyle] = useState({ top: 0, left: 16, width: 420, maxHeight: 340 });
+  const [popoverStyle, setPopoverStyle] = useState({ top: 12, left: 12, width: 296, maxHeight: 320 });
   const scrollTopRef = useRef(0);
   const previousQueryRef = useRef(query);
 
@@ -146,7 +146,7 @@ function SearchCombobox({
     scrollOptionIntoView(boundedIndex);
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!open) return;
     updatePopoverPosition();
   }, [filtered.length, open, updatePopoverPosition]);
