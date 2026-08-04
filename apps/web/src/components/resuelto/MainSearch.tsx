@@ -16,6 +16,11 @@ type Option = {
   categorySlug?: string;
 };
 
+type OpenSearchPanel = "service" | "district" | null;
+
+const CATEGORY_PANEL_OPEN_EVENT = "queda:category-panel-open";
+const SEARCH_PANEL_OPEN_EVENT = "queda:search-panel-open";
+
 const searchServiceOptions: Option[] = serviceOptions.map((service) => ({
   value: service.slug,
   label: service.label,
@@ -35,6 +40,10 @@ function normalizeSearch(value: string) {
 
 function isDesktopViewport() {
   return typeof window !== "undefined" && window.matchMedia("(min-width: 768px)").matches;
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
 }
 
 function SearchCombobox({
@@ -70,39 +79,21 @@ function SearchCombobox({
   compact?: boolean;
   kind: "service" | "district";
 }) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLLabelElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const listboxRef = useRef<HTMLDivElement>(null);
+  const optionRefs = useRef<Record<number, HTMLButtonElement | null>>({});
   const fallbackInputRef = useRef<HTMLInputElement>(null);
   const resolvedInputRef = inputRef ?? fallbackInputRef;
   const [query, setQuery] = useState(value?.label ?? "");
   const [activeIndex, setActiveIndex] = useState(0);
+  const [popoverStyle, setPopoverStyle] = useState({ top: 0, left: 16, width: 420, maxHeight: 340 });
+  const scrollTopRef = useRef(0);
+  const previousQueryRef = useRef(query);
 
   useEffect(() => {
     setQuery(value?.label ?? "");
   }, [value]);
-
-  useEffect(() => {
-    setActiveIndex(0);
-  }, [query, open]);
-
-  useEffect(() => {
-    if (!open) return;
-
-    function handlePointerDown(event: PointerEvent) {
-      if (event.target instanceof Node && containerRef.current?.contains(event.target)) return;
-      onOpenChange(false);
-    }
-
-    function handleScroll() {
-      onOpenChange(false);
-    }
-
-    document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("scroll", handleScroll, true);
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("scroll", handleScroll, true);
-    };
-  }, [onOpenChange, open]);
 
   const filtered = useMemo(() => {
     const normalized = normalizeSearch(query);
@@ -117,6 +108,102 @@ function SearchCombobox({
     options: filtered.filter((option) => option.categorySlug === category.slug)
   })).filter((category) => category.options.length > 0);
 
+  const updatePopoverPosition = useCallback(() => {
+    if (!open || typeof window === "undefined") return;
+    const trigger = triggerRef.current;
+    if (!trigger) return;
+
+    const rect = trigger.getBoundingClientRect();
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    const isMobile = viewportWidth < 640;
+    const isTablet = viewportWidth >= 640 && viewportWidth < 1024;
+    const margin = isMobile ? 12 : 16;
+    const maxWidth = viewportWidth - margin * 2;
+    const preferredWidth = kind === "service" ? (isMobile ? maxWidth : 420) : compact ? 380 : Math.max(rect.width, 320);
+    const width = Math.min(preferredWidth, maxWidth);
+    const left = clamp(rect.left, margin, viewportWidth - width - margin);
+    const spaceBelow = viewportHeight - rect.bottom - margin;
+    const spaceAbove = rect.top - margin;
+    const preferredHeight = isMobile ? Math.min(360, viewportHeight * 0.5) : isTablet ? Math.min(360, viewportHeight * 0.55) : Math.min(380, viewportHeight - margin * 2);
+    const openAbove = spaceBelow < Math.min(260, preferredHeight) && spaceAbove > spaceBelow;
+    const availableHeight = Math.max(160, (openAbove ? spaceAbove : spaceBelow) - 10);
+    const maxHeight = Math.min(preferredHeight, availableHeight);
+    const top = openAbove ? Math.max(margin, rect.top - maxHeight - 10) : Math.min(rect.bottom + 10, viewportHeight - margin - maxHeight);
+
+    setPopoverStyle({ top, left, width, maxHeight });
+  }, [compact, kind, open]);
+
+  function scrollOptionIntoView(index: number) {
+    requestAnimationFrame(() => {
+      optionRefs.current[index]?.scrollIntoView({ block: "nearest" });
+    });
+  }
+
+  function moveActiveIndex(nextIndex: number) {
+    const boundedIndex = clamp(nextIndex, 0, Math.max(filtered.length - 1, 0));
+    setActiveIndex(boundedIndex);
+    scrollOptionIntoView(boundedIndex);
+  }
+
+  useEffect(() => {
+    if (!open) return;
+    updatePopoverPosition();
+  }, [filtered.length, open, updatePopoverPosition]);
+
+  useEffect(() => {
+    if (!open) return;
+    const selectedIndex = filtered.findIndex((option) => value?.value === option.value && value?.meta === option.meta);
+    const nextIndex = selectedIndex >= 0 ? selectedIndex : clamp(activeIndex, 0, Math.max(filtered.length - 1, 0));
+    setActiveIndex(nextIndex);
+    requestAnimationFrame(() => {
+      if (selectedIndex >= 0) {
+        optionRefs.current[selectedIndex]?.scrollIntoView({ block: "nearest" });
+        return;
+      }
+      if (listboxRef.current) listboxRef.current.scrollTop = scrollTopRef.current;
+    });
+  // Run only on open so repeated clicks keep active option and scroll stable.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  useEffect(() => {
+    if (previousQueryRef.current === query) return;
+    previousQueryRef.current = query;
+    setActiveIndex(0);
+    scrollTopRef.current = 0;
+    if (open) requestAnimationFrame(() => {
+      if (listboxRef.current) listboxRef.current.scrollTop = 0;
+    });
+  }, [open, query]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    function handlePointerDown(event: PointerEvent) {
+      if (!(event.target instanceof Node)) return;
+      if (triggerRef.current?.contains(event.target)) return;
+      if (popoverRef.current?.contains(event.target)) return;
+      onOpenChange(false);
+    }
+
+    function handleViewportChange(event: Event) {
+      if (event.target instanceof Node && popoverRef.current?.contains(event.target)) return;
+      updatePopoverPosition();
+    }
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    window.addEventListener("resize", handleViewportChange);
+    window.addEventListener("orientationchange", handleViewportChange);
+    window.addEventListener("scroll", handleViewportChange, true);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("resize", handleViewportChange);
+      window.removeEventListener("orientationchange", handleViewportChange);
+      window.removeEventListener("scroll", handleViewportChange, true);
+    };
+  }, [onOpenChange, open, updatePopoverPosition]);
+
   function selectOption(option: Option) {
     onChange(option);
     setQuery(option.label);
@@ -129,8 +216,8 @@ function SearchCombobox({
   }
 
   return (
-    <div ref={containerRef} className="relative min-w-0 flex-1">
-      <label className={cn("grid cursor-text", compact ? "gap-0.5 px-3 py-2.5 sm:px-4" : "gap-1 px-4 py-3")} htmlFor={id}>
+    <div className="relative min-w-0 flex-1">
+      <label ref={triggerRef} className={cn("grid cursor-text", compact ? "gap-0.5 px-3 py-2.5 sm:px-4" : "gap-1 px-4 py-3")} htmlFor={id}>
         <span className={cn("font-semibold text-neutral-600", compact ? "text-[10px] leading-4" : "text-xs")}>{label}</span>
         <span className={cn("flex items-center text-neutral-950", compact ? "gap-1.5" : "gap-2")}>
           {icon}
@@ -163,41 +250,66 @@ function SearchCombobox({
                 event.preventDefault();
                 if (!open) {
                   onOpenChange(true);
-                  setActiveIndex(0);
                   return;
                 }
-                setActiveIndex((index) => Math.min(index + 1, Math.max(filtered.length - 1, 0)));
+                moveActiveIndex(activeIndex + 1);
               }
               if (event.key === "ArrowUp") {
                 event.preventDefault();
                 if (!open) {
                   onOpenChange(true);
-                  setActiveIndex(Math.max(filtered.length - 1, 0));
+                  moveActiveIndex(Math.max(filtered.length - 1, 0));
                   return;
                 }
-                setActiveIndex((index) => Math.max(index - 1, 0));
+                moveActiveIndex(activeIndex - 1);
+              }
+              if (event.key === "Home" && open) {
+                event.preventDefault();
+                moveActiveIndex(0);
+              }
+              if (event.key === "End" && open) {
+                event.preventDefault();
+                moveActiveIndex(Math.max(filtered.length - 1, 0));
               }
               if (event.key === "Enter" && open && filtered[activeIndex]) {
                 event.preventDefault();
                 selectOption(filtered[activeIndex]);
+              } else if (event.key === "Enter" && !open) {
+                event.preventDefault();
+                onOpenChange(true);
               }
               if (event.key === "Escape" && open) {
                 event.preventDefault();
                 onOpenChange(false);
                 resolvedInputRef.current?.focus();
               }
+              if (event.key === "Tab" && open) onOpenChange(false);
             }}
           />
         </span>
       </label>
       {open ? (
-        <div className={cn("absolute top-[calc(100%+10px)] z-[80] rounded-[16px] border border-neutral-200 bg-white p-2 shadow-[0_18px_42px_rgba(22,48,42,0.16)]", kind === "service" ? "left-0 w-[min(420px,calc(100vw-32px))] max-w-[calc(100vw-32px)]" : compact ? "left-0 w-[min(380px,calc(100vw-32px))] max-w-[calc(100vw-32px)]" : "left-0 right-0")} onMouseDown={(event) => event.preventDefault()}>
-          <div id={listboxId} role="listbox" className="max-h-[min(21.25rem,58vh)] overflow-auto pr-1">
+        <div
+          ref={popoverRef}
+          className="fixed z-[80] rounded-[18px] border border-neutral-200 bg-white p-2 shadow-[0_18px_42px_rgba(22,48,42,0.16)]"
+          style={{ top: popoverStyle.top, left: popoverStyle.left, width: popoverStyle.width }}
+        >
+          <div
+            ref={listboxRef}
+            id={listboxId}
+            role="listbox"
+            className="queda-service-dropdown-scroll overflow-y-auto overflow-x-hidden pr-1"
+            style={{ maxHeight: popoverStyle.maxHeight }}
+            onScroll={(event) => {
+              scrollTopRef.current = event.currentTarget.scrollTop;
+            }}
+          >
             {filtered.length > 0 && kind === "service" ? groupedServices.map((group) => {
               const CategoryIcon = group.icon;
+              const groupHeadingId = `${id}-group-${group.slug}`;
               return (
-                <div key={group.slug} className="py-1 first:pt-0" role="group" aria-label={group.label}>
-                  <div className="sticky top-0 z-10 flex min-h-11 w-full items-center gap-3 rounded-xl border-b border-neutral-200 bg-brand-100 px-3.5 py-2 text-brand-700 shadow-[0_1px_0_rgba(220,233,229,0.65)]">
+                <div key={group.slug} className="py-1.5 first:pt-0" role="group" aria-labelledby={groupHeadingId}>
+                  <div id={groupHeadingId} className="sticky top-0 z-10 flex min-h-[46px] w-full items-center gap-3 rounded-[14px] bg-brand-100 px-4 py-2.5 text-neutral-950 shadow-[0_1px_0_rgba(220,233,229,0.8)]">
                     <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/85" aria-hidden="true">
                       <CategoryIcon className="h-4 w-4" />
                     </span>
@@ -210,12 +322,15 @@ function SearchCombobox({
                       <button
                         key={`${option.meta}-${option.value}`}
                         id={`${id}-option-${index}`}
+                        ref={(node) => {
+                          optionRefs.current[index] = node;
+                        }}
                         type="button"
                         role="option"
                         aria-selected={selected}
                         tabIndex={-1}
                         className={cn(
-                          "mt-1 flex min-h-12 w-full items-center justify-between rounded-xl px-4 py-3 text-left text-[15px] text-neutral-950 transition-colors duration-fast focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600",
+                          "mt-1 flex min-h-11 w-full items-center justify-between rounded-xl px-4 py-2.5 text-left text-[15px] text-neutral-950 transition-colors duration-fast focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600",
                           selected ? "bg-brand-100 font-semibold text-brand-700" : index === activeIndex ? "bg-neutral-50 text-neutral-950 ring-1 ring-brand-100" : "hover:bg-neutral-50"
                         )}
                         onMouseEnter={() => setActiveIndex(index)}
@@ -233,11 +348,14 @@ function SearchCombobox({
               <button
                 key={`${option.meta}-${option.value}`}
                 id={`${id}-option-${index}`}
+                ref={(node) => {
+                  optionRefs.current[index] = node;
+                }}
                 type="button"
                 role="option"
                 aria-selected={value?.value === option.value && value?.meta === option.meta}
                 tabIndex={-1}
-                className={cn("flex min-h-12 w-full items-center justify-between rounded-xl px-3 py-2.5 text-left transition-colors duration-fast focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600", index === activeIndex ? "bg-brand-100 text-brand-700" : "hover:bg-neutral-50")}
+                className={cn("flex min-h-11 w-full items-center justify-between rounded-xl px-3 py-2.5 text-left transition-colors duration-fast focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600", index === activeIndex ? "bg-brand-100 text-brand-700" : "hover:bg-neutral-50")}
                 onMouseEnter={() => setActiveIndex(index)}
                 onClick={() => selectOption(option)}
               >
@@ -258,26 +376,40 @@ function SearchCombobox({
 export function MainSearch({ className, compact = false }: { className?: string; compact?: boolean }) {
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
   const pathname = usePathname();
+  const serviceInputRef = useRef<HTMLInputElement>(null);
   const districtInputRef = useRef<HTMLInputElement>(null);
   const suppressNextDistrictOpenRef = useRef(false);
   const [service, setService] = useState<Option | null>(null);
   const [district, setDistrict] = useState<Option | null>(null);
-  const [openCombobox, setOpenCombobox] = useState<string | null>(null);
+  const [openPanel, setOpenPanel] = useState<OpenSearchPanel>(null);
   const [loading, setLoading] = useState(false);
 
   const canSubmit = Boolean(service && district);
   const helperText = !service ? "Elige un servicio para continuar." : !district ? "Selecciona un distrito disponible para buscar." : "Listo para buscar profesionales compatibles.";
 
-  function setComboboxOpen(id: string, nextOpen: boolean) {
-    setOpenCombobox((current) => (nextOpen ? id : current === id ? null : current));
+  const openSearchPanel = useCallback((panel: Exclude<OpenSearchPanel, null>) => {
+    setOpenPanel(panel);
+    window.dispatchEvent(new CustomEvent(SEARCH_PANEL_OPEN_EVENT));
+  }, []);
+
+  const closeSearchPanel = useCallback(() => {
+    setOpenPanel(null);
+  }, []);
+
+  function setComboboxOpen(panel: Exclude<OpenSearchPanel, null>, nextOpen: boolean) {
+    if (nextOpen) {
+      openSearchPanel(panel);
+      return;
+    }
+    setOpenPanel((current) => (current === panel ? null : current));
   }
 
   const focusDistrictAfterService = useCallback(() => {
     if (isDesktopViewport()) {
-      setOpenCombobox("district-search");
+      setOpenPanel("district");
     } else {
       suppressNextDistrictOpenRef.current = true;
-      setOpenCombobox(null);
+      setOpenPanel(null);
     }
     requestAnimationFrame(() => districtInputRef.current?.focus());
   }, []);
@@ -307,17 +439,21 @@ export function MainSearch({ className, compact = false }: { className?: string;
   }, [focusDistrictAfterService]);
 
   useEffect(() => {
-    setOpenCombobox(null);
-  }, [pathname]);
+    closeSearchPanel();
+  }, [closeSearchPanel, pathname]);
 
   useEffect(() => {
     function closeDropdown() {
-      setOpenCombobox(null);
+      closeSearchPanel();
     }
 
     window.addEventListener("queda:auth-modal-open", closeDropdown);
-    return () => window.removeEventListener("queda:auth-modal-open", closeDropdown);
-  }, []);
+    window.addEventListener(CATEGORY_PANEL_OPEN_EVENT, closeDropdown);
+    return () => {
+      window.removeEventListener("queda:auth-modal-open", closeDropdown);
+      window.removeEventListener(CATEGORY_PANEL_OPEN_EVENT, closeDropdown);
+    };
+  }, [closeSearchPanel]);
 
   return (
     <form
@@ -332,9 +468,16 @@ export function MainSearch({ className, compact = false }: { className?: string;
       onSubmit={(event) => {
         if (!canSubmit) {
           event.preventDefault();
+          if (!service) {
+            openSearchPanel("service");
+            requestAnimationFrame(() => serviceInputRef.current?.focus());
+          } else if (!district) {
+            openSearchPanel("district");
+            requestAnimationFrame(() => districtInputRef.current?.focus());
+          }
           return;
         }
-        setOpenCombobox(null);
+        closeSearchPanel();
         setLoading(true);
       }}
     >
@@ -350,9 +493,10 @@ export function MainSearch({ className, compact = false }: { className?: string;
           options={searchServiceOptions}
           value={service}
           onChange={setService}
-          open={openCombobox === "service-search"}
-          onOpenChange={(nextOpen) => setComboboxOpen("service-search", nextOpen)}
+          open={openPanel === "service"}
+          onOpenChange={(nextOpen) => setComboboxOpen("service", nextOpen)}
           placeholder={compact ? "¿Qué necesitas?" : "Ej. Electricidad, limpieza de casa o idiomas"}
+          inputRef={serviceInputRef}
           inputName="queda-service-search"
           onSelectComplete={focusDistrictAfterService}
           compact={compact}
@@ -368,8 +512,8 @@ export function MainSearch({ className, compact = false }: { className?: string;
           options={districtOptions}
           value={district}
           onChange={setDistrict}
-          open={openCombobox === "district-search"}
-          onOpenChange={(nextOpen) => setComboboxOpen("district-search", nextOpen)}
+          open={openPanel === "district"}
+          onOpenChange={(nextOpen) => setComboboxOpen("district", nextOpen)}
           placeholder={compact ? "Elige tu distrito" : "Selecciona tu distrito"}
           inputRef={districtInputRef}
           inputName="queda-district-search"
@@ -383,7 +527,7 @@ export function MainSearch({ className, compact = false }: { className?: string;
         />
       </div>
 
-      <Button className={cn(compact ? "h-[46px] min-h-[46px] w-full rounded-[15px] px-4 text-sm text-white shadow-none md:h-full md:min-h-[46px] md:px-5" : "min-h-[60px] w-full rounded-2xl bg-brand-600 px-7 text-base text-white shadow-sm hover:bg-brand-800 disabled:bg-neutral-200 disabled:text-neutral-700 md:h-full md:min-h-full md:w-auto md:min-w-[216px] md:rounded-lg md:px-8")} type="submit" disabled={!canSubmit} loading={loading} aria-describedby="main-search-help">
+      <Button className={cn(compact ? "h-[46px] min-h-[46px] w-full rounded-[15px] px-4 text-sm text-white shadow-none md:h-full md:min-h-[46px] md:px-5" : "min-h-[60px] w-full rounded-2xl bg-brand-600 px-7 text-base text-white shadow-sm hover:bg-brand-800 disabled:bg-neutral-200 disabled:text-neutral-700 md:h-full md:min-h-full md:w-auto md:min-w-[216px] md:rounded-lg md:px-8")} type="submit" disabled={loading} loading={loading} aria-describedby="main-search-help">
         {compact ? "Buscar" : "Buscar profesionales"}
       </Button>
       <p id="main-search-help" className={cn("px-2 text-left text-sm font-medium text-neutral-600 md:col-span-3", compact ? "sr-only" : undefined)} aria-live="polite">

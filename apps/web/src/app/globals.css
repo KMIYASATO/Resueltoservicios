@@ -87,6 +87,31 @@ a {
   display: none;
 }
 
+.queda-service-dropdown-scroll {
+  overscroll-behavior: contain;
+  scrollbar-color: #bfd4cd transparent;
+  scrollbar-gutter: stable;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+
+.queda-service-dropdown-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.queda-service-dropdown-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.queda-service-dropdown-scroll::-webkit-scrollbar-thumb {
+  border-radius: 9999px;
+  background: #bfd4cd;
+}
+
+.queda-service-dropdown-scroll::-webkit-scrollbar-thumb:hover {
+  background: #98bfb3;
+}
+
 :focus-visible {
   outline: 3px solid rgba(35, 106, 91, 0.35);
   outline-offset: 3px;

@@ -7,6 +7,9 @@ import { SERVICE_SELECTED_EVENT, serviceCategories } from "@/data/serviceCatalog
 import type { ServiceCategory, ServiceSelectedDetail } from "@/data/serviceCatalog";
 import { cn } from "@/lib/cn";
 
+const CATEGORY_PANEL_OPEN_EVENT = "queda:category-panel-open";
+const SEARCH_PANEL_OPEN_EVENT = "queda:search-panel-open";
+
 function isDesktopViewport() {
   return typeof window !== "undefined" && window.matchMedia("(min-width: 1024px)").matches;
 }
@@ -51,6 +54,7 @@ export function PrimaryCategoryNav({ className, listClassName, compact = false, 
   function openDesktop(category: ServiceCategory, delay = 0) {
     clearTimers();
     openTimer.current = setTimeout(() => {
+      window.dispatchEvent(new CustomEvent(CATEGORY_PANEL_OPEN_EVENT));
       setMobileSlug(null);
       setOpenSlug(category.slug);
       requestAnimationFrame(() => updatePanelPosition(category.slug));
@@ -104,7 +108,11 @@ export function PrimaryCategoryNav({ className, listClassName, compact = false, 
     }
 
     setOpenSlug(null);
-    setMobileSlug((currentSlug) => (currentSlug === category.slug ? null : category.slug));
+    setMobileSlug((currentSlug) => {
+      const nextSlug = currentSlug === category.slug ? null : category.slug;
+      if (nextSlug) window.dispatchEvent(new CustomEvent(CATEGORY_PANEL_OPEN_EVENT));
+      return nextSlug;
+    });
   }
 
   function handleTriggerKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number, category: ServiceCategory) {
@@ -122,6 +130,7 @@ export function PrimaryCategoryNav({ className, listClassName, compact = false, 
         openDesktop(category);
         requestAnimationFrame(() => panelRef.current?.querySelector<HTMLButtonElement>("[data-category-service]")?.focus());
       } else {
+        window.dispatchEvent(new CustomEvent(CATEGORY_PANEL_OPEN_EVENT));
         setOpenSlug(null);
         setMobileSlug(category.slug);
         requestAnimationFrame(() => mobilePanelRef.current?.querySelector<HTMLButtonElement>("[data-category-service]")?.focus());
@@ -191,7 +200,11 @@ export function PrimaryCategoryNav({ className, listClassName, compact = false, 
     }
 
     window.addEventListener("queda:auth-modal-open", closeDropdowns);
-    return () => window.removeEventListener("queda:auth-modal-open", closeDropdowns);
+    window.addEventListener(SEARCH_PANEL_OPEN_EVENT, closeDropdowns);
+    return () => {
+      window.removeEventListener("queda:auth-modal-open", closeDropdowns);
+      window.removeEventListener(SEARCH_PANEL_OPEN_EVENT, closeDropdowns);
+    };
   }, []);
 
   return (
