@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import type { KeyboardEvent } from "react";
+import { ChevronDown } from "lucide-react";
 import { SERVICE_SELECTED_EVENT, serviceCategories } from "@/data/serviceCatalog";
 import type { ServiceCategory, ServiceSelectedDetail } from "@/data/serviceCatalog";
 import { cn } from "@/lib/cn";
@@ -230,6 +231,7 @@ export function PrimaryCategoryNav({ className, listClassName, compact = false, 
                 <Icon className={compact ? "h-4 w-4" : "h-5 w-5 sm:h-6 sm:w-6"} style={active ? { color: "#FFFFFF" } : { color: category.color }} />
               </span>
               <span>{category.label}</span>
+              <ChevronDown className={cn("h-4 w-4 shrink-0 transition-transform duration-fast", expanded ? "rotate-180" : "")} aria-hidden="true" />
             </button>
           );
         })}

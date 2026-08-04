@@ -6,7 +6,7 @@ export function ResueltoLogo({ inverted = false, compact = false }: { inverted?:
   const logoSrc = `${basePath}/${inverted ? "queda-logo.png" : "queda-logo-transparent.png"}`;
 
   return (
-    <Link className="flex shrink-0 items-center border-0 bg-transparent p-0 shadow-none" href={`${basePath}/`} aria-label="Queda, inicio">
+    <Link className="flex shrink-0 cursor-pointer items-center rounded-md border-0 bg-transparent p-0 shadow-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-600" href="/" aria-label="Ir al inicio">
       <Image
         src={logoSrc}
         alt="Queda"

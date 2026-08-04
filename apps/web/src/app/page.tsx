@@ -33,6 +33,21 @@ const trustItems = [
   }
 ] as const;
 
+const howItWorksSteps = [
+  {
+    title: "Cuéntanos qué necesitas",
+    text: "Selecciona el servicio y tu distrito."
+  },
+  {
+    title: "Revisa opciones",
+    text: "Compara profesionales disponibles."
+  },
+  {
+    title: "Coordina la atención",
+    text: "Envía tu solicitud y acuerda fecha y hora."
+  }
+] as const;
+
 export default function HomePage() {
   return (
     <main id="contenido" className="min-h-screen bg-white">
@@ -42,41 +57,30 @@ export default function HomePage() {
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_0%,rgba(152,219,198,0.38),transparent_28%),radial-gradient(circle_at_80%_10%,rgba(241,141,158,0.14),transparent_24%)]" />
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <PrimaryCategoryNav compact listClassName="justify-center" />
-          <div className="mx-auto max-w-4xl py-8 sm:py-10 lg:py-12">
-            <p className="text-base font-semibold text-brand-600 sm:text-[17px]">Clases, limpieza y hogar</p>
-            <h1 className="mx-auto mt-3 max-w-3xl font-display text-4xl font-bold tracking-[-0.045em] text-neutral-950 sm:text-5xl lg:text-[52px] lg:leading-[1.02]">Encuentra al profesional que necesitas</h1>
+          <div className="mx-auto max-w-4xl py-7 sm:py-9 lg:py-10">
+            <h1 className="mx-auto max-w-3xl font-display text-4xl font-bold tracking-[-0.045em] text-neutral-950 sm:text-5xl lg:text-[52px] lg:leading-[1.02]">Encuentra al profesional que necesitas</h1>
             <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-neutral-600 sm:text-xl">Busca por servicio y distrito, revisa opciones y envía tu solicitud.</p>
           </div>
         </div>
       </section>
 
-      <section id="como-funciona" className="bg-white py-12 sm:py-14 lg:py-18">
+      <section id="como-funciona" className="bg-white py-10 sm:py-12 lg:py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
-            <h2 className="font-display text-3xl font-bold tracking-[-0.04em] text-neutral-950 sm:text-4xl lg:text-5xl">Cómo funciona</h2>
-            <p className="mt-4 text-lg leading-8 text-neutral-600">
-              Queda conecta a personas que necesitan un servicio con profesionales disponibles en su zona.
-            </p>
+            <h2 className="font-display text-3xl font-bold tracking-[-0.04em] text-neutral-950 sm:text-4xl">Cómo funciona</h2>
+            <p className="mt-3 text-base leading-7 text-neutral-600 sm:text-lg">Busca, elige y coordina tu servicio en pocos pasos.</p>
           </div>
-          <div className="mt-10 grid gap-5 lg:grid-cols-3">
-            <Card className="p-6">
-              <span className="grid h-11 w-11 place-items-center rounded-full bg-brand-600 text-sm font-bold text-white">1</span>
-              <h3 className="mt-5 font-display text-2xl font-bold text-neutral-950">Cuéntanos qué necesitas</h3>
-              <p className="mt-3 leading-7 text-neutral-600">Elige el servicio, indica tu distrito y describe tu solicitud.</p>
-            </Card>
-
-            <Card className="p-6">
-              <span className="grid h-11 w-11 place-items-center rounded-full bg-brand-600 text-sm font-bold text-white">2</span>
-              <h3 className="mt-5 font-display text-2xl font-bold text-neutral-950">Elige una opción</h3>
-              <p className="mt-3 leading-7 text-neutral-600">Compara profesionales según disponibilidad y valoración.</p>
-            </Card>
-
-            <Card className="p-6">
-              <span className="grid h-11 w-11 place-items-center rounded-full bg-brand-600 text-sm font-bold text-white">3</span>
-              <h3 className="mt-5 font-display text-2xl font-bold text-neutral-950">Coordina la atención</h3>
-              <p className="mt-3 leading-7 text-neutral-600">Envía la solicitud y acuerda fecha, horario y contacto.</p>
-            </Card>
-          </div>
+          <ol className="mt-8 grid gap-0 overflow-hidden rounded-[20px] border border-neutral-200 bg-white md:grid-cols-3" aria-label="Pasos para usar Queda">
+            {howItWorksSteps.map((step, index) => (
+              <li key={step.title} className="flex gap-4 border-b border-neutral-200 p-5 last:border-b-0 md:block md:border-b-0 md:border-r md:p-6 md:last:border-r-0 lg:p-7">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand-100 text-sm font-bold text-brand-700 md:h-10 md:w-10">{index + 1}</span>
+                <div className="min-w-0 md:mt-4">
+                  <h3 className="font-display text-xl font-bold tracking-[-0.02em] text-neutral-950">{step.title}</h3>
+                  <p className="mt-1.5 text-sm leading-6 text-neutral-600 sm:text-base">{step.text}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
@@ -145,6 +149,10 @@ export default function HomePage() {
           <div className="grid gap-4">
             <ResueltoLogo inverted />
             <p className="max-w-sm text-sm leading-6 text-brand-100">Servicios de confianza, cuando los necesitas. Pensado para Lima Metropolitana.</p>
+            <div className="grid gap-1 text-sm text-brand-100">
+              <p>© 2026 Queda</p>
+              <p>Fundado por Kenji Miyasato & David Chavez</p>
+            </div>
           </div>
           <div className="grid gap-6 text-sm sm:grid-cols-4">
             {[

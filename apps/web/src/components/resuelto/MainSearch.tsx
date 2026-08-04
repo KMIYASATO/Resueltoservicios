@@ -1,9 +1,9 @@
 "use client";
 
-import { MapPin, Search } from "lucide-react";
+import { Check, MapPin, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 import type { ReactNode, RefObject } from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { enabledDistricts, SERVICE_SELECTED_EVENT, serviceCategories, serviceOptions } from "@/data/serviceCatalog";
 import type { ServiceSelectedDetail } from "@/data/serviceCatalog";
@@ -25,6 +25,18 @@ const searchServiceOptions: Option[] = serviceOptions.map((service) => ({
 
 const districtOptions: Option[] = enabledDistricts.map((district) => ({ value: district.slug, label: district.label, meta: "Lima" }));
 
+function normalizeSearch(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+function isDesktopViewport() {
+  return typeof window !== "undefined" && window.matchMedia("(min-width: 768px)").matches;
+}
+
 function SearchCombobox({
   id,
   label,
@@ -36,6 +48,9 @@ function SearchCombobox({
   onOpenChange,
   placeholder,
   inputRef,
+  inputName,
+  onFocusOpen,
+  onSelectComplete,
   compact = false,
   kind
 }: {
@@ -49,6 +64,9 @@ function SearchCombobox({
   onOpenChange: (open: boolean) => void;
   placeholder: string;
   inputRef?: RefObject<HTMLInputElement | null>;
+  inputName: string;
+  onFocusOpen?: () => boolean;
+  onSelectComplete?: (option: Option) => void;
   compact?: boolean;
   kind: "service" | "district";
 }) {
@@ -87,9 +105,9 @@ function SearchCombobox({
   }, [onOpenChange, open]);
 
   const filtered = useMemo(() => {
-    const normalized = query.trim().toLowerCase();
+    const normalized = normalizeSearch(query);
     if (!normalized) return options;
-    return options.filter((option) => option.label.toLowerCase().includes(normalized) || option.meta.toLowerCase().includes(normalized));
+    return options.filter((option) => normalizeSearch(option.label).includes(normalized) || normalizeSearch(option.meta).includes(normalized));
   }, [options, query]);
 
   const listboxId = `${id}-listbox`;
@@ -103,6 +121,10 @@ function SearchCombobox({
     onChange(option);
     setQuery(option.label);
     onOpenChange(false);
+    if (onSelectComplete) {
+      onSelectComplete(option);
+      return;
+    }
     resolvedInputRef.current?.focus();
   }
 
@@ -116,6 +138,10 @@ function SearchCombobox({
             ref={resolvedInputRef}
             id={id}
             className={cn("w-full min-w-0 bg-transparent font-semibold outline-none placeholder:font-normal placeholder:text-neutral-400", compact ? "text-[15px] leading-5 placeholder:text-[#7B9089]" : "text-base")}
+            name={inputName}
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
             role="combobox"
             aria-autocomplete="list"
             aria-expanded={open}
@@ -123,7 +149,10 @@ function SearchCombobox({
             aria-activedescendant={open ? activeId : undefined}
             placeholder={placeholder}
             value={query}
-            onFocus={() => onOpenChange(true)}
+            onFocus={() => {
+              if (onFocusOpen?.() === false) return;
+              onOpenChange(true);
+            }}
             onChange={(event) => {
               setQuery(event.target.value);
               onChange(null);
@@ -162,31 +191,44 @@ function SearchCombobox({
         </span>
       </label>
       {open ? (
-        <div className={cn("absolute top-[calc(100%+10px)] z-[80] rounded-lg border border-neutral-200 bg-white p-2 shadow-[0_14px_34px_rgba(22,48,42,0.16)]", compact ? "left-0 w-[min(380px,calc(100vw-32px))] max-w-[calc(100vw-32px)]" : "left-0 right-0")} onMouseDown={(event) => event.preventDefault()}>
-          <div id={listboxId} role="listbox" className="max-h-[min(21rem,58vh)] overflow-auto">
-            {filtered.length > 0 && kind === "service" ? groupedServices.map((group) => (
-              <div key={group.slug} className="py-1">
-                <p className="px-3 py-1 text-xs font-semibold text-neutral-600">{group.label}</p>
-                {group.options.map((option) => {
-                  const index = filtered.findIndex((item) => item.value === option.value && item.categorySlug === option.categorySlug);
-                  return (
-                    <button
-                      key={`${option.meta}-${option.value}`}
-                      id={`${id}-option-${index}`}
-                      type="button"
-                      role="option"
-                      aria-selected={value?.value === option.value && value?.meta === option.meta}
-                      className={cn("flex w-full items-center justify-between rounded-md px-3 py-2.5 text-left transition-colors duration-fast focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600", index === activeIndex ? "bg-brand-100 text-brand-700" : "hover:bg-neutral-50")}
-                      onMouseEnter={() => setActiveIndex(index)}
-                      onClick={() => selectOption(option)}
-                    >
-                      <span className="font-semibold text-neutral-950">{option.label}</span>
-                      <span className="text-xs font-medium text-neutral-600">{option.meta}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            )) : null}
+        <div className={cn("absolute top-[calc(100%+10px)] z-[80] rounded-[16px] border border-neutral-200 bg-white p-2 shadow-[0_18px_42px_rgba(22,48,42,0.16)]", kind === "service" ? "left-0 w-[min(420px,calc(100vw-32px))] max-w-[calc(100vw-32px)]" : compact ? "left-0 w-[min(380px,calc(100vw-32px))] max-w-[calc(100vw-32px)]" : "left-0 right-0")} onMouseDown={(event) => event.preventDefault()}>
+          <div id={listboxId} role="listbox" className="max-h-[min(21.25rem,58vh)] overflow-auto pr-1">
+            {filtered.length > 0 && kind === "service" ? groupedServices.map((group) => {
+              const CategoryIcon = group.icon;
+              return (
+                <div key={group.slug} className="py-1 first:pt-0" role="group" aria-label={group.label}>
+                  <div className="sticky top-0 z-10 flex min-h-11 w-full items-center gap-3 rounded-xl border-b border-neutral-200 bg-brand-100 px-3.5 py-2 text-brand-700 shadow-[0_1px_0_rgba(220,233,229,0.65)]">
+                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/85" aria-hidden="true">
+                      <CategoryIcon className="h-4 w-4" />
+                    </span>
+                    <p className="text-[13px] font-bold uppercase tracking-[0.08em]">{group.label}</p>
+                  </div>
+                  {group.options.map((option) => {
+                    const index = filtered.findIndex((item) => item.value === option.value && item.categorySlug === option.categorySlug);
+                    const selected = value?.value === option.value && value?.meta === option.meta;
+                    return (
+                      <button
+                        key={`${option.meta}-${option.value}`}
+                        id={`${id}-option-${index}`}
+                        type="button"
+                        role="option"
+                        aria-selected={selected}
+                        tabIndex={-1}
+                        className={cn(
+                          "mt-1 flex min-h-12 w-full items-center justify-between rounded-xl px-4 py-3 text-left text-[15px] text-neutral-950 transition-colors duration-fast focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600",
+                          selected ? "bg-brand-100 font-semibold text-brand-700" : index === activeIndex ? "bg-neutral-50 text-neutral-950 ring-1 ring-brand-100" : "hover:bg-neutral-50"
+                        )}
+                        onMouseEnter={() => setActiveIndex(index)}
+                        onClick={() => selectOption(option)}
+                      >
+                        <span>{option.label}</span>
+                        {selected ? <Check className="h-4 w-4 shrink-0 text-brand-600" aria-hidden="true" /> : null}
+                      </button>
+                    );
+                  })}
+                </div>
+              );
+            }) : null}
             {filtered.length > 0 && kind === "district" ? filtered.map((option, index) => (
               <button
                 key={`${option.meta}-${option.value}`}
@@ -194,7 +236,8 @@ function SearchCombobox({
                 type="button"
                 role="option"
                 aria-selected={value?.value === option.value && value?.meta === option.meta}
-                className={cn("flex w-full items-center justify-between rounded-md px-3 py-2.5 text-left transition-colors duration-fast focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600", index === activeIndex ? "bg-brand-100 text-brand-700" : "hover:bg-neutral-50")}
+                tabIndex={-1}
+                className={cn("flex min-h-12 w-full items-center justify-between rounded-xl px-3 py-2.5 text-left transition-colors duration-fast focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600", index === activeIndex ? "bg-brand-100 text-brand-700" : "hover:bg-neutral-50")}
                 onMouseEnter={() => setActiveIndex(index)}
                 onClick={() => selectOption(option)}
               >
@@ -216,6 +259,7 @@ export function MainSearch({ className, compact = false }: { className?: string;
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
   const pathname = usePathname();
   const districtInputRef = useRef<HTMLInputElement>(null);
+  const suppressNextDistrictOpenRef = useRef(false);
   const [service, setService] = useState<Option | null>(null);
   const [district, setDistrict] = useState<Option | null>(null);
   const [openCombobox, setOpenCombobox] = useState<string | null>(null);
@@ -227,6 +271,16 @@ export function MainSearch({ className, compact = false }: { className?: string;
   function setComboboxOpen(id: string, nextOpen: boolean) {
     setOpenCombobox((current) => (nextOpen ? id : current === id ? null : current));
   }
+
+  const focusDistrictAfterService = useCallback(() => {
+    if (isDesktopViewport()) {
+      setOpenCombobox("district-search");
+    } else {
+      suppressNextDistrictOpenRef.current = true;
+      setOpenCombobox(null);
+    }
+    requestAnimationFrame(() => districtInputRef.current?.focus());
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -245,12 +299,12 @@ export function MainSearch({ className, compact = false }: { className?: string;
       const option = searchServiceOptions.find((item) => item.value === detail.serviceSlug && item.categorySlug === detail.categorySlug);
       if (!option) return;
       setService(option);
-      requestAnimationFrame(() => districtInputRef.current?.focus());
+      focusDistrictAfterService();
     }
 
     window.addEventListener(SERVICE_SELECTED_EVENT, handleSelected);
     return () => window.removeEventListener(SERVICE_SELECTED_EVENT, handleSelected);
-  }, []);
+  }, [focusDistrictAfterService]);
 
   useEffect(() => {
     setOpenCombobox(null);
@@ -273,12 +327,14 @@ export function MainSearch({ className, compact = false }: { className?: string;
           : "mx-auto grid w-full max-w-5xl gap-3 rounded-[26px] border border-neutral-200 bg-white p-3 shadow-lg md:min-h-[72px] md:grid-cols-[1.25fr_1fr_auto] md:items-stretch md:gap-0 md:rounded-[20px] md:p-2 md:shadow-md",
         className
       )}
+      autoComplete="off"
       action={`${basePath}/resultados/`}
       onSubmit={(event) => {
         if (!canSubmit) {
           event.preventDefault();
           return;
         }
+        setOpenCombobox(null);
         setLoading(true);
       }}
     >
@@ -297,6 +353,8 @@ export function MainSearch({ className, compact = false }: { className?: string;
           open={openCombobox === "service-search"}
           onOpenChange={(nextOpen) => setComboboxOpen("service-search", nextOpen)}
           placeholder={compact ? "¿Qué necesitas?" : "Ej. Electricidad, limpieza de casa o idiomas"}
+          inputName="queda-service-search"
+          onSelectComplete={focusDistrictAfterService}
           compact={compact}
           kind="service"
         />
@@ -314,6 +372,12 @@ export function MainSearch({ className, compact = false }: { className?: string;
           onOpenChange={(nextOpen) => setComboboxOpen("district-search", nextOpen)}
           placeholder={compact ? "Elige tu distrito" : "Selecciona tu distrito"}
           inputRef={districtInputRef}
+          inputName="queda-district-search"
+          onFocusOpen={() => {
+            if (!suppressNextDistrictOpenRef.current) return true;
+            suppressNextDistrictOpenRef.current = false;
+            return false;
+          }}
           compact={compact}
           kind="district"
         />
