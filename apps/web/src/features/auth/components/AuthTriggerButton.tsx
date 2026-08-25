@@ -34,6 +34,13 @@ export function AuthTriggerButton({ auth, variant = "primary", className, childr
       onClick={async (event) => {
         onClick?.(event);
         if (event.defaultPrevented) return;
+        if (auth.pendingAction?.startsWith("request-service:")) {
+          const professionalId = auth.pendingAction.replace("request-service:", "");
+          const result = session ? null : await authService.signInWithEmail(defaultDemoAccount);
+          if (result?.session) completeAuth(result.session);
+          window.dispatchEvent(new CustomEvent("queda:request-flow-open", { detail: { professionalId } }));
+          return;
+        }
         if (session) {
           if (auth.returnTo && auth.returnTo !== "/") window.location.assign(auth.returnTo);
           return;

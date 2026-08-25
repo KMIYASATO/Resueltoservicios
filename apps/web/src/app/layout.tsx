@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { PwaRegistration } from "@/components/resuelto/PwaRegistration";
 import { AuthModalProvider } from "@/features/auth/components/AuthModalProvider";
+import { RequestFlowProvider } from "@/features/requests/components/RequestFlowProvider";
 import "./globals.css";
 
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
@@ -34,9 +35,11 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
     <html lang="es-PE">
       <body>
         <AuthModalProvider>
-          <a className="skip-link" href="#contenido">Saltar al contenido</a>
-          {children}
-          <PwaRegistration />
+          <RequestFlowProvider>
+            <a className="skip-link" href="#contenido">Saltar al contenido</a>
+            {children}
+            <PwaRegistration />
+          </RequestFlowProvider>
         </AuthModalProvider>
       </body>
     </html>
