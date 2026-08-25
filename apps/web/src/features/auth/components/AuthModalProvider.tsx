@@ -4,6 +4,8 @@ import type { ReactNode } from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { sanitizeIntent, sanitizeReturnTo } from "../validation/auth.validation";
 import type { AuthIntent, AuthModalMode, OpenAuthModalOptions } from "../types/auth.types";
+import type { AuthSession } from "../services/auth.service";
+import { demoAuthService } from "../services/demo-auth.service";
 import { AuthModalContext } from "../hooks/useAuthModal";
 import { AuthModal } from "./AuthModal";
 
@@ -39,6 +41,7 @@ function removeAuthParams(url: URL) {
 
 export function AuthModalProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthModalState>(defaultState);
+  const [session, setSession] = useState<AuthSession | null>(null);
   const [isBusy, setIsBusy] = useState(false);
   const triggerRef = useRef<HTMLElement | null>(null);
 
@@ -78,6 +81,26 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
     window.setTimeout(() => triggerRef.current?.focus(), 0);
   }, [isBusy]);
 
+  const completeAuth = useCallback((nextSession: AuthSession) => {
+    setSession(nextSession);
+    setIsBusy(false);
+    setState((current) => ({ ...current, isOpen: false }));
+
+    const url = new URL(window.location.href);
+    removeAuthParams(url);
+    window.history.replaceState({}, "", url);
+
+    const target = sanitizeReturnTo(state.returnTo);
+    if (target !== "/") window.location.assign(target);
+  }, [state.returnTo]);
+
+  const signOut = useCallback(async () => {
+    setIsBusy(true);
+    await demoAuthService.signOut();
+    setSession(null);
+    setIsBusy(false);
+  }, []);
+
   const setAuthMode = useCallback((mode: AuthModalMode) => {
     setState((current) => {
       const next = { ...current, mode, isOpen: true };
@@ -111,6 +134,23 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
+    let mounted = true;
+    demoAuthService.getSession().then((currentSession) => {
+      if (mounted) setSession(currentSession);
+    });
+
+    function handleSessionChange(event: Event) {
+      setSession((event as CustomEvent<AuthSession | null>).detail ?? null);
+    }
+
+    window.addEventListener("queda:auth-session-changed", handleSessionChange);
+    return () => {
+      mounted = false;
+      window.removeEventListener("queda:auth-session-changed", handleSessionChange);
+    };
+  }, []);
+
+  useEffect(() => {
     if (!state.isOpen) return;
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -121,12 +161,15 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo(() => ({
     ...state,
+    session,
     isBusy,
     openAuthModal,
     closeAuthModal,
     setAuthMode,
-    setAuthModalBusy: setIsBusy
-  }), [closeAuthModal, isBusy, openAuthModal, setAuthMode, state]);
+    setAuthModalBusy: setIsBusy,
+    completeAuth,
+    signOut
+  }), [closeAuthModal, completeAuth, isBusy, openAuthModal, session, setAuthMode, signOut, state]);
 
   return (
     <AuthModalContext.Provider value={value}>

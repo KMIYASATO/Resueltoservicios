@@ -2,7 +2,7 @@
 
 import type { FormEvent } from "react";
 import { useState } from "react";
-import { unavailableAuthService } from "../services/unavailable-auth.service";
+import { demoAuthService } from "../services/demo-auth.service";
 import type { AuthFeedbackState, AuthProvider } from "../types/auth.types";
 import { validateRegister } from "../validation/auth.validation";
 import { useAuthForm } from "../hooks/useAuthForm";
@@ -20,7 +20,7 @@ type RegisterFormProps = {
 };
 
 export function RegisterForm({ email, onEmailChange }: RegisterFormProps) {
-  const { setAuthMode, setAuthModalBusy } = useAuthModal();
+  const { completeAuth, setAuthMode, setAuthModalBusy } = useAuthModal();
   const form = useAuthForm({ name: "", email, password: "", confirmPassword: "", acceptedTerms: false });
   const [feedback, setFeedback] = useState<AuthFeedbackState>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -42,19 +42,21 @@ export function RegisterForm({ email, onEmailChange }: RegisterFormProps) {
 
     setSubmitting(true);
     setAuthModalBusy(true);
-    const result = await unavailableAuthService.signUpWithEmail(form.values);
+    const result = await demoAuthService.signUpWithEmail(form.values);
     setSubmitting(false);
     setAuthModalBusy(false);
     setFeedback({ tone: result.ok ? "success" : "error", message: result.message });
+    if (result.session) completeAuth(result.session);
   }
 
   async function handleProvider(provider: AuthProvider) {
     setLoadingProvider(provider);
     setAuthModalBusy(true);
-    const result = provider === "google" ? await unavailableAuthService.signInWithGoogle() : await unavailableAuthService.signInWithFacebook();
+    const result = provider === "google" ? await demoAuthService.signInWithGoogle() : await demoAuthService.signInWithFacebook();
     setLoadingProvider(null);
     setAuthModalBusy(false);
     setFeedback({ tone: result.ok ? "success" : "error", message: result.message });
+    if (result.session) completeAuth(result.session);
   }
 
   return (

@@ -1,8 +1,17 @@
-import type { AuthProvider, ForgotPasswordValues, LoginValues, RegisterValues } from "../types/auth.types";
+import type { AuthIntent, AuthProvider, ForgotPasswordValues, LoginValues, RegisterValues } from "../types/auth.types";
+
+export type AuthSession = {
+  user: {
+    name: string;
+    email: string;
+    accountIntent: AuthIntent;
+  };
+};
 
 export type AuthServiceResult = {
   ok: boolean;
   message: string;
+  session?: AuthSession;
 };
 
 export type AuthService = {
@@ -12,7 +21,7 @@ export type AuthService = {
   signInWithFacebook(): Promise<AuthServiceResult>;
   sendPasswordReset(values: ForgotPasswordValues): Promise<AuthServiceResult>;
   signOut(): Promise<AuthServiceResult>;
-  getSession(): Promise<null>;
+  getSession(): Promise<AuthSession | null>;
 };
 
 export function providerLabel(provider: AuthProvider) {

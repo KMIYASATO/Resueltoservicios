@@ -3,11 +3,13 @@
 import { ArrowRight, BriefcaseBusiness } from "lucide-react";
 import { useEffect, useState } from "react";
 import { AuthTriggerButton } from "@/features/auth/components/AuthTriggerButton";
+import { useAuthModal } from "@/features/auth/hooks/useAuthModal";
 import { cn } from "@/lib/cn";
 import { MainSearch } from "./MainSearch";
 import { ResueltoLogo } from "./ResueltoLogo";
 
 export function SiteHeader() {
+  const { session, signOut } = useAuthModal();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -44,14 +46,25 @@ export function SiteHeader() {
 
           <div className="hidden h-8 w-px bg-neutral-200 min-[1180px]:block" aria-hidden="true" />
 
-          <div className="flex items-center gap-2">
-            <AuthTriggerButton auth={{ mode: "login" }} variant="accountSecondary">Iniciar sesión</AuthTriggerButton>
-            <AuthTriggerButton auth={{ mode: "register" }} variant="accountPrimary">Registrarme</AuthTriggerButton>
-          </div>
+          {session ? (
+            <div className="flex items-center gap-2 rounded-full border border-brand-200 bg-brand-100 px-2 py-1">
+              <span className="max-w-32 truncate pl-2 text-sm font-semibold text-brand-700">{session.user.name}</span>
+              <button className="rounded-full bg-white px-3 py-1.5 text-sm font-semibold text-brand-700 transition-colors hover:bg-neutral-50" type="button" onClick={signOut}>Salir</button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <AuthTriggerButton auth={{ mode: "login" }} variant="accountSecondary">Iniciar sesión</AuthTriggerButton>
+              <AuthTriggerButton auth={{ mode: "register" }} variant="accountPrimary">Registrarme</AuthTriggerButton>
+            </div>
+          )}
         </div>
 
         <div className="ml-auto md:hidden">
-          <AuthTriggerButton auth={{ mode: "login" }} variant="accountSecondary" className="px-3 text-sm">Cuenta</AuthTriggerButton>
+          {session ? (
+            <button className="rounded-md border border-brand-600 bg-white px-3 py-2 text-sm font-semibold text-brand-600" type="button" onClick={signOut}>Salir</button>
+          ) : (
+            <AuthTriggerButton auth={{ mode: "login" }} variant="accountSecondary" className="px-3 text-sm">Cuenta</AuthTriggerButton>
+          )}
         </div>
       </div>
     </header>

@@ -2,7 +2,7 @@
 
 import type { FormEvent } from "react";
 import { useState } from "react";
-import { unavailableAuthService } from "../services/unavailable-auth.service";
+import { defaultDemoAccount, demoAuthService } from "../services/demo-auth.service";
 import type { AuthFeedbackState, AuthProvider } from "../types/auth.types";
 import { validateLogin } from "../validation/auth.validation";
 import { useAuthForm } from "../hooks/useAuthForm";
@@ -20,8 +20,8 @@ type LoginFormProps = {
 };
 
 export function LoginForm({ email, onEmailChange }: LoginFormProps) {
-  const { setAuthMode, setAuthModalBusy } = useAuthModal();
-  const form = useAuthForm({ email, password: "" });
+  const { completeAuth, setAuthMode, setAuthModalBusy } = useAuthModal();
+  const form = useAuthForm({ email: email || defaultDemoAccount.email, password: defaultDemoAccount.password });
   const [feedback, setFeedback] = useState<AuthFeedbackState>(null);
   const [submitting, setSubmitting] = useState(false);
   const [loadingProvider, setLoadingProvider] = useState<AuthProvider | null>(null);
@@ -42,24 +42,31 @@ export function LoginForm({ email, onEmailChange }: LoginFormProps) {
 
     setSubmitting(true);
     setAuthModalBusy(true);
-    const result = await unavailableAuthService.signInWithEmail(form.values);
+    const result = await demoAuthService.signInWithEmail(form.values);
     setSubmitting(false);
     setAuthModalBusy(false);
     setFeedback({ tone: result.ok ? "success" : "error", message: result.message });
+    if (result.session) completeAuth(result.session);
   }
 
   async function handleProvider(provider: AuthProvider) {
     setLoadingProvider(provider);
     setAuthModalBusy(true);
-    const result = provider === "google" ? await unavailableAuthService.signInWithGoogle() : await unavailableAuthService.signInWithFacebook();
+    const result = provider === "google" ? await demoAuthService.signInWithGoogle() : await demoAuthService.signInWithFacebook();
     setLoadingProvider(null);
     setAuthModalBusy(false);
     setFeedback({ tone: result.ok ? "success" : "error", message: result.message });
+    if (result.session) completeAuth(result.session);
   }
 
   return (
     <div className="mt-5 grid gap-4">
       <SocialAuthButtons loadingProvider={loadingProvider} onProvider={handleProvider} />
+      <div className="rounded-xl border border-brand-200 bg-brand-100 p-3 text-sm leading-6 text-neutral-700">
+        <p className="font-semibold text-neutral-950">Cuenta demo lista</p>
+        <p>Correo: {defaultDemoAccount.email}</p>
+        <p>Contraseña: {defaultDemoAccount.password}</p>
+      </div>
       <AuthDivider>o continúa con tu correo</AuthDivider>
       <form className="grid gap-4" noValidate onSubmit={submitLogin}>
         <AuthField

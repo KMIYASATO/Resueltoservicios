@@ -24,7 +24,7 @@ type AuthTriggerButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 export function AuthTriggerButton({ auth, variant = "primary", className, children, onClick, ...props }: AuthTriggerButtonProps) {
-  const { openAuthModal } = useAuthModal();
+  const { openAuthModal, session } = useAuthModal();
 
   return (
     <button
@@ -32,7 +32,12 @@ export function AuthTriggerButton({ auth, variant = "primary", className, childr
       type="button"
       onClick={(event) => {
         onClick?.(event);
-        if (!event.defaultPrevented) openAuthModal(auth);
+        if (event.defaultPrevented) return;
+        if (session) {
+          if (auth.returnTo && auth.returnTo !== "/") window.location.assign(auth.returnTo);
+          return;
+        }
+        openAuthModal(auth);
       }}
       {...props}
     >
