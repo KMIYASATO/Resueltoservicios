@@ -37,6 +37,17 @@ function readAccount() {
   }
 }
 
+function accountFromLogin(values: LoginValues): DemoAccount {
+  const email = normalizeEmail(values.email) || defaultDemoAccount.email;
+  const name = email.split("@")[0]?.replace(/[._-]/g, " ") || defaultDemoAccount.name;
+  return {
+    name: name.replace(/^\w|\s\w/g, (match) => match.toUpperCase()),
+    email,
+    password: values.password,
+    accountIntent: "customer"
+  };
+}
+
 function saveSession(account: DemoAccount): AuthSession {
   const session: AuthSession = {
     user: {
@@ -54,11 +65,7 @@ export const demoAuthService: AuthService = {
   async signInWithEmail(values: LoginValues) {
     await wait();
     const accounts = [readAccount(), defaultDemoAccount];
-    const account = accounts.find((item) => normalizeEmail(values.email) === normalizeEmail(item.email) && values.password === item.password);
-
-    if (!account) {
-      return { ok: false, message: "Usa la cuenta demo: cliente@queda.pe / Queda1234." };
-    }
+    const account = accounts.find((item) => normalizeEmail(values.email) === normalizeEmail(item.email) && values.password === item.password) ?? accountFromLogin(values);
 
     return { ok: true, message: "Sesión demo iniciada.", session: saveSession(account) };
   },

@@ -17,7 +17,7 @@ export type AuthModalContextValue = {
   closeAuthModal: () => void;
   setAuthMode: (mode: AuthModalMode) => void;
   setAuthModalBusy: (busy: boolean) => void;
-  completeAuth: (session: AuthSession) => void;
+  completeAuth: (session: AuthSession, returnTo?: string) => void;
   signOut: () => Promise<void>;
 };
 

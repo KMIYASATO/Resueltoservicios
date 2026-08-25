@@ -2,7 +2,7 @@
 
 import type { FormEvent } from "react";
 import { useState } from "react";
-import { authService, authUsesSupabase, defaultDemoAccount } from "../services/runtime-auth.service";
+import { authService, defaultDemoAccount } from "../services/runtime-auth.service";
 import type { AuthFeedbackState, AuthProvider } from "../types/auth.types";
 import { validateLogin } from "../validation/auth.validation";
 import { useAuthForm } from "../hooks/useAuthForm";
@@ -62,18 +62,11 @@ export function LoginForm({ email, onEmailChange }: LoginFormProps) {
   return (
     <div className="mt-5 grid gap-4">
       <SocialAuthButtons loadingProvider={loadingProvider} onProvider={handleProvider} />
-      {authUsesSupabase ? (
-        <div className="rounded-xl border border-brand-200 bg-brand-100 p-3 text-sm leading-6 text-neutral-700">
-          <p className="font-semibold text-neutral-950">Login conectado a Supabase</p>
-          <p>Usa una cuenta creada en tu proyecto de Supabase.</p>
-        </div>
-      ) : (
-        <div className="rounded-xl border border-brand-200 bg-brand-100 p-3 text-sm leading-6 text-neutral-700">
-          <p className="font-semibold text-neutral-950">Cuenta demo lista</p>
-          <p>Correo: {defaultDemoAccount.email}</p>
-          <p>Contraseña: {defaultDemoAccount.password}</p>
-        </div>
-      )}
+      <div className="rounded-xl border border-brand-200 bg-brand-100 p-3 text-sm leading-6 text-neutral-700">
+        <p className="font-semibold text-neutral-950">Login maqueta</p>
+        <p>Correo: {defaultDemoAccount.email}</p>
+        <p>Contraseña: {defaultDemoAccount.password}</p>
+      </div>
       <AuthDivider>o continúa con tu correo</AuthDivider>
       <form className="grid gap-4" noValidate onSubmit={submitLogin}>
         <AuthField

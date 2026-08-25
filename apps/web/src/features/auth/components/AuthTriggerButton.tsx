@@ -2,6 +2,7 @@
 
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/cn";
+import { authService, defaultDemoAccount } from "../services/runtime-auth.service";
 import type { OpenAuthModalOptions } from "../types/auth.types";
 import { useAuthModal } from "../hooks/useAuthModal";
 
@@ -24,17 +25,22 @@ type AuthTriggerButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 export function AuthTriggerButton({ auth, variant = "primary", className, children, onClick, ...props }: AuthTriggerButtonProps) {
-  const { openAuthModal, session } = useAuthModal();
+  const { completeAuth, openAuthModal, session } = useAuthModal();
 
   return (
     <button
       className={cn("inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold transition-[background-color,border-color,color,box-shadow,transform] duration-fast ease-standard active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600", variants[variant], className)}
       type="button"
-      onClick={(event) => {
+      onClick={async (event) => {
         onClick?.(event);
         if (event.defaultPrevented) return;
         if (session) {
           if (auth.returnTo && auth.returnTo !== "/") window.location.assign(auth.returnTo);
+          return;
+        }
+        if (auth.returnTo) {
+          const result = await authService.signInWithEmail(defaultDemoAccount);
+          if (result.session) completeAuth(result.session, auth.returnTo);
           return;
         }
         openAuthModal(auth);

@@ -81,7 +81,7 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
     window.setTimeout(() => triggerRef.current?.focus(), 0);
   }, [isBusy]);
 
-  const completeAuth = useCallback((nextSession: AuthSession) => {
+  const completeAuth = useCallback((nextSession: AuthSession, returnTo?: string) => {
     setSession(nextSession);
     setIsBusy(false);
     setState((current) => ({ ...current, isOpen: false }));
@@ -90,7 +90,7 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
     removeAuthParams(url);
     window.history.replaceState({}, "", url);
 
-    const target = sanitizeReturnTo(state.returnTo);
+    const target = sanitizeReturnTo(returnTo ?? state.returnTo);
     if (target !== "/") window.location.assign(target);
   }, [state.returnTo]);
 
