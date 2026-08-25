@@ -2,7 +2,7 @@
 
 import type { FormEvent } from "react";
 import { useState } from "react";
-import { demoAuthService } from "../services/demo-auth.service";
+import { authService } from "../services/runtime-auth.service";
 import type { AuthFeedbackState, AuthProvider } from "../types/auth.types";
 import { validateRegister } from "../validation/auth.validation";
 import { useAuthForm } from "../hooks/useAuthForm";
@@ -20,7 +20,7 @@ type RegisterFormProps = {
 };
 
 export function RegisterForm({ email, onEmailChange }: RegisterFormProps) {
-  const { completeAuth, setAuthMode, setAuthModalBusy } = useAuthModal();
+  const { accountIntent, completeAuth, setAuthMode, setAuthModalBusy } = useAuthModal();
   const form = useAuthForm({ name: "", email, password: "", confirmPassword: "", acceptedTerms: false });
   const [feedback, setFeedback] = useState<AuthFeedbackState>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -42,7 +42,7 @@ export function RegisterForm({ email, onEmailChange }: RegisterFormProps) {
 
     setSubmitting(true);
     setAuthModalBusy(true);
-    const result = await demoAuthService.signUpWithEmail(form.values);
+    const result = await authService.signUpWithEmail(form.values, accountIntent);
     setSubmitting(false);
     setAuthModalBusy(false);
     setFeedback({ tone: result.ok ? "success" : "error", message: result.message });
@@ -52,7 +52,7 @@ export function RegisterForm({ email, onEmailChange }: RegisterFormProps) {
   async function handleProvider(provider: AuthProvider) {
     setLoadingProvider(provider);
     setAuthModalBusy(true);
-    const result = provider === "google" ? await demoAuthService.signInWithGoogle() : await demoAuthService.signInWithFacebook();
+    const result = provider === "google" ? await authService.signInWithGoogle() : await authService.signInWithFacebook();
     setLoadingProvider(null);
     setAuthModalBusy(false);
     setFeedback({ tone: result.ok ? "success" : "error", message: result.message });

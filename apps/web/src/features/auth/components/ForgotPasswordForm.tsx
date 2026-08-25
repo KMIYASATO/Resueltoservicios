@@ -2,7 +2,7 @@
 
 import type { FormEvent } from "react";
 import { useState } from "react";
-import { unavailableAuthService } from "../services/unavailable-auth.service";
+import { authService } from "../services/runtime-auth.service";
 import type { AuthFeedbackState } from "../types/auth.types";
 import { validateForgotPassword } from "../validation/auth.validation";
 import { useAuthForm } from "../hooks/useAuthForm";
@@ -38,7 +38,7 @@ export function ForgotPasswordForm({ email, onEmailChange }: ForgotPasswordFormP
 
     setSubmitting(true);
     setAuthModalBusy(true);
-    const result = await unavailableAuthService.sendPasswordReset(form.values);
+    const result = await authService.sendPasswordReset(form.values);
     setSubmitting(false);
     setAuthModalBusy(false);
     setFeedback({ tone: result.ok ? "success" : "error", message: result.message });

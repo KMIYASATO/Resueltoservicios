@@ -62,13 +62,13 @@ export const demoAuthService: AuthService = {
 
     return { ok: true, message: "Sesión demo iniciada.", session: saveSession(account) };
   },
-  async signUpWithEmail(values: RegisterValues) {
+  async signUpWithEmail(values: RegisterValues, accountIntent: AuthIntent = "customer") {
     await wait();
     const account: DemoAccount = {
       name: values.name.trim(),
       email: normalizeEmail(values.email),
       password: values.password,
-      accountIntent: "customer"
+      accountIntent
     };
     window.localStorage.setItem(accountKey, JSON.stringify(account));
     return { ok: true, message: "Cuenta demo creada.", session: saveSession(account) };

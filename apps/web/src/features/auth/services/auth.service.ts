@@ -16,7 +16,7 @@ export type AuthServiceResult = {
 
 export type AuthService = {
   signInWithEmail(values: LoginValues): Promise<AuthServiceResult>;
-  signUpWithEmail(values: RegisterValues): Promise<AuthServiceResult>;
+  signUpWithEmail(values: RegisterValues, accountIntent?: AuthIntent): Promise<AuthServiceResult>;
   signInWithGoogle(): Promise<AuthServiceResult>;
   signInWithFacebook(): Promise<AuthServiceResult>;
   sendPasswordReset(values: ForgotPasswordValues): Promise<AuthServiceResult>;

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { sanitizeIntent, sanitizeReturnTo } from "../validation/auth.validation";
 import type { AuthIntent, AuthModalMode, OpenAuthModalOptions } from "../types/auth.types";
 import type { AuthSession } from "../services/auth.service";
-import { demoAuthService } from "../services/demo-auth.service";
+import { authService } from "../services/runtime-auth.service";
 import { AuthModalContext } from "../hooks/useAuthModal";
 import { AuthModal } from "./AuthModal";
 
@@ -96,7 +96,7 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
 
   const signOut = useCallback(async () => {
     setIsBusy(true);
-    await demoAuthService.signOut();
+    await authService.signOut();
     setSession(null);
     setIsBusy(false);
   }, []);
@@ -135,7 +135,7 @@ export function AuthModalProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let mounted = true;
-    demoAuthService.getSession().then((currentSession) => {
+    authService.getSession().then((currentSession) => {
       if (mounted) setSession(currentSession);
     });
 
