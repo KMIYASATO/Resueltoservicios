@@ -39,6 +39,8 @@ jobs:
           GITHUB_PAGES: "true"
           NEXT_PUBLIC_BASE_PATH: /Resueltoservicios
           NEXT_PUBLIC_APP_URL: https://kmiyasato.github.io/Resueltoservicios
+          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ vars.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
         run: pnpm build
 
       - name: Publish static site to gh-pages
