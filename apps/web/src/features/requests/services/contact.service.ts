@@ -12,7 +12,6 @@ export function getProfessionalContact(professionalId: string, status: RequestSt
   return privateProfessionalContacts[professionalId] ?? { phone: "+51010000000", whatsapp: "51010000000" };
 }
 
-export function getWhatsAppUrl(professionalName: string, whatsapp: string) {
-  const text = encodeURIComponent(`Hola ${professionalName.split(" ")[0]}, soy el cliente de tu solicitud en Queda.`);
-  return `https://wa.me/${whatsapp}?text=${text}`;
+export function getWhatsAppMessage(professionalName: string) {
+  return `Hola ${professionalName.split(" ")[0]}, soy el cliente de tu solicitud en Queda.`;
 }

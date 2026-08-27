@@ -47,16 +47,18 @@ function update(idValue: string, updater: (request: ServiceRequest) => ServiceRe
 }
 
 export const mockRequestService = {
-  createRequest(draft: RequestDraft) {
+  createRequest(draft: RequestDraft, assignmentMode: RequestDraft["assignmentMode"] = "invited") {
     const createdAt = now();
+    const isOpen = assignmentMode === "open";
     const request: ServiceRequest = {
       ...draft,
+      assignmentMode,
       id: id("req"),
       status: "sent",
       createdAt,
       updatedAt: createdAt,
-      timeline: [timeline("Solicitud enviada", `${draft.professional.name} recibió el detalle para revisarlo.`)],
-      messages: [],
+      timeline: [timeline(isOpen ? "Solicitud publicada" : "Solicitud enviada", isOpen ? "Queda empezó a buscar técnicos compatibles para tu solicitud." : `${draft.professional.name} recibió el detalle para revisarlo.`)],
+      messages: isOpen ? [systemMessage("Esperando postulación de técnicos compatibles.")] : [],
       proposals: []
     };
     writeAll([request, ...readAll()]);

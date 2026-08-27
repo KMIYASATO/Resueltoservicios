@@ -38,6 +38,7 @@ export type PrivateProfessionalContact = {
 
 export type RequestDraft = {
   professional: PublicProfessionalData;
+  assignmentMode: "invited" | "open";
   categorySlug: string;
   categoryLabel: string;
   serviceSlug: string;

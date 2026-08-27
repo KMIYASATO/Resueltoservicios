@@ -51,7 +51,7 @@ export function RequestsContent({ selectedId }: { selectedId?: string | null }) 
             <a key={request.id} href={`${basePath}/solicitudes/?id=${request.id}`} className="block" onClick={(event) => { event.preventDefault(); setActiveId(request.id); window.history.replaceState({}, "", `${basePath}/solicitudes/?id=${request.id}`); }}>
               <Card className={`p-4 transition-colors hover:border-brand-500 ${request.id === active?.id ? "border-brand-600 bg-brand-100" : ""}`}>
                 <div className="flex items-start justify-between gap-2"><h2 className="font-display text-xl font-bold text-neutral-950">{request.professional.name}</h2><RequestStatusBadge status={request.status} /></div>
-                <p className="mt-1 text-sm text-neutral-600">{request.serviceLabel} · {request.districtLabel}</p>
+                <p className="mt-1 text-sm text-neutral-600">{request.assignmentMode === "open" && request.status === "sent" ? "Esperando postulación" : request.professional.name} · {request.serviceLabel} · {request.districtLabel}</p>
                 <p className="mt-2 text-xs font-semibold text-neutral-500">{formatShortDate(request.agreedDate ?? request.preferredDate)} · {request.agreedTime ?? request.preferredTime}</p>
               </Card>
             </a>

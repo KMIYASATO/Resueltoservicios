@@ -17,7 +17,7 @@ import { trackRequestEvent } from "../services/request-analytics";
 import type { AttachmentDraft, RequestDraft, ServiceRequest } from "../types/request.types";
 import { formatDateLabel, todayInputValue } from "../utils/format";
 
-type Step = "details" | "schedule" | "review" | "sent";
+type Step = "details" | "schedule" | "review" | "technician" | "sent";
 
 const timeSlots = ["8 a. m. - 12 p. m.", "12 p. m. - 3 p. m.", "3 p. m. - 6 p. m.", "6 p. m. - 9 p. m."];
 
@@ -44,6 +44,7 @@ function buildDraft(professionalId: string): RequestDraft {
       rating: professional.rating,
       reviews: professional.reviews
     },
+    assignmentMode: "invited",
     categorySlug,
     categoryLabel: getCategoryLabel(categorySlug),
     serviceSlug: service.slug,
@@ -156,7 +157,7 @@ export function RequestFlowProvider({ children }: { children: ReactNode }) {
       openAuthModal({ mode: "login", returnTo: draft.returnTo, accountIntent: "customer", pendingAction: "submit-request" });
       return;
     }
-    const request = mockRequestService.createRequest(draft);
+    const request = mockRequestService.createRequest(draft, draft.assignmentMode);
     setLastRequest(request);
     setStep("sent");
     trackRequestEvent("request_submitted", { requestId: request.id });
@@ -172,13 +173,16 @@ export function RequestFlowProvider({ children }: { children: ReactNode }) {
             <div className="sticky top-0 z-10 border-b border-neutral-200 bg-white px-4 py-4 sm:px-6">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-xs font-semibold text-brand-600">Paso {step === "details" ? 1 : step === "schedule" ? 2 : step === "review" ? 3 : 4} de 4</p>
+                  <p className="text-xs font-semibold text-brand-600">Paso {step === "details" ? 1 : step === "schedule" ? 2 : step === "review" ? 3 : step === "technician" ? 4 : 5} de 5</p>
                   <h1 id="request-flow-title" className="font-display text-2xl font-bold text-neutral-950">{step === "sent" ? "Solicitud enviada" : copy.cta}</h1>
                 </div>
                 <button ref={closeButtonRef} type="button" className="grid h-11 w-11 place-items-center rounded-full bg-neutral-100 text-neutral-700 hover:bg-brand-100" aria-label="Cerrar" onClick={attemptClose}><X className="h-5 w-5" /></button>
               </div>
               <div className="mt-4 grid grid-cols-4 gap-2" aria-hidden="true">
-                {["details", "schedule", "review", "sent"].map((item) => <div key={item} className={cn("h-1.5 rounded-full", item === step || ["schedule", "review", "sent"].indexOf(step) > ["schedule", "review", "sent"].indexOf(item) ? "bg-brand-600" : "bg-neutral-200")} />)}
+                {["details", "schedule", "review", "technician", "sent"].map((item) => {
+                  const order = ["details", "schedule", "review", "technician", "sent"];
+                  return <div key={item} className={cn("h-1.5 rounded-full", order.indexOf(step) >= order.indexOf(item) ? "bg-brand-600" : "bg-neutral-200")} />;
+                })}
               </div>
             </div>
 
@@ -212,14 +216,31 @@ export function RequestFlowProvider({ children }: { children: ReactNode }) {
                 <div className="mt-5 grid gap-5">
                   <div><h2 className="font-display text-2xl font-bold text-neutral-950">Revisa tu solicitud</h2><p className="mt-1 text-sm leading-6 text-neutral-600">Aún no es una reserva confirmada. Primero el profesional debe responder.</p></div>
                   <ReviewRows draft={draft} />
-                  <div className="sticky bottom-0 -mx-4 grid grid-cols-2 gap-3 bg-white px-4 py-3 sm:-mx-6 sm:px-6"><Button type="button" variant="secondary" onClick={() => setStep("details")}>Editar</Button><Button type="button" onClick={submitRequest}>Enviar solicitud</Button></div>
+                  <div className="sticky bottom-0 -mx-4 grid grid-cols-2 gap-3 bg-white px-4 py-3 sm:-mx-6 sm:px-6"><Button type="button" variant="secondary" onClick={() => setStep("details")}>Editar</Button><Button type="button" onClick={() => setStep("technician")}>Continuar</Button></div>
+                </div>
+              ) : null}
+
+              {step === "technician" ? (
+                <div className="mt-5 grid gap-5">
+                  <div><h2 className="font-display text-2xl font-bold text-neutral-950">¿Quieres invitar a un técnico?</h2><p className="mt-1 text-sm leading-6 text-neutral-600">Puedes darle prioridad a {draft.professional.name.split(" ")[0]} o publicar la solicitud para esperar postulaciones de técnicos compatibles.</p></div>
+                  <button type="button" className={cn("rounded-2xl border p-4 text-left transition-colors", draft.assignmentMode === "invited" ? "border-brand-600 bg-brand-100" : "border-neutral-200 bg-white hover:border-brand-500")} onClick={() => patch({ assignmentMode: "invited" })}>
+                    <p className="text-sm font-semibold text-brand-700">Invitar técnico seleccionado</p>
+                    <p className="mt-1 font-display text-xl font-bold text-neutral-950">{draft.professional.name}</p>
+                    <p className="text-sm text-neutral-600">{draft.professional.specialty} · prioridad para responder.</p>
+                  </button>
+                  <button type="button" className={cn("rounded-2xl border p-4 text-left transition-colors", draft.assignmentMode === "open" ? "border-brand-600 bg-brand-100" : "border-neutral-200 bg-white hover:border-brand-500")} onClick={() => patch({ assignmentMode: "open" })}>
+                    <p className="text-sm font-semibold text-brand-700">Omitir y publicar</p>
+                    <p className="mt-1 font-display text-xl font-bold text-neutral-950">Esperar postulación de técnicos</p>
+                    <p className="text-sm text-neutral-600">Queda mostrará la solicitud como publicada mientras aparecen ofertas.</p>
+                  </button>
+                  <div className="sticky bottom-0 -mx-4 grid grid-cols-2 gap-3 bg-white px-4 py-3 sm:-mx-6 sm:px-6"><Button type="button" variant="secondary" onClick={() => setStep("review")}>Atrás</Button><Button type="button" onClick={submitRequest}>{draft.assignmentMode === "open" ? "Omitir y publicar" : "Invitar y publicar"}</Button></div>
                 </div>
               ) : null}
 
               {step === "sent" && lastRequest ? (
                 <div className="mt-5 grid gap-5 text-center">
                   <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-success-100 text-success-600"><CheckCircle2 className="h-8 w-8" /></div>
-                  <div><h2 className="font-display text-3xl font-bold text-neutral-950">Solicitud enviada</h2><p className="mt-2 leading-7 text-neutral-600">{lastRequest.professional.name.split(" ")[0]} recibió tu solicitud. Te avisaremos cuando responda.</p></div>
+                  <div><h2 className="font-display text-3xl font-bold text-neutral-950">{lastRequest.assignmentMode === "open" ? "Solicitud publicada" : "Solicitud enviada"}</h2><p className="mt-2 leading-7 text-neutral-600">{lastRequest.assignmentMode === "open" ? "En unos momentos te aparecerán ofertas de técnicos compatibles." : `${lastRequest.professional.name.split(" ")[0]} recibió tu solicitud. Te avisaremos cuando responda.`}</p></div>
                   <div className="grid gap-3 sm:grid-cols-2"><a className="inline-flex min-h-[44px] items-center justify-center rounded-md bg-brand-600 px-5 py-3 text-sm font-semibold text-white hover:bg-brand-800" href={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/solicitudes/?id=${lastRequest.id}`}>Ver mi solicitud</a><Button type="button" variant="secondary" onClick={close}>Volver a resultados</Button></div>
                 </div>
               ) : null}
