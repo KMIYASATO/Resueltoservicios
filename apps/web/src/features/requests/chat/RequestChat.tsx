@@ -43,7 +43,7 @@ export function RequestChat({ request, actor = "customer", onChange }: { request
   const scrollRef = useRef<HTMLDivElement>(null);
   const wasNearBottomRef = useRef(true);
   const sender = actor === "professional" ? "professional" : "customer";
-  const canSend = request.status !== "completed" && !request.status.includes("cancelled") && request.status !== "rejected";
+  const canSend = request.status !== "completed" && request.status !== "cancelled" && request.status !== "expired";
 
   useEffect(() => {
     const node = scrollRef.current;

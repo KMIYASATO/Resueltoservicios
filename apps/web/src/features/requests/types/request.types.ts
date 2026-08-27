@@ -1,15 +1,21 @@
 export type RequestStatus =
   | "draft"
-  | "review"
-  | "sent"
-  | "viewed"
-  | "information_requested"
-  | "reschedule_proposed"
-  | "accepted"
-  | "rejected"
-  | "cancelled_by_customer"
-  | "cancelled_by_professional"
-  | "completed";
+  | "submitted"
+  | "matching"
+  | "awaiting_response"
+  | "proposals_received"
+  | "selected"
+  | "scheduled"
+  | "in_service"
+  | "completed"
+  | "cancelled"
+  | "expired";
+
+export type OfferStatus = "draft" | "sent" | "viewed" | "negotiating" | "accepted" | "not_selected" | "withdrawn" | "expired";
+
+export type PricingType = "fixed_price" | "price_range" | "diagnostic_visit";
+
+export type RequestMode = "direct" | "multi";
 
 export type ServiceKind = "home" | "cleaning" | "education";
 
@@ -36,9 +42,51 @@ export type PrivateProfessionalContact = {
   whatsapp: string;
 };
 
+export type ExactAddress = {
+  query: string;
+  formatted: string;
+  approximateZone: string;
+  lat: number;
+  lng: number;
+  propertyType: "Casa" | "Departamento" | "Local";
+  unit: string;
+  reference: string;
+  pinAdjusted: boolean;
+};
+
+export type EstimatedPriceBand = {
+  min: number;
+  max: number;
+  currency: "PEN";
+  label: string;
+  explanation: string;
+  budgetCap?: string;
+};
+
+export type Offer = {
+  id: string;
+  requestId: string;
+  professional: PublicProfessionalData;
+  pricingType: PricingType;
+  amount?: number;
+  minAmount?: number;
+  maxAmount?: number;
+  diagnosticFee?: number;
+  availability: string;
+  proposedDate: string;
+  proposedTimeWindow: string;
+  scopeIncluded: string;
+  note: string;
+  etaLabel: string;
+  responseLabel: string;
+  status: OfferStatus;
+  createdAt: string;
+  expiresAt: string;
+};
+
 export type RequestDraft = {
   professional: PublicProfessionalData;
-  assignmentMode: "invited" | "open";
+  requestMode: RequestMode;
   categorySlug: string;
   categoryLabel: string;
   serviceSlug: string;
@@ -54,8 +102,9 @@ export type RequestDraft = {
   preferredDate: string;
   preferredTime: string;
   modality: "presencial" | "virtual";
-  address: string;
+  address: ExactAddress;
   phone: string;
+  estimatedPrice: EstimatedPriceBand;
   attachments: AttachmentDraft[];
 };
 
@@ -97,12 +146,14 @@ export type Review = {
 export type ServiceRequest = RequestDraft & {
   id: string;
   status: RequestStatus;
+  acceptedOfferId?: string;
   createdAt: string;
   updatedAt: string;
   agreedDate?: string;
   agreedTime?: string;
   timeline: TimelineEvent[];
   messages: ChatMessage[];
+  offers: Offer[];
   proposals: ScheduleProposal[];
   cancellationReason?: string;
   reportReason?: string;

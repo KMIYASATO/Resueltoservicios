@@ -2,30 +2,41 @@ import type { RequestStatus } from "../types/request.types";
 
 export const requestStatusLabels: Record<RequestStatus, string> = {
   draft: "Borrador",
-  review: "Revisión",
-  sent: "Enviada",
-  viewed: "Vista",
-  information_requested: "Información solicitada",
-  reschedule_proposed: "Nuevo horario propuesto",
-  accepted: "Aceptada",
-  rejected: "Rechazada",
-  cancelled_by_customer: "Cancelada",
-  cancelled_by_professional: "Cancelada por el profesional",
-  completed: "Completada"
+  submitted: "Enviada",
+  matching: "Buscando propuestas",
+  awaiting_response: "Esperando respuesta",
+  proposals_received: "Propuestas recibidas",
+  selected: "Profesional elegido",
+  scheduled: "Servicio programado",
+  in_service: "En atención",
+  completed: "Completada",
+  cancelled: "Cancelada",
+  expired: "Expirada"
 };
 
+export const offerStatusLabels = {
+  draft: "Borrador",
+  sent: "Enviada",
+  viewed: "Vista",
+  negotiating: "En negociación",
+  accepted: "Aceptada",
+  not_selected: "No seleccionada",
+  withdrawn: "Retirada",
+  expired: "Expirada"
+} as const;
+
 const transitions: Record<RequestStatus, RequestStatus[]> = {
-  draft: ["review", "sent", "cancelled_by_customer"],
-  review: ["draft", "sent", "cancelled_by_customer"],
-  sent: ["viewed", "information_requested", "reschedule_proposed", "accepted", "rejected", "cancelled_by_customer"],
-  viewed: ["information_requested", "reschedule_proposed", "accepted", "rejected", "cancelled_by_customer"],
-  information_requested: ["information_requested", "reschedule_proposed", "accepted", "rejected", "cancelled_by_customer"],
-  reschedule_proposed: ["information_requested", "reschedule_proposed", "accepted", "rejected", "cancelled_by_customer"],
-  accepted: ["completed", "cancelled_by_customer", "cancelled_by_professional"],
-  rejected: [],
-  cancelled_by_customer: [],
-  cancelled_by_professional: [],
-  completed: []
+  draft: ["submitted", "cancelled"],
+  submitted: ["matching", "awaiting_response", "proposals_received", "cancelled", "expired"],
+  matching: ["proposals_received", "awaiting_response", "cancelled", "expired"],
+  awaiting_response: ["proposals_received", "selected", "cancelled", "expired"],
+  proposals_received: ["proposals_received", "selected", "cancelled", "expired"],
+  selected: ["scheduled", "cancelled"],
+  scheduled: ["in_service", "completed", "cancelled"],
+  in_service: ["completed", "cancelled"],
+  completed: [],
+  cancelled: [],
+  expired: []
 };
 
 export function canTransition(from: RequestStatus, to: RequestStatus) {
@@ -33,9 +44,9 @@ export function canTransition(from: RequestStatus, to: RequestStatus) {
 }
 
 export function isTerminalStatus(status: RequestStatus) {
-  return status === "rejected" || status === "cancelled_by_customer" || status === "cancelled_by_professional" || status === "completed";
+  return status === "cancelled" || status === "expired" || status === "completed";
 }
 
-export function canRevealContact(status: RequestStatus) {
-  return status === "accepted" || status === "completed";
+export function canRevealContact(status: RequestStatus, acceptedOfferId?: string) {
+  return Boolean(acceptedOfferId && (status === "selected" || status === "scheduled" || status === "in_service" || status === "completed"));
 }

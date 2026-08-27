@@ -7,10 +7,15 @@ const privateProfessionalContacts: Record<string, PrivateProfessionalContact> = 
   "jorge-a": { phone: "+51010000003", whatsapp: "51010000003" }
 };
 
-export function getProfessionalContact(professionalId: string, status: RequestStatus) {
-  if (!canRevealContact(status)) return null;
+export function getProfessionalContact(professionalId: string, status: RequestStatus, acceptedOfferId?: string) {
+  if (!canRevealContact(status, acceptedOfferId)) return null;
   return privateProfessionalContacts[professionalId] ?? { phone: "+51010000000", whatsapp: "51010000000" };
 }
+
+export const mockContactService = {
+  getProfessionalContact,
+  getWhatsAppMessage
+};
 
 export function getWhatsAppMessage(professionalName: string) {
   return `Hola ${professionalName.split(" ")[0]}, soy el cliente de tu solicitud en Queda.`;
