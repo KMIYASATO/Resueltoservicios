@@ -1,4 +1,4 @@
-const CACHE_NAME = "queda-pwa-v1";
+const CACHE_NAME = "queda-pwa-v2-request-marketplace";
 const SHELL_ASSETS = ["./"];
 
 self.addEventListener("install", (event) => {
